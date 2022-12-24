@@ -129,6 +129,64 @@ public class CipherEver : MonoBehaviour
         Debug.Log(word);
         //pageContents[0, 0] = word;
         //pageUpdate(0);
+        string ayoString = "AOYYOAAOAYOY";
+        int ayoShift = Bomb.GetSerialNumberNumbers().Last() + 1;
+        string[] ayoStringShifted = new string[12];
+        for (int i = 0; i < ayoString.Length; i++)
+        {
+            ayoStringShifted[i] = ayoString[(i + ayoShift) % 12].ToString();
+        }
+        for (int i = 0; i < 12; i++)
+        {
+            Debug.Log(ayoStringShifted[i]);
+        }
+        List<int> APositions = new List<int>();
+        List<int> YPositions = new List<int>();
+        List<int> OPositions = new List<int>();
+
+        for (int i = 0; i < ayoStringShifted.Length; i++)
+        {
+            switch (ayoStringShifted[i])
+            {
+                case "A":
+                    APositions.Add(i);
+                    break;
+                case "Y":
+                    YPositions.Add(i);
+                    break;
+                case "O":
+                    OPositions.Add(i);
+                    break;
+
+            }
+
+        }
+        string[] encryptedKeyWordArr = new string[12];
+        for (int i = 0; i < word.Length; i++)
+        {
+            if (i>= 0 && i <= 3)
+            {
+                encryptedKeyWordArr[APositions[i]] = word[i].ToString();
+            }
+            else if (i >= 4 && i <= 7)
+            {
+                encryptedKeyWordArr[YPositions[i % 4]] = word[i].ToString();
+            }
+            else
+            {
+                encryptedKeyWordArr[OPositions[i % 4]] = word[i].ToString();
+            }
+        }
+        string encryptedKeyWord = "";
+        foreach (string letter in encryptedKeyWordArr)
+        {
+            encryptedKeyWord += letter;
+        }
+
+        Debug.Log("Final " + encryptedKeyWord);
+
+
+
         return "bla";
     }
 
