@@ -236,13 +236,62 @@ public class CipherEver : MonoBehaviour
     }
 
     // Kuro Cipher down here
+    void wayfinding()
+    {
+        
+    }
+
+    TubeLine[] generateMap()
+        // Generates all 11 Tube lines and their branches.
+    {
+        TubeLine[] lines = new TubeLine[10];
+
+        lines[0] = new TubeLine("BAKERLOO", "B36305");
+        string[] bakerlooPath = { "HARROW N WEALDSTONE", "KENTON", "SOUTH KENTON", "NORTH WEMBLEY", "WEMBLEY CENTRAL", "STONEBRIDGE PARK", "HARLSEDEN", "WILLESDEN JUNCTION", "KENSAL GREEN", "QUEENS PARK", "KILBURN PARK", "MAIDA VALE", "WARWICK AVENUE", "PADDINGTON", "EDGEWARE ROAD", "MARYLEBONE", "BAKER STREET", "REGENTS PARK", "OXFORD CIRCUS", "PICCADILLY CIRCUS", "CHARING CROSS", "EMBANKMENT", "WATERLOO", "LAMBETH NORTH", "ELEPHANT N CASTLE"};
+        lines[0].AddBranch(bakerlooPath);
+
+        lines[1] = new TubeLine("CENTRAL", "E32017");
+        string[] centralPath1 = { "WEST RUISLIP", "RUISLIP GARDENS", "SOUTH RUISLIP", "NORTHOLT", "GREENFORD", "PERIVALE", "HANGER LANE", "NORTH ACTON" };
+        string[] centralPath2 = { "EALING BROADWAY", "WEST ACTON", "NORTH ACTON" };
+        string[] centralPath3 = { "NORTH ACTON", "EAST ACTON", "WHITE CITY", "SHEPHERDS BUSH", "HOLLAND PARK", "NOTTING HILL GATE", "QUEENSWAY", "LANCASTER GATE", "MARBLE ARCH", "BOND STREET", "OXFORD CIRCUS", "TOTTENHAM COURT ROAD", "HOLBORN", "CHANCERY LANE", "ST PAULS", "BANK" , "LIVERPOOL STREET", "BETHNAL GREEN", "MILE END", "STRATFORD", "LEYTON", "LEYTONSTONE" };
+        string[] centralPath4 = { "LEYTONSTONE", "WANSTEAD", "REDBRIDGE", "GANTS HILL", "NEWBURY PARK", "BARKINGSIDE", "FAIRLOP", "HAINAULT" };
+        string[] centralPath5 = { "LEYTONSTONE", "SNARESBROOK", "SOUTH WOODFORD", "WOODFORD", "BUCKHURST HILL", "LOUGHTON", "DEBDEN", "THEYDON BOIS", "EPPING" };
+        lines[1].AddBranch(centralPath1);
+        lines[1].AddBranch(centralPath2);
+        lines[1].AddBranch(centralPath3);
+        lines[1].AddBranch(centralPath4);
+        lines[1].AddBranch(centralPath5);
+
+        lines[2] = new TubeLine("CIRCLE", "FFD300");
+        string[] circlePath = { "HAMMERSMITH", "GOLDHAWK ROAD", "SHEPHERDS BUSH MARKET", "WOOD LANE", "LATIMER ROAD", "LADBROKE GROVE", "WESTBOURNE PARK", "ROYAL OAK", "PADDINGTON", "EDGEWARE ROAD", "BAKER STREET", "GREAT PORTLAND STREET", "EUSTON SQUARE", "KINGS CROSS ST PANCRAS", "FARRINGDON", "BARBICAN", "MOORGATE", "LIVERPOOL STREET", "ALDGATE", "TOWER HILL", "BANK", "CANNON STREET", "MANSION HOUSE", "BLACKFRIARS", "TEMPLE", "EMBANKMENT", "WESTMINSTER", "ST JAMES PARK", "VICTORIA", "SLOANE SQUARE", "SOUTH KENSINGTON", "GLOUCESTER ROAD", "HIGH STREET KENSINGTON", "NOTTING HILL GATE", "BAYSWATER", "PADDINGTON", "EDGEWARE ROAD" };
+        lines[2].AddBranch(circlePath);
+
+        lines[3] = new TubeLine("DISTRICT", "00782A");
+        string[] districtPath1 = { "EALING BROADWAY", "EALING COMMON", "ACTON TOWN", "CHISWICK PARK", "TURNHAM GREEN" };
+        string[] districtPath2 = { "RICHMOND", "KEW GARDENS", "GUNNERSBURY", "TURNHAM GREEN" };
+        string[] districtPath3 = { "TURNHAM GREEN", "STAMFORD BROOK", "RAVENSCOURT PARK", "HAMMERSMITH", "BARONS COURT", "WEST KENSINGTON", "EARLS COURT" };
+        string[] districtPath4 = { "KENSINGTON OLYMPIA", "EARLS COURT" };
+        string[] districtPath5 = { "WIMBLEDON", "WIMBLEDON PARK", "SOUTHFIELDS", "EAST PUTNEY", "PUTNEY BRIDGE" , "PARSONS GREEN" ,"FULHAM BROADWAY", "WEST BROMPTON", "EARLS COURT" };
+        string[] districtPath6 = { "EARLS COURT", "HIGH STREET KENSINGTON", "NOTTING HILL GATE", "BAYSWATER", "PADDINGTON", "EDGEWARE ROAD" };
+        string[] districtPath7 = { "EARLS COURT", "GLOUCESTER ROAD", "SOUTH KENSINGTON", "SLOANE SQUARE", "VICTORIA", "ST JAMES PARK", "WESTMINSTER", "EMBANKMENT", "TEMPLE", "BLACKFRIARS", "MANSION HOUSE", "CANNON STREET", "MONUMENT", "TOWER HILL", "ALDGATE EAST", "WHITECHAPEL", "STEPNEY GREEN", "MILE END", "BOW ROAD", "BROMLEY BY BOW", "WEST HAM", "PLAISTOW", "UPTON PARK", "EAST HAM", "BARKING", "UPNEY", "BECONTREE", "DAGENHAM HEATHWAY", "DAGENHAM EAST", "ELM PARK", "HORNCHURCH", "UPMINSTER BRIDGE", "UPMINSTER" };
+        lines[3].AddBranch(districtPath1);
+        lines[3].AddBranch(districtPath2);
+        lines[3].AddBranch(districtPath3);
+        lines[3].AddBranch(districtPath4);
+        lines[3].AddBranch(districtPath5);
+        lines[3].AddBranch(districtPath6);
+        lines[3].AddBranch(districtPath7);
+
+        return lines;
+    }
+
     class TubeLine
     {
         public string name;
         public string colour;
         private List<Branch> branches = new List<Branch>();
 
-        public TubeLine(string lineName, string lineColour, int branchCount)
+        public TubeLine(string lineName, string lineColour)
         {
             name = lineName;
             colour = lineColour;
