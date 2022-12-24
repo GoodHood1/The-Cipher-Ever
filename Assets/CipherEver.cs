@@ -238,38 +238,40 @@ public class CipherEver : MonoBehaviour
     // Kuro Cipher down here
     class TubeLine
     {
-        public TubeLine(string lineName, string lineColour, params string[][] sections)
-            // sections is of the form {{"0", "xxxx", "xxxxxx", "xxxxx"}, {"0", "xxxxxxxx", "xx"}, {"1", "xxxxxxxxxxxxxxxx", "x"}}
-            // Want stations[1][2][3] to be station 3 on branch 2 of section 1
-            // Going to make a branch class lmaoo
+        public string name;
+        public string colour;
+        private List<Branch> branches = new List<Branch>();
+
+        public TubeLine(string lineName, string lineColour, int branchCount)
         {
-            string name = lineName;
-            string colour = lineColour;
-            List<List<List<string>>> stations = new List<List<List<string>>>();
-            string branchNumbers = "";
-            int currentBranchNumber = 0;
+            name = lineName;
+            colour = lineColour;
+        }
 
-            foreach (string[] section in sections)
+        public void AddBranch(string[] stationsList, string branchIdentifier = "")
+        {
+            branches.Add(new Branch(stationsList, branchIdentifier));
+        }
+
+        private class Branch
+        {
+            public string[] stations;
+            public string leftEndPoint;
+            public string rightEndPoint;
+            public string name;
+
+            public Branch(string[] stationsList, string branchIdentifier)
             {
-                if (!branchNumbers.Contains(section[0]))
-                {
-                    currentBranchNumber = 0;
-                    branchNumbers += section[0];
-                    stations.Add(new List<List<string>>());
-                }
-                else
-                {
-                    currentBranchNumber += 1;
-                }
-
-                stations[int.Parse(section[0])].Add(new List<string>());
-
-                for (int i = 1; i < section.Length; i++)
-                {
-                    stations[int.Parse(section[0])][currentBranchNumber].Add(section[i]);
-                }
+                stations = stationsList;
+                leftEndPoint = stationsList[0];
+                rightEndPoint = stationsList[stationsList.Count() - 1];
+                name = branchIdentifier;
             }
 
+            public bool Contains(string station)
+            {
+                return stations.Contains(station);
+            }
         }
     }
 
