@@ -78,8 +78,8 @@ public class CipherEver : MonoBehaviour
 
     void Start()
     {
-        pageContents[0,0] = "1TOP";
-        pageContents[0,1] = "1MID";
+        pageContents[0,0] = "TOTTENHAM COURT ROAD";
+        pageContents[0,1] = "GLOUCESTER ROAD";
         pageContents[0,2] = "1BOT";
         pageContents[1,0] = "2TOP";
         pageContents[1,1] = "2MID";
@@ -101,6 +101,11 @@ public class CipherEver : MonoBehaviour
 
         left.OnInteract += delegate () { leftPress(); return false; };
 
+    }
+
+    void wayfinding()
+    {
+        return 1
     }
 
     string encryptGoodHoodKeyword(string word)
@@ -127,8 +132,8 @@ public class CipherEver : MonoBehaviour
         }
         word = newWord;
         Debug.Log(word);
-        pageContents[0, 0] = word;
-        pageUpdate(0);
+        //pageContents[0, 0] = word;
+        //pageUpdate(0);
         return "bla";
     }
 
@@ -169,7 +174,8 @@ public class CipherEver : MonoBehaviour
         {
             return;
         }
-        else if (Submission){
+        else if (Submission)
+        {
             Submission = false;
         }
         Audio.PlaySoundAtTransform("ArrowPress", transform);
