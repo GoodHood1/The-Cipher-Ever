@@ -103,11 +103,6 @@ public class CipherEver : MonoBehaviour
 
     }
 
-    void wayfinding()
-    {
-        return 1;
-    }
-
     string encryptGoodHoodKeyword(string word)
     {
         string alpha = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
