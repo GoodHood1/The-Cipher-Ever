@@ -105,7 +105,7 @@ public class CipherEver : MonoBehaviour
 
     void wayfinding()
     {
-        return 1
+        return 1;
     }
 
     string encryptGoodHoodKeyword(string word)
