@@ -494,6 +494,25 @@ public class CipherEver : MonoBehaviour
             branches.Add(new Branch(stationsList, branchIdentifier));
         }
 
+        public string FindPath(string startStation, string endStation)
+            // Return a string containing the first letters of each station along a path between startStation and endStation, or an empty string if no such path exists.
+        {
+            List<string> possiblePaths = new List<string>();
+            string currentPath = "";
+
+            foreach (Branch b in branches)
+            {
+                
+            }
+
+            return "";
+        }
+
+        private string Explore(Branch b, string startStation, string endStation)
+        {
+            return "";
+        }
+
         private class Branch
         {
             public string[] stations;
@@ -512,6 +531,23 @@ public class CipherEver : MonoBehaviour
             public bool Contains(string station)
             {
                 return stations.Contains(station);
+            }
+
+            public string Search(string startStation, string endStation, bool reverse = false)
+            // Return a string containing the path from startStation to endStation, or to the end of the branch if no such path exists.
+            // reverse -> if true, then the branch will be searched in the right-to-left direction, otherwise it will be searched from left-to-right.
+            {
+                int position = Array.IndexOf(stations, startStation);
+                string currentStation;
+                string path = "";
+
+                do
+                {
+                    currentStation = stations[position];
+                    path += currentStation[0];
+                } while (currentStation != endStation && position >= 0 && position < stations.Length);
+
+                return path;
             }
         }
     }
