@@ -1,0 +1,140 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1">
+    <title>The Cipher Ever — Keep Talking and Nobody Explodes Module</title>
+    <link rel="stylesheet" type="text/css" href="css/font.css">
+    <link rel="stylesheet" type="text/css" href="css/normalize.css">
+    <link rel="stylesheet" type="text/css" href="css/main.css">
+    <script src="js/ktane-utils.js"></script>
+    <style>
+        .dark table, table {
+            margin: 1em auto;
+            border: none;
+        }
+
+        ul{ margin-top: 0.5em; }
+
+        .page-footer::before { content: 'Page '; }
+        .page-footer::after { content: ' of 2'; }
+    </style>
+</head>
+<body>
+    <div class="section">
+        <div class="page page-bg-01">
+            <div class="page-header">
+                <span class="page-header-doc-title">Keep Talking and Nobody Explodes Mod</span>
+                <span class="page-header-section-title">The Cipher Ever</span>
+            </div>
+            <div class="page-content">
+                <img src="img/Component/Module Name.svg" class="diagram">
+                <h2>On the Subject of The Cipher Ever</h2>
+                <p class="flavour-text">The Metropolitan Line has never been stronger!</p>
+                
+                <p>This module contains 3 screens, a keyboard, 2 arrows, and a submit button 
+                    that displays the current page you’re on.</p>
+
+                <p>To disarm the module, first help the module get to its destination, then decrypt
+                     a word which has been encrypted using the three following ciphers.</p>
+
+                <h3>Step 1: Wayfinding</h3>
+
+                <p>Initially, only one page will be accessible as the rest will be locked.
+                     To unlock the remaining pages, please guide the module along its journey
+                      on the Tube this evening.</p>
+
+                <p>The top and middle screens will display the origin and destination stations,
+                     respectively. Due to ongoing strike action, the module requests that two
+                      routes are provided should one be inaccessible. The first of these routes
+                       should contain exactly one interchange*, while the second should contain
+                        exactly two. 
+                </p>
+                
+                <p>To submit your routes, type the name of the interchange used in the first route,
+                     then press <b>"TO THE TRAINS"</b> submit button (or ENTER on your keyboard). Repeat for
+                      the first and then the second interchange used in the second route. A correct
+                    submission will unlock the module - proceed to step 2.</p>
+
+                <u>Rules for submission:</u>
+
+                <ul>
+                    <li>A route may not use the same line more than once (but the two routes 
+                        may share between each other).</li>
+                    <li>The module will not accept routes using the DLR, Elizabeth Line, London
+                         Overground, London Trams, Cable Car, or Thameslink services as these
+                          are not part of the Tube (despite being on the "Tube Map").</li>
+                    <li>You must use three different interchanges across both routes.</li>
+                </ul>
+            
+                <u>Notes:</u>
+
+                <ul>
+                    <li>Only the interchanges themselves need to be submitted, not the lines taken.</li>
+                    <li>There may be multiple possible routes.</li>
+                    <li>On an incorrect submission, valid routes will turn green while invalid ones will
+                        turn red and a strike will be issued.</li>
+                    <li>If a station name is not recognised, it will turn orange but a strike will not 
+                        be issued.</li>
+                </ul>
+
+                *An interchange is a station you used to change lines.
+
+            </div>
+            <div class="page-footer relative-footer">1</div>
+        </div>
+
+        <div class="page page-bg-02">
+            <div class="page-header">
+                <span class="page-header-doc-title">Keep Talking and Nobody Explodes Mod</span>
+                <span class="page-header-section-title">The Cipher Ever</span>
+            </div>
+            <div class="page-content">
+                <u>Map disambiguation:</u>
+                <p>In general, stations connected by solid white lines (labelled "Internal Interchage" in the Key)
+                are the same station. This section of the manual exists to clear up ambiguous cases:</p>
+                <ul>
+                    <li>On the Northern Line, the station between Old Street and Bank is Moorgate.</li>
+                    <li>The station where the Central Line connects with the Circle, Hammersmith & City,
+                        and Metropolitan Lines is Liverpool Street.
+                    </li>
+                </ul>
+
+                <h3>Step 2: The London Underground Cipher</h3>
+                <p>The rest of the module will now unlock. The pages relevant for this section of 
+                    the manual are pages 2 and 3; page 2 will show the encrypted word on the top 
+                    and the Tube lines the module used for the first route on the other two screens,
+                     and page 3 will show the lines used for the second route.
+                </p>
+
+                <h4>Step 2.1: Tube Line Transposition</h4>
+                <table style="float:left; width:20%; font-size:14px; margin-right:25px"> 
+                    <caption>Table A: Tube Colour Index</caption>
+                    <tr><th>Tube Line</th><th>Colour Code</th></tr>
+                    <tr><th style="background-color:#B36305;color:white">Bakerloo</th><td>#B36305</td></tr>
+                    <tr><th style="background-color:#E32017;color:white">Central</th><td>#E32017</td></tr>
+                    <tr><th style="background-color:#FFD300">Circle</th><td>#FFD300</td></tr>
+                    <tr><th style="background-color:#00782A;color:white">District</th><td>#00782A</td></tr>
+                    <tr><th style="background-color:#F3A9BB">Hammersmith & City</th><td>#F3A9BB</td></tr>
+                    <tr><th style="background-color:#A0A5A9">Jubilee</th><td>#A0A5A9</td></tr>
+                    <tr><th style="background-color:#9B0056;color:white">Metropolitan</th><td>#9B0056</td></tr>
+                    <tr><th style="background-color:#000000;color:white">Northern</th><td>#000000</td></tr>
+                    <tr><th style="background-color:#003688;color:white">Piccadilly</th><td>#003688</td></tr>
+                    <tr><th style="background-color:#0098D4;color:white">Victoria</th><td>#0098D4</td></tr>
+                    <tr><th style="background-color:#95CDBA">Waterloo & City</th><td>#95CDBA</td></tr>
+                </table>
+
+                <p>Concatenate the colour codes of these lines (see Table A; omit the # in each code), in the order shown on the
+                     module, and shift the resulting string to the right by the absolute difference in
+                     the number of stations in each route.
+                </p>
+
+                <p>Separate the string back into five 6-digit hexadecimal numbers. Add the first two numbers together
+                    to create <b>Key 1</b>, and add the remaining three numbers together to create <b>Key 2</b>.
+                </p>
+            </div>
+            <div class="page-footer relative-footer">2</div>
+        </div>
+    </div>
+</body>
+</html>
