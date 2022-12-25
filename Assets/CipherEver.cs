@@ -36,11 +36,7 @@ public class CipherEver : MonoBehaviour
     bool pagesLocked = true;
     bool Submission = false;
 
-    string route1input = "";
-    string route1answer = "";
-
-    string[] route2inputs = new string[2];
-    string[] route2answers = new string[2];
+    string[] routeInputs = new string[3];
 
     int routeStage = 1;
 
@@ -83,13 +79,14 @@ public class CipherEver : MonoBehaviour
     void Awake()
     {
 
-
+        for (int i = 0; i < six_letter_words.Length; i++)
+        {
+            Debug.Log(six_letter_words[i]);
+        }
     }
 
     void Start()
     {
-        route1answer = "ONE";
-        route2answers = new string[2] {"TWO", "THREE"};
 
 
         pageContents[0, 0] = "TOTTENHAM COURT ROAD";
@@ -257,49 +254,27 @@ public class CipherEver : MonoBehaviour
 
     void submitPress()
     {
+        if (!Submission)
+        {
+            module.HandleStrike();
+            return;
+        }
         if (pagesLocked && routeStage == 1)
         {
-            if (ScreenTexts[0].text == route1answer)
-            {
-                routeStage = 2;
-                ScreenTexts[0].text = "";
-                Debug.Log("passed part one");
-
-            }
-            else
-            {
-                //If first time submit is pressed in route part is correct
-                module.HandleStrike();
-                pageUpdate(0);
-                Submission = false;
-                Debug.Log("wrong part one");
-
-            }
+            routeStage = 2;
+            screenToWrite = 1;
         }
         else if (pagesLocked && routeStage == 2)
         {
-            screenToWrite = 1;
+            screenToWrite = 2;
             routeStage = 3;
         }
         else if (pagesLocked && routeStage == 3)
         {
-            route2inputs[0] = ScreenTexts[0].text;
-            route2inputs[1] = ScreenTexts[1].text;
-            if (route2inputs[0] == route2answers[0] && route2inputs[1] == route2answers[1])
-            {
-                pagesLocked = false;
-                screenToWrite = 0;
-                pageUpdate(1);
-                currentPage = 1;
-            }
-            else
-            {
-                module.HandleStrike();
-                Submission = false;
-                pageUpdate(0);
-                screenToWrite = 0;
-                routeStage = 1;
-            }
+            routeInputs[0] = ScreenTexts[0].text;
+            routeInputs[1] = ScreenTexts[1].text;
+            routeInputs[2] = ScreenTexts[2].text;
+
         }
 
     }
@@ -379,6 +354,10 @@ public class CipherEver : MonoBehaviour
                     keyboard[getPositionFromChar((char)('A' + ltr))].OnInteract();
                 }
             }
+            if (Input.GetKeyDown(KeyCode.Return))
+                submit.OnInteract();
+            if (Input.GetKeyDown(KeyCode.Space) && pagesLocked)
+                keyboardPress(right);
         }
     }
 
@@ -392,6 +371,7 @@ public class CipherEver : MonoBehaviour
     TubeLine[] generateMap()
     // Generates all 11 Tube lines and their branches.
     {
+
         TubeLine[] lines = new TubeLine[10];
 
         lines[0] = new TubeLine("BAKERLOO", "B36305");
@@ -478,10 +458,12 @@ public class CipherEver : MonoBehaviour
         string[] piccadillyPath1 = { "HEATHROW T5", "HEATHROW T2 N 3", "HATTON CROSS", "HOUNSLOW WEST", "HOUNSLOW CENTRAL", "HOUNSLOW EAST", "OSTERLEY", "BOSTON MANOR", "NORTHFIELDS", "SOUTH EALING", "ACTON TOWN" };
         string[] piccadillyPath2 = { "UXBRIDGE", "HILLINGDON", "ICKENHAM", "RUISLIP", "RUISLIP MANOR", "EASTCOTE", "RAYNERS LANE", "SOUTH HARROW", "SUDBURY HILL", "SUDBURY TOWN", "ALPERTON", "PARK ROYAL", "NORTH EALING", "EALING COMMON", "ACTON TOWN" };
         //                                                                                                              :O
-        string[] piccadillyPath3 = { "ACTON TOWN", "TURNHAM GREEN", "HAMMERSMITH", "BARONS COURT", "EARLS COURT", "GLOUCESTER ROAD", "SOUTH KENSINGTON", "KNIGHTSBRIDGE", "HYDE PARK CORNER", "GREEN PARK", "PICCADILLY CIRCUS", "LEICESTER SQUARE", "COVENT GARDEN", "HOLBORN", "RUSSELL SQUARE", "KINGS CROSS ST PANCRAS", "CALEDONIAN ROAD", "HOLLOWAY ROAD", "ARSENAL", "FINSBURY PARK", "MANOR HOUSE", "TURNPIKE LANE", "WOOD GREEN", "BOUNDS GREEN", "ARNOS GROVE", "SOUTHGATE", "OAKWOOD", "COCKFOSTERS" };
+        string[] piccadillyPath3 = { "ACTON TOWN", "TURNHAM GREEN", "HAMMERSMITH", "BARONS COURT", "EARLS COURT", /* :O */"GLOUCESTER ROAD", "SOUTH KENSINGTON", "KNIGHTSBRIDGE", "HYDE PARK CORNER", "GREEN PARK", "PICCADILLY CIRCUS", "LEICESTER SQUARE", "COVENT GARDEN", "HOLBORN", "RUSSELL SQUARE", "KINGS CROSS ST PANCRAS", "CALEDONIAN ROAD", "HOLLOWAY ROAD", "ARSENAL", "FINSBURY PARK", "MANOR HOUSE", "TURNPIKE LANE", "WOOD GREEN", "BOUNDS GREEN", "ARNOS GROVE", "SOUTHGATE", "OAKWOOD", "COCKFOSTERS" };
         lines[8].AddBranch(piccadillyPath1);
         lines[8].AddBranch(piccadillyPath2);
         lines[8].AddBranch(piccadillyPath3);
+
+        
 
         lines[9] = new TubeLine("VICTORIA", "0098D4");
         string[] victoriaPath = { "BRIXTON", "STOCKWELL", "VAUXHALL", "PIMLICO", "VICTORIA", "GREEN PARK", "OXFORD CIRCUS", "WARREN STREET", "EUSTON", "KINGS CROSS ST PANCRAS", "HIGHBURY N ISLINGTON", "FINSBURY PARK", "SEVEN SISTERS", "TOTTENHAM HALE", "BLACKHORSE ROAD", "WALTHOMSTOW CENTRAL" };
@@ -493,6 +475,7 @@ public class CipherEver : MonoBehaviour
 
         return lines;
     }
+
 
     class TubeLine
     {
