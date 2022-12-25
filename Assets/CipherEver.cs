@@ -340,6 +340,67 @@ public class CipherEver : MonoBehaviour
         lines[3].AddBranch(districtPath6);
         lines[3].AddBranch(districtPath7);
 
+        lines[4] = new TubeLine("HAMMERSMITH N CITY", "F3A9BB");
+        string[] hamNcheesePath = { "HAMMERSMITH", "GOLDHAWK ROAD", "SHEPHERDS BUSH MARKET", "WOOD LANE", "LATIMER ROAD", "LADBROKE GROVE", "WESTBOURNE PARK", "ROYAL OAK", "PADDINGTON", "EDGEWARE ROAD", "BAKER STREET", "GREAT PORTLAND STREET", "EUSTON SQUARE", "KINGS CROSS ST PANCRAS", "FARRINGDON", "BARBICAN", "MOORGATE", "LIVERPOOL STREET", "ALDGATE EAST", "WHITECHAPEL", "STEPNEY GREEN", "MILE END", "BOW ROAD", "BROMLEY BY BOW", "WEST HAM", "PLAISTOW", "UPTON PARK", "EAST HAM", "BARKING" };
+        lines[4].AddBranch(hamNcheesePath);
+
+        lines[5] = new TubeLine("JUBILEE", "A0A5A9");
+        string[] jubileePath = { "STANMORE", "CANONS PARK", "QUEENSBURY", "KINGSBURY", "WEMBLEY PARK", "NEASDEN", "DOLLIS HILL", "WILLESDEN GREEN", "KILBURN", "WEST HAMPSTEAD", "FINCHLEY ROAD", "SWISS COTTAGE", "ST JOHNS WOOD", "BAKER STREET", "BOND STREET", "GREEN PARK", "WESTMINSTER", "WATERLOO", "SOUTHWARK", "LONDON BRIDGE", "BERMONDSEY", "CANADA WATER", "CANARY WHARF", "NORTH GREENWICH", "CANNING TOWN", "WEST HAM", "STRATFORD" };
+        lines[5].AddBranch(jubileePath);
+
+        lines[6] = new TubeLine("METROPOLITAN", "9B0056");
+        string[] metropolitanPath1 = { "CHESHAM", "CHALFONT N LATIMER" };
+        string[] metropolitanPath2 = { "AMERSHAM", "CHALFONT N LATIMER" };
+        string[] metropolitanPath3 = { "CHALFONT N LATIMER", "CHORLEYWOOD", "RICKMANSWORTH", "MOOR PARK" };
+        string[] metropolitanPath4 = { "WATFORD", "CROXLEY", "MOOR PARK" };
+        string[] metropolitanPath5 = { "MOOR PARK", "NORTHWOOD", "NORTHWOOD HILLS", "PINNER", "NORTH HARROW", "HARROW ON THE HILL" };
+        string[] metropolitanPath6 = { "UXBRIDGE", "HILLINGDON", "ICKENHAM", "RUISLIP", "RUISLIP MANOR", "EASTCOTE", "RAYNERS LANE", "WEST HARROW", "HARROW ON THE HILL" };
+        string[] metropolitanPath7 = { "HARROW ON THE HILL", "NORTHWICK PARK", "PRESTON ROAD", "WEMBLEY PARK", "FINCHLEY ROAD", "BAKER STREET", "GREAT PORTLAND STREET", "EUSTON SQUARE", "KINGS CROSS ST PANCRAS", "FARRINGDON", "BARBICAN", "MOORGATE", "LIVERPOOL STREET", "ALDGATE" };
+        lines[6].AddBranch(metropolitanPath1);
+        lines[6].AddBranch(metropolitanPath2);
+        lines[6].AddBranch(metropolitanPath3);
+        lines[6].AddBranch(metropolitanPath4);
+        lines[6].AddBranch(metropolitanPath5);
+        lines[6].AddBranch(metropolitanPath6);
+        lines[6].AddBranch(metropolitanPath7);
+
+        lines[7] = new TubeLine("NORTHERN", "000000");
+        string[] northernPath1 = { "EDGEWARE", "BURNT OAK", "COLLINDALE", "HENDON CENTRAL", "BRENT CROSS", "GOLDERS GREEN", "HAMPSTEAD", "BELSIZE PARK", "CHALK FARM", "CAMDEN TOWN" };
+        string[] northernPath2 = { "HIGH BARNET", "TOTT N WHETSTONE", "WOODSIDE PARK", "WEST FINCHLEY", "FINCHLEY CENTRAL" };
+        string[] bitchPath1 = { "MILL HILL EAST", "FINCHLEY CENTRAL" };
+        string[] northernPath3 = { "FINCHLEY CENTRAL", "EAST FINCHLEY", "HIGHGATE", "ARCHWAY", "TUFNELL PARK", "KENTISH TOWN", "CAMDEN TOWN" };
+        string[] northernPath4 = { "CAMDEN TOWN", "MORNINGTON CRESCENT", "EUSTON", "WARREN STREET", "GOODGE STREET", "TOTTENHAM COURT ROAD", "LEICESTER SQUARE", "CHARING CROSS", "EMBANKMENT", "WATERLOO", "KENNINGTON" };
+        string[] northernPath5 = { "CAMDEN TOWN", "EUSTON", "KINGS CROSS ST PANCRAS", "ANGEL", "OLD STREET", "MOORGATE", "BANK", "LONDON BRIDGE", "BOROUGH", "ELEPHANT N CASTLE", "KENNINGTON", "OVAL" };
+        string[] northernPath6 = { "KENNINGTON", "NINE ELMS", "BATTERSEA PWR STN" };
+        string[] bitchPath2 = { "KENNINGTON", "OVAL" };
+        string[] northernPath7 = { "OVAL", "STOCKWELL", "CLAPHAM NORTH", "CLAPHAM COMMON", "CLAPHAM SOUTH", "BALHAM", "TOOTING BEC", "TOOTING BROADWAY", "COLLIERS WOOD", "SOUTH WIMBLEDON", "MORDEN" };
+        lines[7].AddBranch(northernPath1);
+        lines[7].AddBranch(northernPath2);
+        lines[7].AddBranch(bitchPath1);
+        lines[7].AddBranch(northernPath3);
+        lines[7].AddBranch(northernPath4);
+        lines[7].AddBranch(northernPath5);
+        lines[7].AddBranch(northernPath6);
+        lines[7].AddBranch(bitchPath2);
+        lines[7].AddBranch(northernPath7);
+
+        lines[8] = new TubeLine("PICCADILLY", "003688");
+        string[] piccadillyPath1 = { "HEATHROW T5", "HEATHROW T2 N 3", "HATTON CROSS", "HOUNSLOW WEST", "HOUNSLOW CENTRAL", "HOUNSLOW EAST", "OSTERLEY", "BOSTON MANOR", "NORTHFIELDS", "SOUTH EALING", "ACTON TOWN" };
+        string[] piccadillyPath2 = { "UXBRIDGE", "HILLINGDON", "ICKENHAM", "RUISLIP", "RUISLIP MANOR", "EASTCOTE", "RAYNERS LANE", "SOUTH HARROW", "SUDBURY HILL", "SUDBURY TOWN", "ALPERTON", "PARK ROYAL", "NORTH EALING", "EALING COMMON", "ACTON TOWN" };
+        //                                                                                                              :O
+        string[] piccadillyPath3 = { "ACTON TOWN", "TURNHAM GREEN", "HAMMERSMITH", "BARONS COURT", "EARLS COURT", "GLOUCESTER ROAD", "SOUTH KENSINGTON", "KNIGHTSBRIDGE", "HYDE PARK CORNER", "GREEN PARK", "PICCADILLY CIRCUS", "LEICESTER SQUARE", "COVENT GARDEN", "HOLBORN", "RUSSELL SQUARE", "KINGS CROSS ST PANCRAS", "CALEDONIAN ROAD", "HOLLOWAY ROAD", "ARSENAL", "FINSBURY PARK", "MANOR HOUSE", "TURNPIKE LANE", "WOOD GREEN", "BOUNDS GREEN", "ARNOS GROVE", "SOUTHGATE", "OAKWOOD", "COCKFOSTERS" };
+        lines[8].AddBranch(piccadillyPath1);
+        lines[8].AddBranch(piccadillyPath2);
+        lines[8].AddBranch(piccadillyPath3);
+
+        lines[9] = new TubeLine("VICTORIA", "0098D4");
+        string[] victoriaPath = { "BRIXTON", "STOCKWELL", "VAUXHALL", "PIMLICO", "VICTORIA", "GREEN PARK", "OXFORD CIRCUS", "WARREN STREET", "EUSTON", "KINGS CROSS ST PANCRAS", "HIGHBURY N ISLINGTON", "FINSBURY PARK", "SEVEN SISTERS", "TOTTENHAM HALE", "BLACKHORSE ROAD", "WALTHOMSTOW CENTRAL" };
+        lines[9].AddBranch(victoriaPath);
+
+        lines[10] = new TubeLine("WATERLOO N CITY", "95CDBA");
+        string[] wineNcheesePath = { "WATERLOO", "BANK" };
+        lines[10].AddBranch(wineNcheesePath);
+
         return lines;
     }
 
