@@ -494,23 +494,21 @@ public class CipherEver : MonoBehaviour
             branches.Add(new Branch(stationsList, branchIdentifier));
         }
 
-        public string FindPath(string startStation, string endStation)
-            // Return a string containing the first letters of each station along a path between startStation and endStation, or an empty string if no such path exists.
+        private bool IsTerminus(string station, bool reverse)
+            // Check if a given station is a terminus-only station in the relevant direction.
         {
-            List<string> possiblePaths = new List<string>();
-            string currentPath = "";
-
             foreach (Branch b in branches)
             {
-                
+                if (b.Contains(station))
+                {
+                    if ((!reverse && b.rightEndPoint != station) || (reverse && b.leftEndPoint != station))
+                    {
+                        return false;
+                    }
+                }
             }
 
-            return "";
-        }
-
-        private string Explore(Branch b, string startStation, string endStation)
-        {
-            return "";
+            return true;
         }
 
         private class Branch
@@ -533,18 +531,18 @@ public class CipherEver : MonoBehaviour
                 return stations.Contains(station);
             }
 
-            public string Search(string startStation, string endStation, bool reverse = false)
-            // Return a string containing the path from startStation to endStation, or to the end of the branch if no such path exists.
-            // reverse -> if true, then the branch will be searched in the right-to-left direction, otherwise it will be searched from left-to-right.
+            public List<string> GetPath(string startStation, string endStation, bool reverse)
+            // Return a string containing the path from startStation to endStation.
+            // reverse -> if true, then the branch will be processed in the right-to-left direction, otherwise it will be searched from left-to-right.
             {
                 int position = Array.IndexOf(stations, startStation);
                 string currentStation;
-                string path = "";
+                List<string> path = new List<string>();
 
                 do
                 {
                     currentStation = stations[position];
-                    path += currentStation[0];
+                    path.Add(currentStation);
                 } while (currentStation != endStation && position >= 0 && position < stations.Length);
 
                 return path;
