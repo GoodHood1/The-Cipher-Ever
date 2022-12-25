@@ -21,6 +21,7 @@ public class CipherEver : MonoBehaviour
     public TextMesh[] ScreenTexts;
     public KMSelectable left;
     public KMSelectable right;
+    public KMSelectable submit;
 
     public GameObject subText;
     public GameObject TrainsImage;
@@ -34,6 +35,15 @@ public class CipherEver : MonoBehaviour
 
     bool pagesLocked = true;
     bool Submission = false;
+
+    string route1input = "";
+    string route1answer = "";
+
+    string[] route2inputs = new string[2];
+    string[] route2answers = new string[2];
+
+    int routeStage = 1;
+
 
     int screenToWrite = 0;
 
@@ -78,15 +88,33 @@ public class CipherEver : MonoBehaviour
 
     void Start()
     {
-        pageContents[0,0] = "TOTTENHAM COURT ROAD";
-        pageContents[0,1] = "GLOUCESTER ROAD";
-        pageContents[0,2] = "1BOT";
-        pageContents[1,0] = "2TOP";
-        pageContents[1,1] = "2MID";
-        pageContents[1,2] = "2BOT";
-        pageContents[5,0] = "6TOP";
-        pageContents[5,1] = "6MID";
-        pageContents[5,2] = "6BOT";
+        route1answer = "ONE";
+        route2answers = new string[2] {"TWO", "THREE"};
+
+
+        pageContents[0, 0] = "TOTTENHAM COURT ROAD";
+        pageContents[0, 1] = "GLOUCESTER ROAD";
+        pageContents[0, 2] = "1BOT";
+
+        pageContents[1, 0] = "2TOP";
+        pageContents[1, 1] = "2MID";
+        pageContents[1, 2] = "2BOT";
+
+        pageContents[2, 0] = "3TOP";
+        pageContents[2, 1] = "3MID";
+        pageContents[2, 2] = "3BOT";
+
+        pageContents[3, 0] = "4TOP";
+        pageContents[3, 1] = "4MID";
+        pageContents[3, 2] = "4BOT";
+
+        pageContents[4, 0] = "5TOP";
+        pageContents[4, 1] = "5MID";
+        pageContents[4, 2] = "5BOT";
+
+        pageContents[5, 0] = "6TOP";
+        pageContents[5, 1] = "6MID";
+        pageContents[5, 2] = "6BOT";
         int randomWord = UnityEngine.Random.Range(0, six_letter_words.Length);
         encryptGoodHoodKeyword(six_letter_words[randomWord]);
         module.GetComponent<KMSelectable>().OnFocus += delegate { moduleSelected = true; };
@@ -96,18 +124,21 @@ public class CipherEver : MonoBehaviour
         {
             button.OnInteract += delegate () { keyboardPress(button); return false; };
         }
-        if (!pagesLocked) right.OnInteract += delegate () { rightPress(); return false; };
-        else right.OnInteract += delegate () { keyboardPress(right); return false; };
+        right.OnInteract += delegate () { keyboardPress(right); return false; };
 
         left.OnInteract += delegate () { leftPress(); return false; };
+        submit.OnInteract += delegate () { submitPress(); return false; };
 
     }
+
+
+    #region GoodHoodStuff
 
     string encryptGoodHoodKeyword(string word)
     {
         string alpha = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
         int posOfFirstLetter = Bomb.GetPortCount() % 8;
-        for (int i = 0; i < posOfFirstLetter-1 ; i++)
+        for (int i = 0; i < posOfFirstLetter - 1; i++)
         {
             char randomChar = alpha[UnityEngine.Random.Range(0, alpha.Length)];
             word = word.Insert(0, randomChar.ToString());
@@ -164,7 +195,7 @@ public class CipherEver : MonoBehaviour
         string[] encryptedKeyWordArr = new string[12];
         for (int i = 0; i < word.Length; i++)
         {
-            if (i>= 0 && i <= 3)
+            if (i >= 0 && i <= 3)
             {
                 encryptedKeyWordArr[APositions[i]] = word[i].ToString();
             }
@@ -190,9 +221,15 @@ public class CipherEver : MonoBehaviour
         return "bla";
     }
 
+    #endregion
 
     void keyboardPress(KMSelectable button)
     {
+        if (button == right && !pagesLocked)
+        {
+            rightPress();
+            return;
+        }
         if (!Submission)
         {
             Submission = true;
@@ -201,23 +238,75 @@ public class CipherEver : MonoBehaviour
                 ScreenTexts[i].text = "";
             }
         }
+        if (ScreenTexts[screenToWrite].text.Length >= 20) return;
         if (button == right)
         {
-            ScreenTexts[0].text += " ";
-        } else
-        {
-            ScreenTexts[0].text += button.name.ToUpper();
+            ScreenTexts[screenToWrite].text += " ";
         }
-        int length = ScreenTexts[0].text.Length;
-        ScreenTexts[0].fontSize = length < 13 ? 317 : length == 13 ? 292 : length < 17 ? 237 : 185;
+        else
+        {
+            ScreenTexts[screenToWrite].text += button.name.ToUpper();
+        }
+        int length = ScreenTexts[screenToWrite].text.Length;
+        ScreenTexts[screenToWrite].fontSize = length < 13 ? 317 : length == 13 ? 292 : length < 17 ? 237 : 185;
 
 
 
     }
 
 
+    void submitPress()
+    {
+        if (pagesLocked && routeStage == 1)
+        {
+            if (ScreenTexts[0].text == route1answer)
+            {
+                routeStage = 2;
+                ScreenTexts[0].text = "";
+                Debug.Log("passed part one");
+
+            }
+            else
+            {
+                //If first time submit is pressed in route part is correct
+                module.HandleStrike();
+                pageUpdate(0);
+                Submission = false;
+                Debug.Log("wrong part one");
+
+            }
+        }
+        else if (pagesLocked && routeStage == 2)
+        {
+            screenToWrite = 1;
+            routeStage = 3;
+        }
+        else if (pagesLocked && routeStage == 3)
+        {
+            route2inputs[0] = ScreenTexts[0].text;
+            route2inputs[1] = ScreenTexts[1].text;
+            if (route2inputs[0] == route2answers[0] && route2inputs[1] == route2answers[1])
+            {
+                pagesLocked = false;
+                screenToWrite = 0;
+                pageUpdate(1);
+                currentPage = 1;
+            }
+            else
+            {
+                module.HandleStrike();
+                Submission = false;
+                pageUpdate(0);
+                screenToWrite = 0;
+                routeStage = 1;
+            }
+        }
+
+    }
+
     void leftPress()
     {
+        screenToWrite = 0;
         if (Submission && pagesLocked)
         {
             currentPage = 1;
@@ -247,7 +336,7 @@ public class CipherEver : MonoBehaviour
         currentPage = (currentPage + 1) % pages;
         pageUpdate(currentPage);
 
-        
+
     }
 
     void pageUpdate(int page) // A function that sets the 3 screens to each entry in a 3 long array of strings
@@ -264,7 +353,7 @@ public class CipherEver : MonoBehaviour
         }
         for (int i = 0; i < 3; i++)
         {
-            ScreenTexts[i].text = pageContents[page,i];
+            ScreenTexts[i].text = pageContents[page, i];
             int length = pageContents[page, i].Length;
             ScreenTexts[i].fontSize = length < 13 ? 317 : length == 13 ? 292 : length < 17 ? 237 : 185;
         }
@@ -293,25 +382,26 @@ public class CipherEver : MonoBehaviour
         }
     }
 
+    #region kuroStuff
     // Kuro Cipher down here
     void wayfinding()
     {
-        
+
     }
 
     TubeLine[] generateMap()
-        // Generates all 11 Tube lines and their branches.
+    // Generates all 11 Tube lines and their branches.
     {
         TubeLine[] lines = new TubeLine[10];
 
         lines[0] = new TubeLine("BAKERLOO", "B36305");
-        string[] bakerlooPath = { "HARROW N WEALDSTONE", "KENTON", "SOUTH KENTON", "NORTH WEMBLEY", "WEMBLEY CENTRAL", "STONEBRIDGE PARK", "HARLSEDEN", "WILLESDEN JUNCTION", "KENSAL GREEN", "QUEENS PARK", "KILBURN PARK", "MAIDA VALE", "WARWICK AVENUE", "PADDINGTON", "EDGEWARE ROAD", "MARYLEBONE", "BAKER STREET", "REGENTS PARK", "OXFORD CIRCUS", "PICCADILLY CIRCUS", "CHARING CROSS", "EMBANKMENT", "WATERLOO", "LAMBETH NORTH", "ELEPHANT N CASTLE"};
+        string[] bakerlooPath = { "HARROW N WEALDSTONE", "KENTON", "SOUTH KENTON", "NORTH WEMBLEY", "WEMBLEY CENTRAL", "STONEBRIDGE PARK", "HARLSEDEN", "WILLESDEN JUNCTION", "KENSAL GREEN", "QUEENS PARK", "KILBURN PARK", "MAIDA VALE", "WARWICK AVENUE", "PADDINGTON", "EDGEWARE ROAD", "MARYLEBONE", "BAKER STREET", "REGENTS PARK", "OXFORD CIRCUS", "PICCADILLY CIRCUS", "CHARING CROSS", "EMBANKMENT", "WATERLOO", "LAMBETH NORTH", "ELEPHANT N CASTLE" };
         lines[0].AddBranch(bakerlooPath);
 
         lines[1] = new TubeLine("CENTRAL", "E32017");
         string[] centralPath1 = { "WEST RUISLIP", "RUISLIP GARDENS", "SOUTH RUISLIP", "NORTHOLT", "GREENFORD", "PERIVALE", "HANGER LANE", "NORTH ACTON" };
         string[] centralPath2 = { "EALING BROADWAY", "WEST ACTON", "NORTH ACTON" };
-        string[] centralPath3 = { "NORTH ACTON", "EAST ACTON", "WHITE CITY", "SHEPHERDS BUSH", "HOLLAND PARK", "NOTTING HILL GATE", "QUEENSWAY", "LANCASTER GATE", "MARBLE ARCH", "BOND STREET", "OXFORD CIRCUS", "TOTTENHAM COURT ROAD", "HOLBORN", "CHANCERY LANE", "ST PAULS", "BANK" , "LIVERPOOL STREET", "BETHNAL GREEN", "MILE END", "STRATFORD", "LEYTON", "LEYTONSTONE" };
+        string[] centralPath3 = { "NORTH ACTON", "EAST ACTON", "WHITE CITY", "SHEPHERDS BUSH", "HOLLAND PARK", "NOTTING HILL GATE", "QUEENSWAY", "LANCASTER GATE", "MARBLE ARCH", "BOND STREET", "OXFORD CIRCUS", "TOTTENHAM COURT ROAD", "HOLBORN", "CHANCERY LANE", "ST PAULS", "BANK", "LIVERPOOL STREET", "BETHNAL GREEN", "MILE END", "STRATFORD", "LEYTON", "LEYTONSTONE" };
         string[] centralPath4 = { "LEYTONSTONE", "WANSTEAD", "REDBRIDGE", "GANTS HILL", "NEWBURY PARK", "BARKINGSIDE", "FAIRLOP", "HAINAULT" };
         string[] centralPath5 = { "LEYTONSTONE", "SNARESBROOK", "SOUTH WOODFORD", "WOODFORD", "BUCKHURST HILL", "LOUGHTON", "DEBDEN", "THEYDON BOIS", "EPPING" };
         lines[1].AddBranch(centralPath1);
@@ -329,7 +419,7 @@ public class CipherEver : MonoBehaviour
         string[] districtPath2 = { "RICHMOND", "KEW GARDENS", "GUNNERSBURY", "TURNHAM GREEN" };
         string[] districtPath3 = { "TURNHAM GREEN", "STAMFORD BROOK", "RAVENSCOURT PARK", "HAMMERSMITH", "BARONS COURT", "WEST KENSINGTON", "EARLS COURT" };
         string[] districtPath4 = { "KENSINGTON OLYMPIA", "EARLS COURT" };
-        string[] districtPath5 = { "WIMBLEDON", "WIMBLEDON PARK", "SOUTHFIELDS", "EAST PUTNEY", "PUTNEY BRIDGE" , "PARSONS GREEN" ,"FULHAM BROADWAY", "WEST BROMPTON", "EARLS COURT" };
+        string[] districtPath5 = { "WIMBLEDON", "WIMBLEDON PARK", "SOUTHFIELDS", "EAST PUTNEY", "PUTNEY BRIDGE", "PARSONS GREEN", "FULHAM BROADWAY", "WEST BROMPTON", "EARLS COURT" };
         string[] districtPath6 = { "EARLS COURT", "HIGH STREET KENSINGTON", "NOTTING HILL GATE", "BAYSWATER", "PADDINGTON", "EDGEWARE ROAD" };
         string[] districtPath7 = { "EARLS COURT", "GLOUCESTER ROAD", "SOUTH KENSINGTON", "SLOANE SQUARE", "VICTORIA", "ST JAMES PARK", "WESTMINSTER", "EMBANKMENT", "TEMPLE", "BLACKFRIARS", "MANSION HOUSE", "CANNON STREET", "MONUMENT", "TOWER HILL", "ALDGATE EAST", "WHITECHAPEL", "STEPNEY GREEN", "MILE END", "BOW ROAD", "BROMLEY BY BOW", "WEST HAM", "PLAISTOW", "UPTON PARK", "EAST HAM", "BARKING", "UPNEY", "BECONTREE", "DAGENHAM HEATHWAY", "DAGENHAM EAST", "ELM PARK", "HORNCHURCH", "UPMINSTER BRIDGE", "UPMINSTER" };
         lines[3].AddBranch(districtPath1);
@@ -442,6 +532,7 @@ public class CipherEver : MonoBehaviour
             }
         }
     }
+    #endregion
 
 #pragma warning disable 414
     private readonly string TwitchHelpMessage = @"Use !{0} to do something.";
