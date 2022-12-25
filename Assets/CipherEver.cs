@@ -494,21 +494,39 @@ public class CipherEver : MonoBehaviour
             branches.Add(new Branch(stationsList, branchIdentifier));
         }
 
-        private bool IsTerminus(string station, bool reverse)
-            // Check if a given station is a terminus-only station in the relevant direction.
+        public bool hasPath(string startStation, string endStation)
+            // Returns true if this line has a path between startStation and endStation.
         {
             foreach (Branch b in branches)
             {
-                if (b.Contains(station))
+                if (b.Contains(startStation))
                 {
-                    if ((!reverse && b.rightEndPoint != station) || (reverse && b.leftEndPoint != station))
+                    if (b.rightEndPoint != startStation)
                     {
-                        return false;
+                        if (b.Contains(endStation))
+                        {
+                            return true;
+                        }
+                        else
+                        {
+                            return hasPath(b.rightEndPoint, endStation);
+                        }
+                    }
+                    else if (b.leftEndPoint != startStation)
+                    {
+                        if (b.Contains(endStation))
+                        {
+                            return true;
+                        }
+                        else
+                        {
+                            return hasPath(b.leftEndPoint, endStation);
+                        }
                     }
                 }
             }
 
-            return true;
+            return false;
         }
 
         private class Branch

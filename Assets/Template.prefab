@@ -8414,8 +8414,6 @@ MonoBehaviour:
   Bomb: {fileID: 114454383462897410}
   Audio: {fileID: 114915473299363512}
   module: {fileID: 114853960920223876}
-  ModuleId: 0
-  ModuleSolved: 0
   keyboard:
   - {fileID: 114945580672941706}
   - {fileID: 114781148368040736}
@@ -8443,9 +8441,12 @@ MonoBehaviour:
   - {fileID: 114604600543295554}
   - {fileID: 114894279235639098}
   - {fileID: 114579250348389298}
-  text: {fileID: 0}
-  moduleSolved: 0
-  moduleSelected: 0
+  ScreenTexts: []
+  left: {fileID: 0}
+  right: {fileID: 0}
+  submit: {fileID: 0}
+  subText: {fileID: 0}
+  TrainsImage: {fileID: 0}
 --- !u!114 &114849040243987992
 MonoBehaviour:
   m_ObjectHideFlags: 1
