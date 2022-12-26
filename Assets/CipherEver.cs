@@ -379,6 +379,7 @@ public class CipherEver : MonoBehaviour
         pageContents[0, 0] = p.HasPath().ToString();
     }
 
+    // For use by Kuro to test things. REMEMBER TO COMMENT OUT THE OTHER submitPress METHOD BEFORE TESTING, AND VICE VERSA AFTER TESTING.
 
     //void submitPress()
     //{
@@ -600,6 +601,9 @@ public class CipherEver : MonoBehaviour
             }
 
             private void findPaths(string start, string end, List<string> pathSoFar, bool reverse)
+                // Find all valid paths from start to end.
+                // reverse -> specifies whether the paths are searched right-to-left or left-to-right.
+                // NEED TO CHECK THAT THIS ACTUALLY CREATES VALID PATHS, AND REMOVE DUPLICATES.
             {
                 List<string> path;
 
