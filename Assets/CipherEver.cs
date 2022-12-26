@@ -566,9 +566,9 @@ public class CipherEver : MonoBehaviour
             // reverse -> if true, then the branch will be processed in the right-to-left direction, otherwise it will be searched from left-to-right.
             {
                 int position = Array.IndexOf(_stations, startStation);
-                int i = reverse ? -1 : 1;
+                var i = reverse ? -1 : 1;
                 string currentStation;
-                List<string> path = new List<string>();
+                var path = new List<string>();
 
                 do
                 {
