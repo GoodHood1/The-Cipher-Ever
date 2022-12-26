@@ -112,6 +112,9 @@ public class CipherEver : MonoBehaviour
         pageContents[5, 0] = "6TOP";
         pageContents[5, 1] = "6MID";
         pageContents[5, 2] = "6BOT";
+
+        // wayfinding();
+
         int randomWord = UnityEngine.Random.Range(0, six_letter_words.Length);
         encryptGoodHoodKeyword(six_letter_words[randomWord]);
         module.GetComponent<KMSelectable>().OnFocus += delegate { moduleSelected = true; };
@@ -365,7 +368,14 @@ public class CipherEver : MonoBehaviour
     // Kuro Cipher down here
     void wayfinding()
     {
+        TubeLine[] lines = generateMap();
 
+        pageContents[0, 0] = lines[0].hasPath("BAKER STREET", "PADDINGTON").ToString();
+        pageContents[0, 1] = lines[0].hasPath("PADDINGTON", "BAKER STREET").ToString();
+        pageContents[0, 2] = lines[5].hasPath("WESTMINSTER", "STRATFORD").ToString();
+
+        pageContents[1, 0] = lines[6].hasPath("WESTMINSTER", "STRATFORD").ToString();
+        pageContents[1, 1] = lines[1].hasPath("WEST RUISLIP", "EALING BROADWAY").ToString();
     }
 
     TubeLine[] generateMap()
