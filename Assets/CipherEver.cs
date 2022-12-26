@@ -81,10 +81,6 @@ public class CipherEver : MonoBehaviour
     void Awake()
     {
 
-        for (int i = 0; i < six_letter_words.Length; i++)
-        {
-            Debug.Log(six_letter_words[i]);
-        }
     }
 
     void Start()
@@ -117,8 +113,11 @@ public class CipherEver : MonoBehaviour
 
         lines = GenerateMap();
 
-        int randomWord = UnityEngine.Random.Range(0, six_letter_words.Length);
-        encryptGoodHoodKeyword(six_letter_words[randomWord]);
+        string GoodHoodKeyWord = six_letter_words[UnityEngine.Random.Range(0, six_letter_words.Length)];
+        encryptGoodHoodKeyword(GoodHoodKeyWord);
+        GoodHoodCipher(GoodHoodKeyWord, "CUCS");
+
+
         module.GetComponent<KMSelectable>().OnFocus += delegate { moduleSelected = true; };
         module.GetComponent<KMSelectable>().OnDefocus += delegate { moduleSelected = false; };
         ModuleId = ModuleIdCounter++;
@@ -159,7 +158,6 @@ public class CipherEver : MonoBehaviour
             newWord += alpha[indexOfLetter];
         }
         word = newWord;
-        Debug.Log(word);
         //pageContents[0, 0] = word;
         //pageUpdate(0);
         string ayoString = "AOYYOAAOAYOY";
@@ -168,10 +166,6 @@ public class CipherEver : MonoBehaviour
         for (int i = 0; i < ayoString.Length; i++)
         {
             ayoStringShifted[i] = ayoString[(i + ayoShift) % 12].ToString();
-        }
-        for (int i = 0; i < 12; i++)
-        {
-            Debug.Log(ayoStringShifted[i]);
         }
         List<int> APositions = new List<int>();
         List<int> YPositions = new List<int>();
@@ -222,6 +216,63 @@ public class CipherEver : MonoBehaviour
 
         return "bla";
     }
+
+    void GoodHoodCipher(string keyword, string word)
+    {
+        string key2Initial = "LLLLLL";
+        string key2 = "";
+        for (int i = 0; i < key2Initial.Length; i++)
+        {
+            char serialChar= Bomb.GetSerialNumber()[i];
+            int serialCharNum = 0;
+            if (Char.IsLetter(serialChar))
+            {
+                serialCharNum = alphaNum(serialChar.ToString());
+            }
+            else
+            {
+                serialCharNum = Int32.Parse(serialChar.ToString());
+            }
+
+            int liemuhIndex = 12;
+            if (serialCharNum % 2 == 0)
+            {
+                int newIndex = (serialCharNum + liemuhIndex) % 26;
+                key2 += toAlpha(newIndex);
+            }
+            else
+            {
+                int newIndex = (liemuhIndex - serialCharNum);
+                if (newIndex < 1)
+                {
+                    newIndex += 26;
+                }
+                key2 += toAlpha(newIndex);
+            }
+        }
+        string finalKey = keyword + key2;
+        string[] finalKeyArray = new[] { finalKey }; ;
+        string[] finalShifted = new string[12];
+        for (int i = 0; i < finalKey.Length; i++)
+        {
+            finalShifted[(i + (Bomb.GetIndicators().Count() + 2)) % 12] = finalKeyArray[i].ToString();
+        }
+        finalKey = String.Join(" ", finalShifted);
+
+        finalKey = finalKey.Substring(0, word.Length);
+
+        string[] answer = new string[word.Length];
+
+        for (int i = 0; i < finalKey.Length; i++)
+        {
+            int newChar = alphaNum(finalKey[i].ToString()) - alphaNum(word[i].ToString());
+            answer[word.Length - 1 - i] = toAlpha(newChar);
+        }
+
+
+
+    }
+
 
     #endregion
 
@@ -340,6 +391,19 @@ public class CipherEver : MonoBehaviour
             int length = pageContents[page, i].Length;
             ScreenTexts[i].fontSize = length < 13 ? 317 : length == 13 ? 292 : length < 17 ? 237 : 185;
         }
+    }
+
+    int alphaNum(string letter)
+    {
+        string alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        int letIndex = alphabet.IndexOf(letter) + 1;
+        return letIndex;
+    }
+
+    string toAlpha(int index)
+    {
+        string alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        return (alphabet[index-1]).ToString();
     }
 
 
@@ -511,7 +575,7 @@ public class CipherEver : MonoBehaviour
         lines[8].AddBranch(piccadillyPath2);
         lines[8].AddBranch(piccadillyPath3);
 
-        
+
 
         lines[9] = new TubeLine("VICTORIA", "0098D4");
         string[] victoriaPath = { "BRIXTON", "STOCKWELL", "VAUXHALL", "PIMLICO", "VICTORIA", "GREEN PARK", "OXFORD CIRCUS", "WARREN STREET", "EUSTON", "KINGS CROSS ST PANCRAS", "HIGHBURY N ISLINGTON", "FINSBURY PARK", "SEVEN SISTERS", "TOTTENHAM HALE", "BLACKHORSE ROAD", "WALTHOMSTOW CENTRAL" };
@@ -595,13 +659,13 @@ public class CipherEver : MonoBehaviour
             }
 
             private void FindPaths(string start, string end, List<string> pathSoFar, bool reverse)
-                // Find all valid paths from start to end.
-                // reverse -> specifies whether the paths are searched right-to-left or left-to-right.
-                // NEED TO CHECK THAT THIS ACTUALLY CREATES VALID PATHS, AND REMOVE DUPLICATES.
+            // Find all valid paths from start to end.
+            // reverse -> specifies whether the paths are searched right-to-left or left-to-right.
+            // NEED TO CHECK THAT THIS ACTUALLY CREATES VALID PATHS, AND REMOVE DUPLICATES.
             {
                 List<string> path;
 
-                foreach  (Branch branch in _line._branches)
+                foreach (Branch branch in _line._branches)
                 {
                     path = pathSoFar;
 
