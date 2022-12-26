@@ -115,7 +115,7 @@ public class CipherEver : MonoBehaviour
         pageContents[5, 1] = "6MID";
         pageContents[5, 2] = "6BOT";
 
-        lines = generateMap();
+        lines = GenerateMap();
 
         int randomWord = UnityEngine.Random.Range(0, six_letter_words.Length);
         encryptGoodHoodKeyword(six_letter_words[randomWord]);
@@ -371,9 +371,9 @@ public class CipherEver : MonoBehaviour
 
     #region kuroStuff
     // Kuro Cipher down here
-    void wayfinding()
+    void Wayfinding()
     {
-        TubeLine[] lines = generateMap();
+        TubeLine[] lines = GenerateMap();
 
         TubeLine.PathFinder p = new TubeLine.PathFinder(lines[1], "WEST RUISLIP", "EALING BROADWAY");
         pageContents[0, 0] = p.HasPath().ToString();
@@ -416,9 +416,7 @@ public class CipherEver : MonoBehaviour
     //    }
     //}
 
-
-
-    TubeLine[] generateMap()
+    TubeLine[] GenerateMap()
     // Generates all 11 Tube lines and their branches.
     {
 
@@ -528,56 +526,56 @@ public class CipherEver : MonoBehaviour
 
     class TubeLine
     {
-        public string name;
-        public string colour;
-        private List<Branch> branches = new List<Branch>();
+        public string Name;
+        public string Colour;
+        private readonly List<Branch> _branches = new List<Branch>();
 
         public TubeLine(string lineName, string lineColour)
         {
-            name = lineName;
-            colour = lineColour;
+            Name = lineName;
+            Colour = lineColour;
         }
 
         public void AddBranch(string[] stationsList, string branchIdentifier = "")
         {
-            branches.Add(new Branch(stationsList, branchIdentifier));
+            _branches.Add(new Branch(stationsList, branchIdentifier));
         }
 
         private class Branch
         {
-            public string[] stations;
-            public string leftEndPoint;
-            public string rightEndPoint;
-            public string name;
+            private readonly string[] _stations;
+            public string LeftEndPoint;
+            public string RightEndPoint;
+            public string Name;
 
-            public Branch(string[] stationsList, string branchIdentifier)
+            public Branch(string[] stationsList, string branchName)
             {
-                stations = stationsList;
-                leftEndPoint = stationsList[0];
-                rightEndPoint = stationsList[stationsList.Count() - 1];
-                name = branchIdentifier;
+                _stations = stationsList;
+                LeftEndPoint = stationsList[0];
+                RightEndPoint = stationsList[stationsList.Count() - 1];
+                Name = branchName;
             }
 
             public bool Contains(string station)
             {
-                return stations.Contains(station);
+                return _stations.Contains(station);
             }
 
             public List<string> GetPath(string startStation, string endStation, bool reverse)
             // Return a string containing the path from startStation to endStation.
             // reverse -> if true, then the branch will be processed in the right-to-left direction, otherwise it will be searched from left-to-right.
             {
-                int position = Array.IndexOf(stations, startStation);
+                int position = Array.IndexOf(_stations, startStation);
                 int i = reverse ? -1 : 1;
                 string currentStation;
                 List<string> path = new List<string>();
 
                 do
                 {
-                    currentStation = stations[position];
+                    currentStation = _stations[position];
                     path.Add(currentStation);
                     position += i;
-                } while (currentStation != endStation && position >= 0 && position < stations.Length);
+                } while (currentStation != endStation && position >= 0 && position < _stations.Length);
 
                 return path;
             }
@@ -585,59 +583,55 @@ public class CipherEver : MonoBehaviour
 
         public class PathFinder
         {
-            private List<string[]> paths = new List<string[]>();
-            private string startStation;
-            private string endStation;
-            public TubeLine line;
+            private readonly List<string[]> _paths = new List<string[]>();
+            private readonly TubeLine _line;
 
             public PathFinder(TubeLine lineName, string start, string end)
             {
-                line = lineName;
-                startStation = start;
-                endStation = end;
+                _line = lineName;
 
-                findPaths(start, end, new List<string>(), false);
-                findPaths(start, end, new List<string>(), true);
+                FindPaths(start, end, new List<string>(), false);
+                FindPaths(start, end, new List<string>(), true);
             }
 
-            private void findPaths(string start, string end, List<string> pathSoFar, bool reverse)
+            private void FindPaths(string start, string end, List<string> pathSoFar, bool reverse)
                 // Find all valid paths from start to end.
                 // reverse -> specifies whether the paths are searched right-to-left or left-to-right.
                 // NEED TO CHECK THAT THIS ACTUALLY CREATES VALID PATHS, AND REMOVE DUPLICATES.
             {
                 List<string> path;
 
-                foreach  (Branch branch in line.branches)
+                foreach  (Branch branch in _line._branches)
                 {
                     path = pathSoFar;
 
                     if (branch.Contains(start))
                     {
-                        if (branch.rightEndPoint != start && !reverse)
+                        if (branch.RightEndPoint != start && !reverse)
                         {
                             path.AddRange(branch.GetPath(start, end, false));
 
                             if (path.Contains(end))
                             {
-                                paths.Add(path.ToArray());
+                                _paths.Add(path.ToArray());
                             }
                             else
                             {
-                                findPaths(path[path.Count() - 1], end, path, false);
+                                FindPaths(path[path.Count() - 1], end, path, false);
                             }
                         }
 
-                        if (branch.leftEndPoint != start && reverse)
+                        if (branch.LeftEndPoint != start && reverse)
                         {
                             path.AddRange(branch.GetPath(start, end, true));
 
                             if (path.Contains(end))
                             {
-                                paths.Add(path.ToArray());
+                                _paths.Add(path.ToArray());
                             }
                             else
                             {
-                                findPaths(path[path.Count() - 1], end, path, true);
+                                FindPaths(path[path.Count() - 1], end, path, true);
                             }
                         }
                     }
@@ -646,7 +640,7 @@ public class CipherEver : MonoBehaviour
 
             public bool HasPath()
             {
-                if (paths.Count == 0)
+                if (_paths.Count == 0)
                 {
                     return false;
                 }
