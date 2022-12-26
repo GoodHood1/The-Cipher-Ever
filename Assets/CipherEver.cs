@@ -224,8 +224,8 @@ public class CipherEver : MonoBehaviour
         string key2 = "";
         for (int i = 0; i < key2Initial.Length; i++)
         {
-            char serialChar= Bomb.GetSerialNumber()[i];
-            int serialCharNum = 0;
+            char serialChar = Bomb.GetSerialNumber()[i];
+            int serialCharNum;
             if (Char.IsLetter(serialChar))
             {
                 serialCharNum = alphaNum(serialChar.ToString());
@@ -238,7 +238,8 @@ public class CipherEver : MonoBehaviour
             int liemuhIndex = 12;
             if (serialCharNum % 2 == 0)
             {
-                int newIndex = (serialCharNum + liemuhIndex) % 27;
+                int newIndex = (serialCharNum + liemuhIndex) % 26;
+                if (newIndex == 0) newIndex = 26;
                 key2 += toAlpha(newIndex);
             }
             else
@@ -273,7 +274,7 @@ public class CipherEver : MonoBehaviour
 
         for (int i = 0; i < finalKey.Length; i++)
         {
-            int newChar = (alphaNum(finalKey[i].ToString()) - alphaNum(word[i].ToString())) % 27;
+            int newChar = (alphaNum(finalKey[i].ToString()) - alphaNum(word[i].ToString())) % 26;
             if (newChar < 1)
             {
                 newChar += 26;
@@ -324,32 +325,32 @@ public class CipherEver : MonoBehaviour
     }
 
 
-    void submitPress()
-    {
-        if (!Submission)
-        {
-            module.HandleStrike();
-            return;
-        }
-        if (pagesLocked && routeStage == 1)
-        {
-            routeStage = 2;
-            screenToWrite = 1;
-        }
-        else if (pagesLocked && routeStage == 2)
-        {
-            routeStage = 3;
-            screenToWrite = 2;
-        }
-        else if (pagesLocked && routeStage == 3)
-        {
-            routeInputs[0] = ScreenTexts[0].text;
-            routeInputs[1] = ScreenTexts[1].text;
-            routeInputs[2] = ScreenTexts[2].text;
+    //void submitPress()
+    //{
+    //    if (!Submission)
+    //    {
+    //        module.HandleStrike();
+    //        return;
+    //    }
+    //    if (pagesLocked && routeStage == 1)
+    //    {
+    //        routeStage = 2;
+    //        screenToWrite = 1;
+    //    }
+    //    else if (pagesLocked && routeStage == 2)
+    //    {
+    //        routeStage = 3;
+    //        screenToWrite = 2;
+    //    }
+    //    else if (pagesLocked && routeStage == 3)
+    //    {
+    //        routeInputs[0] = ScreenTexts[0].text;
+    //        routeInputs[1] = ScreenTexts[1].text;
+    //        routeInputs[2] = ScreenTexts[2].text;
 
-        }
+    //    }
 
-    }
+    //}
 
 
 
@@ -461,40 +462,40 @@ public class CipherEver : MonoBehaviour
 
     // For use by Kuro to test things. REMEMBER TO COMMENT OUT THE OTHER submitPress METHOD BEFORE TESTING, AND VICE VERSA AFTER TESTING.
 
-    //void submitPress()
-    //{
-    //    if (!Submission)
-    //    {
-    //        module.HandleStrike();
-    //        return;
-    //    }
-    //    if (pagesLocked && routeStage == 1)
-    //    {
-    //        routeStage = 2;
-    //        screenToWrite = 1;
-    //    }
-    //    else if (pagesLocked && routeStage == 2)
-    //    {
-    //        routeStage = 3;
-    //        screenToWrite = 2;
-    //    }
-    //    else if (pagesLocked && routeStage == 3)
-    //    {
-    //        routeInputs[0] = ScreenTexts[0].text;
-    //        routeInputs[1] = ScreenTexts[1].text;
-    //        routeInputs[2] = ScreenTexts[2].text;
+    void submitPress()
+    {
+        if (!Submission)
+        {
+            module.HandleStrike();
+            return;
+        }
+        if (pagesLocked && routeStage == 1)
+        {
+            routeStage = 2;
+            screenToWrite = 1;
+        }
+        else if (pagesLocked && routeStage == 2)
+        {
+            routeStage = 3;
+            screenToWrite = 2;
+        }
+        else if (pagesLocked && routeStage == 3)
+        {
+            routeInputs[0] = ScreenTexts[0].text;
+            routeInputs[1] = ScreenTexts[1].text;
+            routeInputs[2] = ScreenTexts[2].text;
 
-    //        string alphabet = "ABCDEFGHIJK";
+            string alphabet = "ABCDEFGHIJK";
 
-    //        TubeLine.PathFinder p = new TubeLine.PathFinder(lines[alphabet.IndexOf(routeInputs[0])], routeInputs[1], routeInputs[2]);
-    //        pageContents[0, 0] = p.HasPath().ToString();
-    //        Submission = false;
-    //        pageUpdate(currentPage);
+            TubeLine.PathFinder p = new TubeLine.PathFinder(lines[alphabet.IndexOf(routeInputs[0])], routeInputs[1], routeInputs[2]);
+            pageContents[0, 0] = p.HasPath().ToString();
+            Submission = false;
+            pageUpdate(currentPage);
 
-    //        routeStage = 1;
-    //        screenToWrite = 0;
-    //    }
-    //}
+            routeStage = 1;
+            screenToWrite = 0;
+        }
+    }
 
     TubeLine[] GenerateMap()
     // Generates all 11 Tube lines and their branches.
@@ -519,7 +520,7 @@ public class CipherEver : MonoBehaviour
         lines[1].AddBranch(centralPath5);
 
         lines[2] = new TubeLine("CIRCLE", "FFD300");
-        string[] circlePath = { "HAMMERSMITH", "GOLDHAWK ROAD", "SHEPHERDS BUSH MKT", "WOOD LANE", "LATIMER ROAD", "LADBROKE GROVE", "WESTBOURNE PARK", "ROYAL OAK", "PADDINGTON", "EDGWARE ROAD", "BAKER STREET", "GREAT PORTLAND STREET", "EUSTON SQUARE", "KINGS CROSS", "FARRINGDON", "BARBICAN", "MOORGATE", "LIVERPOOL STREET", "ALDGATE", "TOWER HILL", "MONUMENT", "CANNON STREET", "MANSION HOUSE", "BLACKFRIARS", "TEMPLE", "EMBANKMENT", "WESTMINSTER", "ST JAMES PARK", "VICTORIA", "SLOANE SQUARE", "SOUTH KENSINGTON", "GLOUCESTER ROAD", "HIGH STREET KEN", "NOTTING HILL GATE", "BAYSWATER", "PADDINGTON", "EDGWARE ROAD" };
+        string[] circlePath = { "HAMMERSMITH", "GOLDHAWK ROAD", "SHEPHERDS BUSH MKT", "WOOD LANE", "LATIMER ROAD", "LADBROKE GROVE", "WESTBOURNE PARK", "ROYAL OAK", "PADDINGTON", "EDGWARE ROAD", "BAKER STREET", "GREAT PORTLAND ST", "EUSTON SQUARE", "KINGS CROSS", "FARRINGDON", "BARBICAN", "MOORGATE", "LIVERPOOL STREET", "ALDGATE", "TOWER HILL", "MONUMENT", "CANNON STREET", "MANSION HOUSE", "BLACKFRIARS", "TEMPLE", "EMBANKMENT", "WESTMINSTER", "ST JAMES PARK", "VICTORIA", "SLOANE SQUARE", "SOUTH KENSINGTON", "GLOUCESTER ROAD", "HIGH STREET KEN", "NOTTING HILL GATE", "BAYSWATER", "PADDINGTON", "EDGWARE ROAD" };
         lines[2].AddBranch(circlePath);
 
         lines[3] = new TubeLine("DISTRICT", "00782A");
@@ -537,7 +538,7 @@ public class CipherEver : MonoBehaviour
         lines[3].AddBranch(districtPath6);
 
         lines[4] = new TubeLine("HAMMERSMITH N CITY", "F3A9BB");
-        string[] hamNcheesePath = { "HAMMERSMITH", "GOLDHAWK ROAD", "SHEPHERDS BUSH MARKET", "WOOD LANE", "LATIMER ROAD", "LADBROKE GROVE", "WESTBOURNE PARK", "ROYAL OAK", "PADDINGTON", "EDGWARE ROAD", "BAKER STREET", "GREAT PORTLAND STREET", "EUSTON SQUARE", "KINGS CROSS ST PANCRAS", "FARRINGDON", "BARBICAN", "MOORGATE", "LIVERPOOL STREET", "ALDGATE EAST", "WHITECHAPEL", "STEPNEY GREEN", "MILE END", "BOW ROAD", "BROMLEY BY BOW", "WEST HAM", "PLAISTOW", "UPTON PARK", "EAST HAM", "BARKING" };
+        string[] hamNcheesePath = { "HAMMERSMITH", "GOLDHAWK ROAD", "SHEPHERDS BUSH MKT", "WOOD LANE", "LATIMER ROAD", "LADBROKE GROVE", "WESTBOURNE PARK", "ROYAL OAK", "PADDINGTON", "EDGWARE ROAD", "BAKER STREET", "GREAT PORTLAND ST", "EUSTON SQUARE", "KINGS CROSS", "FARRINGDON", "BARBICAN", "MOORGATE", "LIVERPOOL STREET", "ALDGATE EAST", "WHITECHAPEL", "STEPNEY GREEN", "MILE END", "BOW ROAD", "BROMLEY BY BOW", "WEST HAM", "PLAISTOW", "UPTON PARK", "EAST HAM", "BARKING" };
         lines[4].AddBranch(hamNcheesePath);
 
         lines[5] = new TubeLine("JUBILEE", "A0A5A9");
@@ -551,7 +552,7 @@ public class CipherEver : MonoBehaviour
         string[] metropolitanPath4 = { "WATFORD", "CROXLEY", "MOOR PARK" };
         string[] metropolitanPath5 = { "MOOR PARK", "NORTHWOOD", "NORTHWOOD HILLS", "PINNER", "NORTH HARROW", "HARROW ON THE HILL" };
         string[] metropolitanPath6 = { "UXBRIDGE", "HILLINGDON", "ICKENHAM", "RUISLIP", "RUISLIP MANOR", "EASTCOTE", "RAYNERS LANE", "WEST HARROW", "HARROW ON THE HILL" };
-        string[] metropolitanPath7 = { "HARROW ON THE HILL", "NORTHWICK PARK", "PRESTON ROAD", "WEMBLEY PARK", "FINCHLEY ROAD", "BAKER STREET", "GREAT PORTLAND STREET", "EUSTON SQUARE", "KINGS CROSS ST PANCRAS", "FARRINGDON", "BARBICAN", "MOORGATE", "LIVERPOOL STREET", "ALDGATE" };
+        string[] metropolitanPath7 = { "HARROW ON THE HILL", "NORTHWICK PARK", "PRESTON ROAD", "WEMBLEY PARK", "FINCHLEY ROAD", "BAKER STREET", "GREAT PORTLAND ST", "EUSTON SQUARE", "KINGS CROSS", "FARRINGDON", "BARBICAN", "MOORGATE", "LIVERPOOL STREET", "ALDGATE" };
         lines[6].AddBranch(metropolitanPath1);
         lines[6].AddBranch(metropolitanPath2);
         lines[6].AddBranch(metropolitanPath3);
@@ -566,7 +567,7 @@ public class CipherEver : MonoBehaviour
         string[] bitchPath1 = { "MILL HILL EAST", "FINCHLEY CENTRAL" };
         string[] northernPath3 = { "FINCHLEY CENTRAL", "EAST FINCHLEY", "HIGHGATE", "ARCHWAY", "TUFNELL PARK", "KENTISH TOWN", "CAMDEN TOWN" };
         string[] northernPath4 = { "CAMDEN TOWN", "MORNINGTON CRESCENT", "EUSTON", "WARREN STREET", "GOODGE STREET", "TOTTENHAM COURT ROAD", "LEICESTER SQUARE", "CHARING CROSS", "EMBANKMENT", "WATERLOO", "KENNINGTON" };
-        string[] northernPath5 = { "CAMDEN TOWN", "EUSTON", "KINGS CROSS ST PANCRAS", "ANGEL", "OLD STREET", "MOORGATE", "BANK", "LONDON BRIDGE", "BOROUGH", "ELEPHANT N CASTLE", "KENNINGTON", "OVAL" };
+        string[] northernPath5 = { "CAMDEN TOWN", "EUSTON", "KINGS CROSS", "ANGEL", "OLD STREET", "MOORGATE", "BANK", "LONDON BRIDGE", "BOROUGH", "ELEPHANT N CASTLE", "KENNINGTON", "OVAL" };
         string[] northernPath6 = { "KENNINGTON", "NINE ELMS", "BATTERSEA PWR STN" };
         string[] bitchPath2 = { "KENNINGTON", "OVAL" };
         string[] northernPath7 = { "OVAL", "STOCKWELL", "CLAPHAM NORTH", "CLAPHAM COMMON", "CLAPHAM SOUTH", "BALHAM", "TOOTING BEC", "TOOTING BROADWAY", "COLLIERS WOOD", "SOUTH WIMBLEDON", "MORDEN" };
@@ -584,14 +585,14 @@ public class CipherEver : MonoBehaviour
         string[] piccadillyPath1 = { "HEATHROW T5", "HEATHROW T2 N 3", "HATTON CROSS", "HOUNSLOW WEST", "HOUNSLOW CENTRAL", "HOUNSLOW EAST", "OSTERLEY", "BOSTON MANOR", "NORTHFIELDS", "SOUTH EALING", "ACTON TOWN" };
         string[] piccadillyPath2 = { "UXBRIDGE", "HILLINGDON", "ICKENHAM", "RUISLIP", "RUISLIP MANOR", "EASTCOTE", "RAYNERS LANE", "SOUTH HARROW", "SUDBURY HILL", "SUDBURY TOWN", "ALPERTON", "PARK ROYAL", "NORTH EALING", "EALING COMMON", "ACTON TOWN" };
         //                                                                                                                       :O
-        string[] piccadillyPath3 = { "ACTON TOWN", "TURNHAM GREEN", "HAMMERSMITH", "BARONS COURT", "EARLS COURT", /* :O */"GLOUCESTER ROAD"/* :O */, "SOUTH KENSINGTON", "KNIGHTSBRIDGE", "HYDE PARK CORNER", "GREEN PARK", "PICCADILLY CIRCUS", "LEICESTER SQUARE", "COVENT GARDEN", "HOLBORN", "RUSSELL SQUARE", "KINGS CROSS ST PANCRAS", "CALEDONIAN ROAD", "HOLLOWAY ROAD", "ARSENAL", "FINSBURY PARK", "MANOR HOUSE", "TURNPIKE LANE", "WOOD GREEN", "BOUNDS GREEN", "ARNOS GROVE", "SOUTHGATE", "OAKWOOD", "COCKFOSTERS" };
+        string[] piccadillyPath3 = { "ACTON TOWN", "TURNHAM GREEN", "HAMMERSMITH", "BARONS COURT", "EARLS COURT", /* :O */"GLOUCESTER ROAD"/* :O */, "SOUTH KENSINGTON", "KNIGHTSBRIDGE", "HYDE PARK CORNER", "GREEN PARK", "PICCADILLY CIRCUS", "LEICESTER SQUARE", "COVENT GARDEN", "HOLBORN", "RUSSELL SQUARE", "KINGS CROSS", "CALEDONIAN ROAD", "HOLLOWAY ROAD", "ARSENAL", "FINSBURY PARK", "MANOR HOUSE", "TURNPIKE LANE", "WOOD GREEN", "BOUNDS GREEN", "ARNOS GROVE", "SOUTHGATE", "OAKWOOD", "COCKFOSTERS" };
         //                                                                                                                       :O
         lines[8].AddBranch(piccadillyPath1);
         lines[8].AddBranch(piccadillyPath2);
         lines[8].AddBranch(piccadillyPath3);
 
         lines[9] = new TubeLine("VICTORIA", "0098D4");
-        string[] victoriaPath = { "BRIXTON", "STOCKWELL", "VAUXHALL", "PIMLICO", "VICTORIA", "GREEN PARK", "OXFORD CIRCUS", "WARREN STREET", "EUSTON", "KINGS CROSS ST PANCRAS", "HIGHBURY N ISLINGTON", "FINSBURY PARK", "SEVEN SISTERS", "TOTTENHAM HALE", "BLACKHORSE ROAD", "WALTHOMSTOW CENTRAL" };
+        string[] victoriaPath = { "BRIXTON", "STOCKWELL", "VAUXHALL", "PIMLICO", "VICTORIA", "GREEN PARK", "OXFORD CIRCUS", "WARREN STREET", "EUSTON", "KINGS CROSS", "HIGHBURY N ISLINGTON", "FINSBURY PARK", "SEVEN SISTERS", "TOTTENHAM HALE", "BLACKHORSE ROAD", "WALTHOMSTOW CENTRAL" };
         lines[9].AddBranch(victoriaPath);
 
         lines[10] = new TubeLine("WATERLOO N CITY", "95CDBA");
@@ -620,7 +621,8 @@ public class CipherEver : MonoBehaviour
 
         private class Branch
         {
-            private readonly string[] _stations;
+            // private readonly string[] _stations;
+            public string[] _stations;
             public string LeftEndPoint;
             public string RightEndPoint;
             public string Name;
@@ -660,7 +662,7 @@ public class CipherEver : MonoBehaviour
 
         public class PathFinder
         {
-            private readonly List<string[]> _paths = new List<string[]>();
+            private readonly List<List<string>> _paths = new List<List<string>>();
             private readonly TubeLine _line;
 
             public PathFinder(TubeLine lineName, string start, string end)
@@ -674,49 +676,69 @@ public class CipherEver : MonoBehaviour
             private void FindPaths(string start, string end, List<string> pathSoFar, bool reverse)
             // Find all valid paths from start to end.
             // reverse -> specifies whether the paths are searched right-to-left or left-to-right.
-            // NEED TO CHECK THAT THIS ACTUALLY CREATES VALID PATHS, AND REMOVE DUPLICATES.
             {
                 List<string> path;
 
                 foreach (Branch branch in _line._branches)
                 {
-                    path = pathSoFar;
+                    path = new List<string>(pathSoFar);
 
                     if (branch.Contains(start))
                     {
                         if (branch.RightEndPoint != start && !reverse)
                         {
-                            path.AddRange(branch.GetPath(start, end, false));
-
-                            if (path.Contains(end))
-                            {
-                                _paths.Add(path.ToArray());
-                            }
-                            else
-                            {
-                                FindPaths(path[path.Count() - 1], end, path, false);
-                            }
+                            CheckForEndStation(start, end, reverse, path, branch);
                         }
 
                         if (branch.LeftEndPoint != start && reverse)
                         {
-                            path.AddRange(branch.GetPath(start, end, true));
-
-                            if (path.Contains(end))
-                            {
-                                _paths.Add(path.ToArray());
-                            }
-                            else
-                            {
-                                FindPaths(path[path.Count() - 1], end, path, true);
-                            }
+                            CheckForEndStation(start, end, reverse, path, branch);
                         }
                     }
                 }
             }
 
+            private void CheckForEndStation(string start, string end, bool reverse, List<string> path, Branch branch)
+            {
+                string endOfPathSoFar;
+                var flag = false;
+                path.AddRange(branch.GetPath(start, end, reverse));
+
+                if (path.Contains(end))
+                {
+                    foreach (List<string> _path in _paths)
+                    {
+                        if (AreTheSameFuckingList(_path, path)) flag = true;
+                    }
+                    if (!flag) _paths.Add(path);
+                }
+                else
+                {
+                    endOfPathSoFar = path[path.Count() - 1];
+                    path.Remove(endOfPathSoFar);
+                    FindPaths(endOfPathSoFar, end, path, reverse);
+                }
+            }
+
+            private bool AreTheSameFuckingList(List<string> list1, List<string> list2)
+            {
+                if (list1.Count() != list2.Count()) return false;
+
+                for (int i = 0; i < list1.Count(); i++)
+                {
+                    if (list1[i] != list2[i]) return false;
+                }
+
+                return true;
+            }
+
             public bool HasPath()
             {
+
+                foreach (List<string> path in _paths)
+                {
+                    Debug.Log(string.Join(" ", path.ToArray()));
+                }
                 if (_paths.Count == 0)
                 {
                     return false;
