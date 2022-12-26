@@ -46,6 +46,8 @@ public class CipherEver : MonoBehaviour
     int currentPage = 0;
     int pages = 6;
 
+    TubeLine[] lines;
+
 
     string[] six_letter_words = new string[]
             {
@@ -113,7 +115,7 @@ public class CipherEver : MonoBehaviour
         pageContents[5, 1] = "6MID";
         pageContents[5, 2] = "6BOT";
 
-        wayfinding();
+        lines = generateMap();
 
         int randomWord = UnityEngine.Random.Range(0, six_letter_words.Length);
         encryptGoodHoodKeyword(six_letter_words[randomWord]);
@@ -269,8 +271,8 @@ public class CipherEver : MonoBehaviour
         }
         else if (pagesLocked && routeStage == 2)
         {
-            screenToWrite = 2;
             routeStage = 3;
+            screenToWrite = 2;
         }
         else if (pagesLocked && routeStage == 3)
         {
@@ -281,6 +283,8 @@ public class CipherEver : MonoBehaviour
         }
 
     }
+
+
 
     void leftPress()
     {
@@ -374,6 +378,42 @@ public class CipherEver : MonoBehaviour
         TubeLine.PathFinder p = new TubeLine.PathFinder(lines[1], "WEST RUISLIP", "EALING BROADWAY");
         pageContents[0, 0] = p.HasPath().ToString();
     }
+
+
+    //void submitPress()
+    //{
+    //    if (!Submission)
+    //    {
+    //        module.HandleStrike();
+    //        return;
+    //    }
+    //    if (pagesLocked && routeStage == 1)
+    //    {
+    //        routeStage = 2;
+    //        screenToWrite = 1;
+    //    }
+    //    else if (pagesLocked && routeStage == 2)
+    //    {
+    //        routeStage = 3;
+    //        screenToWrite = 2;
+    //    }
+    //    else if (pagesLocked && routeStage == 3)
+    //    {
+    //        routeInputs[0] = ScreenTexts[0].text;
+    //        routeInputs[1] = ScreenTexts[1].text;
+    //        routeInputs[2] = ScreenTexts[2].text;
+
+    //        string alphabet = "ABCDEFGHIJK";
+
+    //        TubeLine.PathFinder p = new TubeLine.PathFinder(lines[alphabet.IndexOf(routeInputs[0])], routeInputs[1], routeInputs[2]);
+    //        pageContents[0, 0] = p.HasPath().ToString();
+    //        Submission = false;
+    //        pageUpdate(currentPage);
+
+    //        routeStage = 1;
+    //        screenToWrite = 0;
+    //    }
+    //}
 
 
 
