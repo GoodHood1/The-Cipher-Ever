@@ -115,7 +115,8 @@ public class CipherEver : MonoBehaviour
 
         string GoodHoodKeyWord = six_letter_words[UnityEngine.Random.Range(0, six_letter_words.Length)];
         encryptGoodHoodKeyword(GoodHoodKeyWord);
-        GoodHoodCipher(GoodHoodKeyWord, "CUCS");
+        GoodHoodCipher(GoodHoodKeyWord, "HIKURO");
+        Debug.Log("KEYWORD: " + GoodHoodKeyWord);
 
 
         module.GetComponent<KMSelectable>().OnFocus += delegate { moduleSelected = true; };
@@ -237,7 +238,7 @@ public class CipherEver : MonoBehaviour
             int liemuhIndex = 12;
             if (serialCharNum % 2 == 0)
             {
-                int newIndex = (serialCharNum + liemuhIndex) % 26;
+                int newIndex = (serialCharNum + liemuhIndex) % 27;
                 key2 += toAlpha(newIndex);
             }
             else
@@ -251,13 +252,20 @@ public class CipherEver : MonoBehaviour
             }
         }
         string finalKey = keyword + key2;
-        string[] finalKeyArray = new[] { finalKey }; ;
+        Debug.Log("FINALKEY " + finalKey);
+        string[] finalKeyArray = new string[12];
+
+        for (int i = 0; i < finalKey.Length; i++)
+        {
+            finalKeyArray[i] = finalKey[i].ToString();
+        }
+
         string[] finalShifted = new string[12];
         for (int i = 0; i < finalKey.Length; i++)
         {
             finalShifted[(i + (Bomb.GetIndicators().Count() + 2)) % 12] = finalKeyArray[i].ToString();
         }
-        finalKey = String.Join(" ", finalShifted);
+        finalKey = String.Join("", finalShifted);
 
         finalKey = finalKey.Substring(0, word.Length);
 
@@ -265,9 +273,17 @@ public class CipherEver : MonoBehaviour
 
         for (int i = 0; i < finalKey.Length; i++)
         {
-            int newChar = alphaNum(finalKey[i].ToString()) - alphaNum(word[i].ToString());
+            int newChar = (alphaNum(finalKey[i].ToString()) - alphaNum(word[i].ToString())) % 27;
+            if (newChar < 1)
+            {
+                newChar += 26;
+            }
             answer[word.Length - 1 - i] = toAlpha(newChar);
         }
+
+        string answerString = String.Join("", answer);
+        pageContents[0, 0] = answerString;
+        pageUpdate(0);
 
 
 
