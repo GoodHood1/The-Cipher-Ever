@@ -113,7 +113,7 @@ public class CipherEver : MonoBehaviour
         pageContents[5, 1] = "6MID";
         pageContents[5, 2] = "6BOT";
 
-        // wayfinding();
+        wayfinding();
 
         int randomWord = UnityEngine.Random.Range(0, six_letter_words.Length);
         encryptGoodHoodKeyword(six_letter_words[randomWord]);
@@ -285,6 +285,7 @@ public class CipherEver : MonoBehaviour
     void leftPress()
     {
         screenToWrite = 0;
+        routeStage = 1;
         if (Submission && pagesLocked)
         {
             currentPage = 1;
@@ -370,19 +371,13 @@ public class CipherEver : MonoBehaviour
     {
         TubeLine[] lines = generateMap();
 
-        pageContents[0, 0] = lines[0].hasPath("BAKER STREET", "PADDINGTON").ToString();
-        pageContents[0, 1] = lines[0].hasPath("PADDINGTON", "BAKER STREET").ToString();
-        pageContents[0, 2] = lines[5].hasPath("WESTMINSTER", "STRATFORD").ToString();
-
-        pageContents[1, 0] = lines[6].hasPath("WESTMINSTER", "STRATFORD").ToString();
-        pageContents[1, 1] = lines[1].hasPath("WEST RUISLIP", "EALING BROADWAY").ToString();
     }
 
     TubeLine[] generateMap()
     // Generates all 11 Tube lines and their branches.
     {
 
-        TubeLine[] lines = new TubeLine[10];
+        TubeLine[] lines = new TubeLine[11];
 
         lines[0] = new TubeLine("BAKERLOO", "B36305");
         string[] bakerlooPath = { "HARROW N WEALDSTONE", "KENTON", "SOUTH KENTON", "NORTH WEMBLEY", "WEMBLEY CENTRAL", "STONEBRIDGE PARK", "HARLSEDEN", "WILLESDEN JUNCTION", "KENSAL GREEN", "QUEENS PARK", "KILBURN PARK", "MAIDA VALE", "WARWICK AVENUE", "PADDINGTON", "EDGEWARE ROAD", "MARYLEBONE", "BAKER STREET", "REGENTS PARK", "OXFORD CIRCUS", "PICCADILLY CIRCUS", "CHARING CROSS", "EMBANKMENT", "WATERLOO", "LAMBETH NORTH", "ELEPHANT N CASTLE" };
@@ -504,40 +499,7 @@ public class CipherEver : MonoBehaviour
             branches.Add(new Branch(stationsList, branchIdentifier));
         }
 
-        public bool hasPath(string startStation, string endStation)
-            // Returns true if this line has a path between startStation and endStation.
-        {
-            foreach (Branch b in branches)
-            {
-                if (b.Contains(startStation))
-                {
-                    if (b.rightEndPoint != startStation)
-                    {
-                        if (b.Contains(endStation))
-                        {
-                            return true;
-                        }
-                        else
-                        {
-                            return hasPath(b.rightEndPoint, endStation);
-                        }
-                    }
-                    else if (b.leftEndPoint != startStation)
-                    {
-                        if (b.Contains(endStation))
-                        {
-                            return true;
-                        }
-                        else
-                        {
-                            return hasPath(b.leftEndPoint, endStation);
-                        }
-                    }
-                }
-            }
-
-            return false;
-        }
+       
 
         private class Branch
         {
