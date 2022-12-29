@@ -45,9 +45,9 @@ public class CipherEver : MonoBehaviour
 
     // Kuro variables
     TubeLine[] lines;
+    TubeLine.Path[] linesTaken = new TubeLine.Path[5];
     string origin;
     string destination;
-    string[] linesTaken = new string[5];
     string[] routeInputs = new string[1];
 
 
@@ -457,8 +457,8 @@ public class CipherEver : MonoBehaviour
     void Wayfinding()
     {
         lines = GenerateMap();
-        origin = "VICTORIA";
-        destination = "HIGH BARNET";
+        origin = "WILLESDEN JUNCTION";
+        destination = "CHORLEYWOOD";
 
         pageContents[0, 1] = origin;
         pageContents[0, 2] = destination;
@@ -470,6 +470,8 @@ public class CipherEver : MonoBehaviour
         TubeLine.PathFinder p;
         List<TubeLine.Path>[] pathOneSections = new List<TubeLine.Path>[2];
         List<TubeLine.Path>[] pathTwoSections = new List<TubeLine.Path>[3];
+        var rnd = new System.Random();
+        int i;
 
         // Checking path 1:
         pathOneSections[0] = new List<TubeLine.Path>();
@@ -487,12 +489,49 @@ public class CipherEver : MonoBehaviour
         }
 
         if (pathOneSections[0].Count() == 0 || pathOneSections[1].Count() == 0) return false;
-        if ((pathOneSections[0].Count == 1 && pathOneSections[1].Count == 1) && pathOneSections[0][0] == pathOneSections[1][0]) return false;
+        if ((pathOneSections[0].Count == 1 && pathOneSections[1].Count == 1) && pathOneSections[0][0].id == pathOneSections[1][0].id) return false;
 
-        Debug.Log(pathOneSections[0][0].Name);
-        Debug.Log(string.Join(" ", pathOneSections[0][0].Stations));
-        Debug.Log(pathOneSections[1][0].Name);
-        Debug.Log(string.Join(" ", pathOneSections[1][0].Stations));
+        if (pathOneSections[1].Count == 1)
+        {
+            linesTaken[1] = pathOneSections[1][0];
+            i = rnd.Next(pathOneSections[0].Count + 1) - 1;
+
+            if (pathOneSections[0][i].id != linesTaken[1].id) linesTaken[0] = pathOneSections[0][i];
+            else
+            {
+                i = 0;
+                do
+                {
+                    linesTaken[0] = pathOneSections[0][i];
+                    i++;
+                } while (linesTaken[0].id == linesTaken[1].id);
+            }
+        }
+        else
+        {
+            i = rnd.Next(pathOneSections[0].Count + 1) - 1;
+            linesTaken[0] = pathOneSections[0][i];
+
+            i = rnd.Next(pathOneSections[1].Count + 1) - 1;
+
+            if (pathOneSections[1][i].id != linesTaken[0].id) linesTaken[1] = pathOneSections[1][i];
+            else
+            {
+                i = 0;
+                do
+                {
+                    linesTaken[1] = pathOneSections[1][i];
+                    i++;
+                } while (linesTaken[1].id == linesTaken[0].id);
+            }
+        }
+
+        Debug.Log(linesTaken[0].Name);
+        Debug.Log(string.Join(" ", linesTaken[0].Stations));
+        Debug.Log(linesTaken[1].Name);
+        Debug.Log(string.Join(" ", linesTaken[1].Stations));
+
+
         return true;
     }
 
@@ -598,9 +637,8 @@ public class CipherEver : MonoBehaviour
         string[] northernPath3 = { "FINCHLEY CENTRAL", "EAST FINCHLEY", "HIGHGATE", "ARCHWAY", "TUFNELL PARK", "KENTISH TOWN", "CAMDEN TOWN" };
         string[] northernPath4 = { "CAMDEN TOWN", "MORNINGTON CRESCENT", "EUSTON", "WARREN STREET", "GOODGE STREET", "TOTTENHAM COURT ROAD", "LEICESTER SQUARE", "CHARING CROSS", "EMBANKMENT", "WATERLOO", "KENNINGTON" };
         string[] northernPath5 = { "CAMDEN TOWN", "EUSTON", "KINGS CROSS", "ANGEL", "OLD STREET", "MOORGATE", "BANK", "LONDON BRIDGE", "BOROUGH", "ELEPHANT N CASTLE", "KENNINGTON", "OVAL" };
-        string[] northernPath6 = { "KENNINGTON", "NINE ELMS", "BATTERSEA PWR STN" };
-        string[] bitchPath2 = { "KENNINGTON", "OVAL" };
-        string[] northernPath7 = { "OVAL", "STOCKWELL", "CLAPHAM NORTH", "CLAPHAM COMMON", "CLAPHAM SOUTH", "BALHAM", "TOOTING BEC", "TOOTING BROADWAY", "COLLIERS WOOD", "SOUTH WIMBLEDON", "MORDEN" };
+        string[] bitchPath2 = { "CAMDEN TOWN", "MORNINGTON CRESCENT", "EUSTON", "WARREN STREET", "GOODGE STREET", "TOTTENHAM COURT ROAD", "LEICESTER SQUARE", "CHARING CROSS", "EMBANKMENT", "WATERLOO", "KENNINGTON", "NINE ELMS", "BATTERSEA PWR STN" };
+        string[] northernPath6 = { "OVAL", "STOCKWELL", "CLAPHAM NORTH", "CLAPHAM COMMON", "CLAPHAM SOUTH", "BALHAM", "TOOTING BEC", "TOOTING BROADWAY", "COLLIERS WOOD", "SOUTH WIMBLEDON", "MORDEN" };
         lines[7].AddBranch(northernPath1);
         lines[7].AddBranch(northernPath2);
         lines[7].AddBranch(bitchPath1);
@@ -609,7 +647,6 @@ public class CipherEver : MonoBehaviour
         lines[7].AddBranch(northernPath5);
         lines[7].AddBranch(northernPath6);
         lines[7].AddBranch(bitchPath2);
-        lines[7].AddBranch(northernPath7);
 
         lines[8] = new TubeLine("PICCADILLY", "003688");
         string[] piccadillyPath1 = { "HEATHROW T5", "HEATHROW T2 N 3", "HATTON CROSS", "HOUNSLOW WEST", "HOUNSLOW CENTRAL", "HOUNSLOW EAST", "OSTERLEY", "BOSTON MANOR", "NORTHFIELDS", "SOUTH EALING", "ACTON TOWN" };
@@ -789,11 +826,13 @@ public class CipherEver : MonoBehaviour
         {
             public string Name;
             public string[] Stations;
+            public string id;
             private string[] _endPoints = new string[2];
 
             public Path(string lineName, string[] pathStations)
             {
                 Name = lineName;
+                id = lineName;
                 Stations = pathStations;
                 _endPoints[0] = Stations[0];
                 _endPoints[1] = Stations[Stations.Length - 1];
