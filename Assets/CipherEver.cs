@@ -457,8 +457,8 @@ public class CipherEver : MonoBehaviour
     void Wayfinding()
     {
         lines = GenerateMap();
-        origin = "GLOUCESTER ROAD";
-        destination = "COCKFOSTERS";
+        origin = "VICTORIA";
+        destination = "HIGH BARNET";
 
         pageContents[0, 1] = origin;
         pageContents[0, 2] = destination;
@@ -489,7 +489,9 @@ public class CipherEver : MonoBehaviour
         if (pathOneSections[0].Count() == 0 || pathOneSections[1].Count() == 0) return false;
         if ((pathOneSections[0].Count == 1 && pathOneSections[1].Count == 1) && pathOneSections[0][0] == pathOneSections[1][0]) return false;
 
+        Debug.Log(pathOneSections[0][0].Name);
         Debug.Log(string.Join(" ", pathOneSections[0][0].Stations));
+        Debug.Log(pathOneSections[1][0].Name);
         Debug.Log(string.Join(" ", pathOneSections[1][0].Stations));
         return true;
     }
@@ -763,10 +765,10 @@ public class CipherEver : MonoBehaviour
             public bool HasPath()
             {
 
-                foreach (List<string> path in _paths)
-                {
-                    Debug.Log(string.Join(" ", path.ToArray()));
-                }
+                //foreach (List<string> path in _paths)
+                //{
+                //    Debug.Log(string.Join(" ", path.ToArray()));
+                //}
                 if (_paths.Count == 0)
                 {
                     return false;
