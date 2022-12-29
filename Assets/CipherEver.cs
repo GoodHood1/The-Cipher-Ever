@@ -48,7 +48,7 @@ public class CipherEver : MonoBehaviour
     string origin;
     string destination;
     string[] linesTaken = new string[5];
-    string[] routeInputs = new string[3];
+    string[] routeInputs = new string[1];
 
 
     string[] six_letter_words = new string[]
@@ -476,18 +476,21 @@ public class CipherEver : MonoBehaviour
         foreach (TubeLine line in lines)
         {
             p = new TubeLine.PathFinder(line, origin, interchanges[0]);
-            if (p.HasPath()) pathOneSections[0].Add(line.Name);
+            if (p.HasPath()) pathOneSections[0].Add(p.ProducePath());
         }
 
         pathOneSections[1] = new List<TubeLine.Path>();
         foreach (TubeLine line in lines)
         {
             p = new TubeLine.PathFinder(line, interchanges[0], destination);
-            if (p.HasPath()) pathOneSections[1].Add(line.Name);
+            if (p.HasPath()) pathOneSections[1].Add(p.ProducePath());
         }
 
         if (pathOneSections[0].Count() == 0 || pathOneSections[1].Count() == 0) return false;
         if ((pathOneSections[0].Count == 1 && pathOneSections[1].Count == 1) && pathOneSections[0][0] == pathOneSections[1][0]) return false;
+
+        Debug.Log(string.Join(" ", pathOneSections[0][0].Stations));
+        Debug.Log(string.Join(" ", pathOneSections[1][0].Stations));
         return true;
     }
 
@@ -512,13 +515,8 @@ public class CipherEver : MonoBehaviour
         else if (pagesLocked && routeStage == 3)
         {
             routeInputs[0] = ScreenTexts[0].text;
-            routeInputs[1] = ScreenTexts[1].text;
-            routeInputs[2] = ScreenTexts[2].text;
 
-            string alphabet = "ABCDEFGHIJK";
-            var p = new TubeLine.PathFinder(lines[alphabet.IndexOf(routeInputs[0])], routeInputs[1], routeInputs[2]);
-
-            pageContents[0, 0] = p.HasPath().ToString();
+            pageContents[0, 0] = CheckInterchanges(routeInputs).ToString();
             Submission = false;
             pageUpdate(currentPage);
 
@@ -778,7 +776,10 @@ public class CipherEver : MonoBehaviour
 
             public Path ProducePath()
             {
-                
+                var rnd = new System.Random();
+                int i = rnd.Next(_paths.Count() + 1);
+                var p = new Path(_line.Name, _paths[i - 1].ToArray());
+                return p;
             }
         }
         
