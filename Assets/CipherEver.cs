@@ -36,17 +36,19 @@ public class CipherEver : MonoBehaviour
     bool pagesLocked = true;
     bool Submission = false;
 
-    string[] routeInputs = new string[3];
-
     int routeStage = 1;
-
 
     int screenToWrite = 0;
 
     int currentPage = 0;
     int pages = 6;
 
+    // Kuro variables
     TubeLine[] lines;
+    string origin;
+    string destination;
+    string[] linesTaken = new string[5];
+    string[] routeInputs = new string[3];
 
 
     string[] six_letter_words = new string[]
@@ -87,8 +89,8 @@ public class CipherEver : MonoBehaviour
     {
 
 
-        pageContents[0, 0] = "TOTTENHAM COURT ROAD";
-        pageContents[0, 1] = "GLOUCESTER ROAD";
+        pageContents[0, 0] = "1TOP";
+        pageContents[0, 1] = "1MID";
         pageContents[0, 2] = "1BOT";
 
         pageContents[1, 0] = "2TOP";
@@ -111,7 +113,7 @@ public class CipherEver : MonoBehaviour
         pageContents[5, 1] = "6MID";
         pageContents[5, 2] = "6BOT";
 
-        lines = GenerateMap();
+        Wayfinding();
 
         string GoodHoodKeyWord = six_letter_words[UnityEngine.Random.Range(0, six_letter_words.Length)];
         encryptGoodHoodKeyword(GoodHoodKeyWord);
@@ -454,15 +456,43 @@ public class CipherEver : MonoBehaviour
     // Kuro Cipher down here
     void Wayfinding()
     {
-        TubeLine[] lines = GenerateMap();
+        lines = GenerateMap();
+        origin = "GLOUCESTER ROAD";
+        destination = "COCKFOSTERS";
 
-        TubeLine.PathFinder p = new TubeLine.PathFinder(lines[1], "WEST RUISLIP", "EALING BROADWAY");
-        pageContents[0, 0] = p.HasPath().ToString();
+        pageContents[0, 1] = origin;
+        pageContents[0, 2] = destination;
     }
 
-    // For use by Kuro to test things. REMEMBER TO COMMENT OUT THE OTHER submitPress METHOD BEFORE TESTING, AND VICE VERSA AFTER TESTING.
+    bool CheckInterchanges(string[] interchanges)
+        // Check validity of paths between the two given stations on the module.
+    {
+        TubeLine.PathFinder p;
+        List<TubeLine.Path>[] pathOneSections = new List<TubeLine.Path>[2];
+        List<TubeLine.Path>[] pathTwoSections = new List<TubeLine.Path>[3];
+
+        // Checking path 1:
+        pathOneSections[0] = new List<TubeLine.Path>();
+        foreach (TubeLine line in lines)
+        {
+            p = new TubeLine.PathFinder(line, origin, interchanges[0]);
+            if (p.HasPath()) pathOneSections[0].Add(line.Name);
+        }
+
+        pathOneSections[1] = new List<TubeLine.Path>();
+        foreach (TubeLine line in lines)
+        {
+            p = new TubeLine.PathFinder(line, interchanges[0], destination);
+            if (p.HasPath()) pathOneSections[1].Add(line.Name);
+        }
+
+        if (pathOneSections[0].Count() == 0 || pathOneSections[1].Count() == 0) return false;
+        if ((pathOneSections[0].Count == 1 && pathOneSections[1].Count == 1) && pathOneSections[0][0] == pathOneSections[1][0]) return false;
+        return true;
+    }
 
     void submitPress()
+        // For use by Kuro to test things. REMEMBER TO COMMENT OUT THE OTHER submitPress METHOD BEFORE TESTING, AND VICE VERSA AFTER TESTING
     {
         if (!Submission)
         {
@@ -486,8 +516,8 @@ public class CipherEver : MonoBehaviour
             routeInputs[2] = ScreenTexts[2].text;
 
             string alphabet = "ABCDEFGHIJK";
+            var p = new TubeLine.PathFinder(lines[alphabet.IndexOf(routeInputs[0])], routeInputs[1], routeInputs[2]);
 
-            TubeLine.PathFinder p = new TubeLine.PathFinder(lines[alphabet.IndexOf(routeInputs[0])], routeInputs[1], routeInputs[2]);
             pageContents[0, 0] = p.HasPath().ToString();
             Submission = false;
             pageUpdate(currentPage);
@@ -663,11 +693,11 @@ public class CipherEver : MonoBehaviour
         public class PathFinder
         {
             private readonly List<List<string>> _paths = new List<List<string>>();
-            private readonly TubeLine _line;
+            public readonly TubeLine _line;
 
-            public PathFinder(TubeLine lineName, string start, string end)
+            public PathFinder(TubeLine line, string start, string end)
             {
-                _line = lineName;
+                _line = line;
 
                 FindPaths(start, end, new List<string>(), false);
                 FindPaths(start, end, new List<string>(), true);
@@ -744,6 +774,52 @@ public class CipherEver : MonoBehaviour
                     return false;
                 }
                 return true;
+            }
+
+            public Path ProducePath()
+            {
+                
+            }
+        }
+        
+        public class Path
+        {
+            public string Name;
+            public string[] Stations;
+            private string[] _endPoints = new string[2];
+
+            public Path(string lineName, string[] pathStations)
+            {
+                Name = lineName;
+                Stations = pathStations;
+                _endPoints[0] = Stations[0];
+                _endPoints[1] = Stations[Stations.Length - 1];
+
+                if (Name == "NORTHERN") CheckNorthernLineExceptions();
+                if (Name == "CIRCLE") CheckCircleLineDirection();
+            }
+
+            private void CheckNorthernLineExceptions()
+            {
+                if (_endPoints.Contains("EUSTON") && Stations.Contains("CAMDEN TOWN"))
+                {
+                    if (Stations.Contains("MORNINGTON CRESCENT")) Name = "NORTHERN CC BRANCH";
+                    else Name = "NORTHERN BANK BRANCH";
+                }
+                else if ((_endPoints.Contains("EUSTON") || Stations.Contains("CAMDEN TOWN")) && (Stations.Contains("KENNINGTON") && !Stations.Contains("NINE ELMS")))
+                {
+                    if (Stations.Contains("CHARING CROSS")) Name = "NORTHERN CC BRANCH";
+                    else Name = "NORTHERN BANK BRANCH";
+                }
+            }
+
+            private void CheckCircleLineDirection()
+            {
+                if (_endPoints.Contains("PADDINGTON") || _endPoints.Contains("EDGWARE ROAD"))
+                {
+                    if (Stations.Contains("BAYSWATER")) Name = "CIRCLE VIA BAYSWATER";
+                    else if (Stations.Contains("BAKER STREET")) Name = "CIRCLE VIA BAKER ST";
+                }
             }
         }
     }
