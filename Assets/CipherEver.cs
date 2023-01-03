@@ -45,10 +45,11 @@ public class CipherEver : MonoBehaviour
 
     // Kuro variables
     TubeLine[] lines;
-    TubeLine.Path[] linesTaken = new TubeLine.Path[5];
+    TubeLine.Path[] linesTakenPathOne = new TubeLine.Path[2];
+    TubeLine.Path[] linesTakenPathTwo = new TubeLine.Path[3];
     string origin;
     string destination;
-    string[] routeInputs = new string[1];
+    string[] routeInputs = new string[3];
 
 
     string[] six_letter_words = new string[]
@@ -133,6 +134,149 @@ public class CipherEver : MonoBehaviour
         left.OnInteract += delegate () { leftPress(); return false; };
         submit.OnInteract += delegate () { submitPress(); return false; };
 
+    }
+
+
+    
+
+    void keyboardPress(KMSelectable button)
+    {
+        if (button == right && !pagesLocked)
+        {
+            rightPress();
+            return;
+        }
+        if (!Submission)
+        {
+            Submission = true;
+            for (int i = 0; i < ScreenTexts.Length; i++)
+            {
+                ScreenTexts[i].text = "";
+            }
+        }
+        if (ScreenTexts[screenToWrite].text.Length >= 20) return;
+        if (button == right)
+        {
+            ScreenTexts[screenToWrite].text += " ";
+        }
+        else
+        {
+            ScreenTexts[screenToWrite].text += button.name.ToUpper();
+        }
+        int length = ScreenTexts[screenToWrite].text.Length;
+        ScreenTexts[screenToWrite].fontSize = length < 13 ? 317 : length == 13 ? 292 : length < 17 ? 237 : 185;
+
+
+
+    }
+
+
+    //void submitPress()
+    //{
+    //    if (!Submission)
+    //    {
+    //        module.HandleStrike();
+    //        return;
+    //    }
+    //    if (pagesLocked && routeStage == 1)
+    //    {
+    //        routeStage = 2;
+    //        screenToWrite = 1;
+    //    }
+    //    else if (pagesLocked && routeStage == 2)
+    //    {
+    //        routeStage = 3;
+    //        screenToWrite = 2;
+    //    }
+    //    else if (pagesLocked && routeStage == 3)
+    //    {
+    //        routeInputs[0] = ScreenTexts[0].text;
+    //        routeInputs[1] = ScreenTexts[1].text;
+    //        routeInputs[2] = ScreenTexts[2].text;
+
+    //    }
+
+    //}
+
+    void leftPress()
+    {
+        screenToWrite = 0;
+        routeStage = 1;
+        if (Submission && pagesLocked)
+        {
+            currentPage = 1;
+            Submission = false;
+        }
+        else if (pagesLocked)
+        {
+            return;
+        }
+        else if (Submission)
+        {
+            Submission = false;
+        }
+        Audio.PlaySoundAtTransform("ArrowPress", transform);
+        currentPage = (currentPage - 1);
+        if (currentPage == -1) currentPage = pages - 1;
+        pageUpdate(currentPage);
+    }
+
+    void rightPress()
+    {
+        if (Submission)
+        {
+            Submission = false;
+        }
+        Audio.PlaySoundAtTransform("ArrowPress", transform);
+        currentPage = (currentPage + 1) % pages;
+        pageUpdate(currentPage);
+
+
+    }
+
+    void pageUpdate(int page) // A function that sets the 3 screens to each entry in a 3 long array of strings
+    {
+        if (currentPage == 0)
+        {
+            TrainsImage.SetActive(true);
+            subText.SetActive(false);
+        }
+        else
+        {
+            TrainsImage.SetActive(false);
+            subText.SetActive(true);
+        }
+        for (int i = 0; i < 3; i++)
+        {
+            ScreenTexts[i].text = pageContents[page, i];
+            int length = pageContents[page, i].Length;
+            ScreenTexts[i].fontSize = length < 13 ? 317 : length == 13 ? 292 : length < 17 ? 237 : 185;
+        }
+    }
+
+    private int getPositionFromChar(char c) // More Keyboard Support
+    {
+        return "QWERTYUIOPASDFGHJKLZXCVBNM".IndexOf(c);
+    }
+
+    void Update()
+    {
+        //CHANGE THIS TO IF MODULE SELECTED AFTER DONE
+        if (!moduleSelected)
+        {
+            for (var ltr = 0; ltr < 26; ltr++) //Keyboard Support
+            {
+                if (Input.GetKeyDown(((char)('a' + ltr)).ToString()))
+                {
+
+                    keyboard[getPositionFromChar((char)('A' + ltr))].OnInteract();
+                }
+            }
+            if (Input.GetKeyDown(KeyCode.Return))
+                submit.OnInteract();
+            if (Input.GetKeyDown(KeyCode.Space) && pagesLocked)
+                keyboardPress(right);
+        }
     }
 
 
@@ -288,128 +432,6 @@ public class CipherEver : MonoBehaviour
         pageContents[0, 0] = answerString;
         pageUpdate(0);
 
-
-
-    }
-
-
-    #endregion
-
-    void keyboardPress(KMSelectable button)
-    {
-        if (button == right && !pagesLocked)
-        {
-            rightPress();
-            return;
-        }
-        if (!Submission)
-        {
-            Submission = true;
-            for (int i = 0; i < ScreenTexts.Length; i++)
-            {
-                ScreenTexts[i].text = "";
-            }
-        }
-        if (ScreenTexts[screenToWrite].text.Length >= 20) return;
-        if (button == right)
-        {
-            ScreenTexts[screenToWrite].text += " ";
-        }
-        else
-        {
-            ScreenTexts[screenToWrite].text += button.name.ToUpper();
-        }
-        int length = ScreenTexts[screenToWrite].text.Length;
-        ScreenTexts[screenToWrite].fontSize = length < 13 ? 317 : length == 13 ? 292 : length < 17 ? 237 : 185;
-
-
-
-    }
-
-
-    //void submitPress()
-    //{
-    //    if (!Submission)
-    //    {
-    //        module.HandleStrike();
-    //        return;
-    //    }
-    //    if (pagesLocked && routeStage == 1)
-    //    {
-    //        routeStage = 2;
-    //        screenToWrite = 1;
-    //    }
-    //    else if (pagesLocked && routeStage == 2)
-    //    {
-    //        routeStage = 3;
-    //        screenToWrite = 2;
-    //    }
-    //    else if (pagesLocked && routeStage == 3)
-    //    {
-    //        routeInputs[0] = ScreenTexts[0].text;
-    //        routeInputs[1] = ScreenTexts[1].text;
-    //        routeInputs[2] = ScreenTexts[2].text;
-
-    //    }
-
-    //}
-
-
-
-    void leftPress()
-    {
-        screenToWrite = 0;
-        routeStage = 1;
-        if (Submission && pagesLocked)
-        {
-            currentPage = 1;
-            Submission = false;
-        }
-        else if (pagesLocked)
-        {
-            return;
-        }
-        else if (Submission)
-        {
-            Submission = false;
-        }
-        Audio.PlaySoundAtTransform("ArrowPress", transform);
-        currentPage = (currentPage - 1);
-        if (currentPage == -1) currentPage = pages - 1;
-        pageUpdate(currentPage);
-    }
-
-    void rightPress()
-    {
-        if (Submission)
-        {
-            Submission = false;
-        }
-        Audio.PlaySoundAtTransform("ArrowPress", transform);
-        currentPage = (currentPage + 1) % pages;
-        pageUpdate(currentPage);
-
-
-    }
-
-    void pageUpdate(int page) // A function that sets the 3 screens to each entry in a 3 long array of strings
-    {
-        if (currentPage == 0)
-        {
-            TrainsImage.SetActive(true);
-            subText.SetActive(false);
-        }
-        else
-        {
-            TrainsImage.SetActive(false);
-            subText.SetActive(true);
-        }
-        for (int i = 0; i < 3; i++)
-        {
-            ScreenTexts[i].text = pageContents[page, i];
-            int length = pageContents[page, i].Length;
-            ScreenTexts[i].fontSize = length < 13 ? 317 : length == 13 ? 292 : length < 17 ? 237 : 185;
-        }
     }
 
     int alphaNum(string letter)
@@ -422,43 +444,19 @@ public class CipherEver : MonoBehaviour
     string toAlpha(int index)
     {
         string alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-        return (alphabet[index-1]).ToString();
+        return (alphabet[index - 1]).ToString();
     }
 
+    #endregion
 
-    private int getPositionFromChar(char c) // More Keyboard Support
-    {
-        return "QWERTYUIOPASDFGHJKLZXCVBNM".IndexOf(c);
-    }
-
-
-    void Update()
-    {
-        //CHANGE THIS TO IF MODULE SELECTED AFTER DONE
-        if (!moduleSelected)
-        {
-            for (var ltr = 0; ltr < 26; ltr++) //Keyboard Support
-            {
-                if (Input.GetKeyDown(((char)('a' + ltr)).ToString()))
-                {
-
-                    keyboard[getPositionFromChar((char)('A' + ltr))].OnInteract();
-                }
-            }
-            if (Input.GetKeyDown(KeyCode.Return))
-                submit.OnInteract();
-            if (Input.GetKeyDown(KeyCode.Space) && pagesLocked)
-                keyboardPress(right);
-        }
-    }
 
     #region kuroStuff
     // Kuro Cipher down here
     void Wayfinding()
     {
         lines = GenerateMap();
-        origin = "WILLESDEN JUNCTION";
-        destination = "CHORLEYWOOD";
+        origin = "PADDINGTON";
+        destination = "KENNINGTON";
 
         pageContents[0, 1] = origin;
         pageContents[0, 2] = destination;
@@ -470,8 +468,13 @@ public class CipherEver : MonoBehaviour
         TubeLine.PathFinder p;
         List<TubeLine.Path>[] pathOneSections = new List<TubeLine.Path>[2];
         List<TubeLine.Path>[] pathTwoSections = new List<TubeLine.Path>[3];
+        var section = new List<TubeLine.Path>();
+        var onePaths = new List<string>();
+        var twoPathNumbers = new List<int>();
         var rnd = new System.Random();
         int i;
+
+        if (interchanges.Length != interchanges.Distinct().Count()) return false;
 
         // Checking path 1:
         pathOneSections[0] = new List<TubeLine.Path>();
@@ -488,49 +491,121 @@ public class CipherEver : MonoBehaviour
             if (p.HasPath()) pathOneSections[1].Add(p.ProducePath());
         }
 
+        // Checking validity here.
         if (pathOneSections[0].Count() == 0 || pathOneSections[1].Count() == 0) return false;
         if ((pathOneSections[0].Count == 1 && pathOneSections[1].Count == 1) && pathOneSections[0][0].id == pathOneSections[1][0].id) return false;
 
         if (pathOneSections[1].Count == 1)
         {
-            linesTaken[1] = pathOneSections[1][0];
+            linesTakenPathOne[1] = pathOneSections[1][0];
             i = rnd.Next(pathOneSections[0].Count + 1) - 1;
 
-            if (pathOneSections[0][i].id != linesTaken[1].id) linesTaken[0] = pathOneSections[0][i];
+            if (pathOneSections[0][i].id != linesTakenPathOne[1].id) linesTakenPathOne[0] = pathOneSections[0][i];
             else
             {
                 i = 0;
                 do
                 {
-                    linesTaken[0] = pathOneSections[0][i];
+                    linesTakenPathOne[0] = pathOneSections[0][i];
                     i++;
-                } while (linesTaken[0].id == linesTaken[1].id);
+                } while (linesTakenPathOne[0].id == linesTakenPathOne[1].id);
             }
         }
         else
         {
             i = rnd.Next(pathOneSections[0].Count + 1) - 1;
-            linesTaken[0] = pathOneSections[0][i];
+            linesTakenPathOne[0] = pathOneSections[0][i];
 
             i = rnd.Next(pathOneSections[1].Count + 1) - 1;
 
-            if (pathOneSections[1][i].id != linesTaken[0].id) linesTaken[1] = pathOneSections[1][i];
+            if (pathOneSections[1][i].id != linesTakenPathOne[0].id) linesTakenPathOne[1] = pathOneSections[1][i];
             else
             {
                 i = 0;
                 do
                 {
-                    linesTaken[1] = pathOneSections[1][i];
+                    linesTakenPathOne[1] = pathOneSections[1][i];
                     i++;
-                } while (linesTaken[1].id == linesTaken[0].id);
+                } while (linesTakenPathOne[1].id == linesTakenPathOne[0].id);
             }
         }
 
-        Debug.Log(linesTaken[0].Name);
-        Debug.Log(string.Join(" ", linesTaken[0].Stations));
-        Debug.Log(linesTaken[1].Name);
-        Debug.Log(string.Join(" ", linesTaken[1].Stations));
+        // Checking path 2:
+        pathTwoSections[0] = new List<TubeLine.Path>();
+        foreach (TubeLine line in lines)
+        {
+            p = new TubeLine.PathFinder(line, origin, interchanges[1]);
+            if (p.HasPath()) pathTwoSections[0].Add(p.ProducePath());
+        }
 
+            pathTwoSections[1] = new List<TubeLine.Path>();
+        foreach (TubeLine line in lines)
+        {
+            p = new TubeLine.PathFinder(line, interchanges[1], interchanges[2]);
+            if (p.HasPath()) pathTwoSections[1].Add(p.ProducePath());
+        }
+
+        pathTwoSections[2] = new List<TubeLine.Path>();
+        foreach (TubeLine line in lines)
+        {
+            p = new TubeLine.PathFinder(line, interchanges[2], destination);
+            if (p.HasPath()) pathTwoSections[2].Add(p.ProducePath());
+        }
+
+        // Checking validity here.
+        for (int j = 0; j < 3; j++)
+        {
+            section = pathTwoSections[j];
+
+            switch (section.Count())
+            {
+                case 0:
+                    return false;
+                case 1:
+                    if (onePaths.Contains(section[0].id)) return false;
+                    else onePaths.Add(section[0].id);
+                    linesTakenPathTwo[j] = section[0];
+                    break;
+                case 2:
+                    twoPathNumbers.Add(j);
+                    break;
+            }
+        }
+
+        // THIS DOESNT FIND ALL CASES
+        foreach (int j in twoPathNumbers)
+        {
+            i = rnd.Next(2);
+            if (!linesTakenPathTwo.Contains(pathTwoSections[j][i])) linesTakenPathTwo[j] = pathTwoSections[j][i];
+            else
+            {
+                foreach (TubeLine.Path path in pathTwoSections[j])
+                {
+                    if (!linesTakenPathTwo.Contains(path)) linesTakenPathTwo[j] = path;
+                }
+
+                if (linesTakenPathTwo[j] == null)
+                {
+                    return false;
+                }
+            }
+        }
+
+        for (int j = 0; j < 3; j++)
+        {
+            if (linesTakenPathTwo[j] == null)
+            {
+                foreach (TubeLine.Path path in pathTwoSections[j])
+                {
+                    if (!linesTakenPathTwo.Contains(path)) linesTakenPathTwo[j] = path;
+                }
+
+                if (linesTakenPathTwo[j] == null)
+                {
+                    return false;
+                }
+            }
+        }
 
         return true;
     }
@@ -556,6 +631,8 @@ public class CipherEver : MonoBehaviour
         else if (pagesLocked && routeStage == 3)
         {
             routeInputs[0] = ScreenTexts[0].text;
+            routeInputs[1] = ScreenTexts[1].text;
+            routeInputs[2] = ScreenTexts[2].text;
 
             pageContents[0, 0] = CheckInterchanges(routeInputs).ToString();
             Submission = false;
