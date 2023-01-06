@@ -452,10 +452,7 @@ public class CipherEver : MonoBehaviour
     void Wayfinding()
     {
         lines = GenerateMap();
-        // PickStations();
-
-        origin = "GLOUCESTER ROAD";
-        destination = "MORDEN";
+        PickStations();
 
         pageContents[0, 1] = origin;
         pageContents[0, 2] = destination;
@@ -468,19 +465,26 @@ public class CipherEver : MonoBehaviour
         var rnd = new System.Random();
         int i = rnd.Next(11);
         int j = rnd.Next(lines[i].Stations.Count());
-        string allowedLines = "";
-
+        string linesWithOrigin = "";
+        char nextLineLetter;
+        const string Alphabet = "ABCDEFGHIJK";
+            
         origin = lines[i].Stations[j];
 
-        for (int k = 0; k < 11; k++)
+        foreach (char letter in Alphabet)
         {
-            if (!lines[k].Stations.Contains(origin)) allowedLines += k.ToString();
+            if (lines[alphaNum(letter.ToString()) - 1].Stations.Contains(origin)) linesWithOrigin += letter;
         }
 
-        i = rnd.Next(allowedLines.Length);
-        j = rnd.Next(lines[int.Parse(allowedLines[i].ToString())].Stations.Count());
+        do
+        {
+            nextLineLetter = Alphabet[rnd.Next(11)];
+        }
+        while (linesWithOrigin.Contains(nextLineLetter));
 
-        destination = lines[int.Parse(allowedLines[i].ToString())].Stations[j];
+        i = alphaNum(nextLineLetter.ToString()) - 1;
+        j = rnd.Next(lines[i].Stations.Count());
+        destination = lines[i].Stations[j];
     }
 
     void CheckImpossibilities()
@@ -539,14 +543,14 @@ public class CipherEver : MonoBehaviour
         pathOneSections[1] = new List<TubeLine.Path>();
         foreach (TubeLine line in lines)
         {
-            if ((interchanges[0] == "MOORGATE" || interchanges[0] == "LIVERPOOL STREET") && !funnyLines.Contains(line.Name))
+            if ((interchanges[0] == "MOORGATE" || interchanges[0] == "LIVERPOOL STREET") && !funnyLines.Contains(line.Name) && destination != "MOORGATE" && destination != "LIVERPOOL STREET")
             {
                 p = new TubeLine.PathFinder(line, "LIVERPOOL STREET", destination);
                 if (p.HasPath()) pathOneSections[1].Add(p.ProducePath());
                 p = new TubeLine.PathFinder(line, "MOORGATE", destination);
                 if (p.HasPath()) pathOneSections[1].Add(p.ProducePath());
             }
-            else if (interchanges[0] == "BANK" || interchanges[0] == "MONUMENT")
+            else if ((interchanges[0] == "BANK" || interchanges[0] == "MONUMENT") && destination != "BANK" && destination != "MONUMENT")
             {
                 p = new TubeLine.PathFinder(line, "MONUMENT", destination);
                 if (p.HasPath()) pathOneSections[1].Add(p.ProducePath());
@@ -610,14 +614,14 @@ public class CipherEver : MonoBehaviour
             pathTwoSections[1] = new List<TubeLine.Path>();
         foreach (TubeLine line in lines)
         {
-            if ((interchanges[1] == "MOORGATE" || interchanges[1] == "LIVERPOOL STREET") && !funnyLines.Contains(line.Name))
+            if ((interchanges[1] == "MOORGATE" || interchanges[1] == "LIVERPOOL STREET") && !funnyLines.Contains(line.Name) && interchanges[2] != "MOORGATE" && interchanges[2] != "LIVERPOOL STREET")
             {
                 p = new TubeLine.PathFinder(line, "LIVERPOOL STREET", interchanges[2]);
                 if (p.HasPath()) pathTwoSections[1].Add(p.ProducePath());
                 p = new TubeLine.PathFinder(line, "MOORGATE", interchanges[2]);
                 if (p.HasPath()) pathTwoSections[1].Add(p.ProducePath());
             }
-            else if (interchanges[1] == "BANK" || interchanges[1] == "MONUMENT")
+            else if ((interchanges[1] == "BANK" || interchanges[1] == "MONUMENT") && interchanges[2] != "BANK" && interchanges[2] != "MONUMENT")
             {
                 p = new TubeLine.PathFinder(line, "MONUMENT", interchanges[2]);
                 if (p.HasPath()) pathTwoSections[1].Add(p.ProducePath());
@@ -634,14 +638,14 @@ public class CipherEver : MonoBehaviour
         pathTwoSections[2] = new List<TubeLine.Path>();
         foreach (TubeLine line in lines)
         {
-            if ((interchanges[2] == "MOORGATE" || interchanges[2] == "LIVERPOOL STREET") && !funnyLines.Contains(line.Name))
+            if ((interchanges[2] == "MOORGATE" || interchanges[2] == "LIVERPOOL STREET") && !funnyLines.Contains(line.Name) && destination != "MOORGATE" && destination != "LIVERPOOL STREET")
             {
                 p = new TubeLine.PathFinder(line, "LIVERPOOL STREET", destination);
                 if (p.HasPath()) pathTwoSections[2].Add(p.ProducePath());
                 p = new TubeLine.PathFinder(line, "MOORGATE", destination);
                 if (p.HasPath()) pathTwoSections[2].Add(p.ProducePath());
             }
-            else if (interchanges[2] == "BANK" || interchanges[2] == "MONUMENT")
+            else if ((interchanges[2] == "BANK" || interchanges[2] == "MONUMENT") && destination != "BANK" && destination != "MONUMENT")
             {
                 p = new TubeLine.PathFinder(line, "MONUMENT", destination);
                 if (p.HasPath()) pathTwoSections[2].Add(p.ProducePath());
