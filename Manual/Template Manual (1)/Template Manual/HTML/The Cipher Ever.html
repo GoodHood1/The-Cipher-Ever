@@ -17,7 +17,7 @@
         ul{ margin-top: 0.5em; }
 
         .page-footer::before { content: 'Page '; }
-        .page-footer::after { content: ' of 3'; }
+        .page-footer::after { content: ' of 4'; }
     </style>
 </head>
 <body>
@@ -111,7 +111,7 @@
                 </p>
 
                 <h4>Step 2.1: Tube Line Transposition</h4>
-                <table style="float:left; width:20%; font-size:14px; margin-right:25px"> 
+                <table style="float:left; width:20%; font-size:13px; margin-right:25px"> 
                     <caption>Table A: Tube Colour Index</caption>
                     <tr><th>Tube Line</th><th>Colour Code</th></tr>
                     <tr><th style="background-color:#B36305;color:white">Bakerloo</th><td>#B36305</td></tr>
@@ -129,16 +129,47 @@
 
                 <p>Concatenate the colour codes of these lines (see Table A; omit the # in each code), in the order shown on the
                      module, and shift the resulting string to the right by the absolute difference in
-                     the number of stations in each route.
+                     the total number of stations in the two routes.
                 </p>
 
                 <p>Separate the string back into five 6-digit hexadecimal numbers. Add the first two numbers together
                     to create <b>Key 1</b>, and add the remaining three numbers together to create <b>Key 2</b>.
                 </p>
+
+                <p>
+                    If <b>Key 1</b> and <b>Key 2</b> have the same parity (even or odd) then append <b>Key 2</b>
+                    to <b>Key 1</b>; otherwise append <b>Key 1</b> to <b>Key 2</b>. Discard all characters after
+                    the <b>X</b>th character, where <b>X</b> is the number of letters in the encrypted word.
+                    This is the <b>Transposition Key</b>. 
+                </p>
+
+                <p> Place the encrypted word underneath the <b>Transposition Key</b>, and pair up each letter
+                    of the encrypted word with the character in the same position in the <b>Transposition Key</b>,
+                    then rearrange the pairs so that the <b>Transposition Key</b> is in numerical order (the numbers
+                    going from 0-9 followed by the letters A-F). Decide ties based on original position in reading order.
+                </p>
             </div>
             <div class="page-footer relative-footer">2</div>
         </div>
+
         <div class="page page-bg-03">
+            <div class="page-header">
+                <span class="page-header-doc-title">Keep Talking and Nobody Explodes Mod</span>
+                <span class="page-header-section-title">The Cipher Ever</span>
+            </div>
+            <div class="page-content">
+                <h4>Step 2.2: Compacted Trainfair Cipher</h4>
+
+                <p> GENERAL IDEA:
+                    Playfair, but use every pair of consecutive letters (encrypt right to left, decrypt left to right).
+                    Additionally, after every use of the grid, shift a row/column based on the unused lines in wayfinding step.
+                </p>
+            </div>
+            <div class="page-footer relative-footer">3</div>
+        </div>
+
+
+        <div class="page page-bg-04">
             <div class="page-header">
                 <span class="page-header-doc-title">Keep Talking and Nobody Explodes Mod</span>
                 <span class="page-header-section-title">The Cipher Ever</span>
@@ -169,7 +200,7 @@
                 <p>Now you should have an encrypted word ready to decrypt.</p>
                 
             </div>
-            <div class="page-footer relative-footer">3</div>
+            <div class="page-footer relative-footer">4</div>
         </div>
     </div>
 </body>
