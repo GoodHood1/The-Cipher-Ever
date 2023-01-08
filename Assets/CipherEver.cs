@@ -195,6 +195,40 @@ public class CipherEver : MonoBehaviour
 
     //}
 
+    void submitPress()
+    // For use by Kuro to test things. REMEMBER TO COMMENT OUT THE OTHER submitPress METHOD BEFORE TESTING, AND VICE VERSA AFTER TESTING
+    {
+        if (!Submission)
+        {
+            module.HandleStrike();
+            return;
+        }
+        if (pagesLocked && routeStage == 1)
+        {
+            routeStage = 2;
+            screenToWrite = 1;
+        }
+        else if (pagesLocked && routeStage == 2)
+        {
+            routeStage = 3;
+            screenToWrite = 2;
+        }
+        else if (pagesLocked && routeStage == 3)
+        {
+            routeInputs[0] = ScreenTexts[0].text;
+            routeInputs[1] = ScreenTexts[1].text;
+            routeInputs[2] = ScreenTexts[2].text;
+
+            pageContents[0, 0] = CheckInterchanges(routeInputs).ToString();
+            if (pageContents[0, 0] == "True") TubeCipher.PerformTubeLineTransposition(linesTakenPathOne.Concat(linesTakenPathTwo).ToArray(), "BAYSWATER");
+            Submission = false;
+            pageUpdate(currentPage);
+
+            routeStage = 1;
+            screenToWrite = 0;
+        }
+    }
+
     void leftPress()
     {
         screenToWrite = 0;
@@ -446,9 +480,10 @@ public class CipherEver : MonoBehaviour
 
     #endregion
 
-
-    #region kuroStuff
-    // Kuro Cipher down here
+    // Kuro formally apologises to all individuals (including Kuro himself) who find themselves needing to read the following code.
+    // This is Kuro's first "major" project, and as a result Kuro has learnt a lot during it, but this is too much for Kuro to be bothered to fix.
+    // If you MUST continue, avoid at all costs all 200+ lines of the CheckInterchanges() method.
+    #region Wayfinding
     void Wayfinding()
     {
         lines = GenerateMap();
@@ -483,8 +518,23 @@ public class CipherEver : MonoBehaviour
         while (linesWithOrigin.Contains(nextLineLetter));
 
         i = alphaNum(nextLineLetter.ToString()) - 1;
-        j = rnd.Next(lines[i].Stations.Count());
-        destination = lines[i].Stations[j];
+
+        do
+        {
+            j = rnd.Next(lines[i].Stations.Count());
+            destination = lines[i].Stations[j];
+        }
+        while (OnIllegalLine(destination, linesWithOrigin));
+    }
+
+    bool OnIllegalLine(string station, string IllegalLines)
+    {
+        foreach (char letter in IllegalLines)
+        {
+            if (lines[alphaNum(letter.ToString()) - 1].Stations.Contains(station)) return true;
+        }
+
+        return false;
     }
 
     void CheckImpossibilities()
@@ -731,39 +781,6 @@ public class CipherEver : MonoBehaviour
         return true;
     }
 
-    void submitPress()
-        // For use by Kuro to test things. REMEMBER TO COMMENT OUT THE OTHER submitPress METHOD BEFORE TESTING, AND VICE VERSA AFTER TESTING
-    {
-        if (!Submission)
-        {
-            module.HandleStrike();
-            return;
-        }
-        if (pagesLocked && routeStage == 1)
-        {
-            routeStage = 2;
-            screenToWrite = 1;
-        }
-        else if (pagesLocked && routeStage == 2)
-        {
-            routeStage = 3;
-            screenToWrite = 2;
-        }
-        else if (pagesLocked && routeStage == 3)
-        {
-            routeInputs[0] = ScreenTexts[0].text;
-            routeInputs[1] = ScreenTexts[1].text;
-            routeInputs[2] = ScreenTexts[2].text;
-
-            pageContents[0, 0] = CheckInterchanges(routeInputs).ToString();
-            Submission = false;
-            pageUpdate(currentPage);
-
-            routeStage = 1;
-            screenToWrite = 0;
-        }
-    }
-
     TubeLine[] GenerateMap()
     // Generates all 11 Tube lines and their branches.
     {
@@ -867,205 +884,11 @@ public class CipherEver : MonoBehaviour
         return lines;
     }
 
-    class TubeLine
-    {
-        public string Name;
-        public string Colour;
-        public List<string> Stations = new List<string>();
-        private readonly List<Branch> _branches = new List<Branch>();
 
-        public TubeLine(string lineName, string lineColour)
-        {
-            Name = lineName;
-            Colour = lineColour;
-        }
+    #endregion
 
-        public void AddBranch(string[] stationsList, string branchIdentifier = "")
-        {
-            _branches.Add(new Branch(stationsList, branchIdentifier));
-            Stations.AddRange(stationsList);
-            Stations = Stations.Distinct().ToList();
-        }
+    #region TubeCipher
 
-        private class Branch
-        {
-            // private readonly string[] _stations;
-            public string[] _stations;
-            public string LeftEndPoint;
-            public string RightEndPoint;
-            public string Name;
-
-            public Branch(string[] stationsList, string branchName)
-            {
-                _stations = stationsList;
-                LeftEndPoint = stationsList[0];
-                RightEndPoint = stationsList[stationsList.Count() - 1];
-                Name = branchName;
-            }
-
-            public bool Contains(string station)
-            {
-                return _stations.Contains(station);
-            }
-
-            public List<string> GetPath(string startStation, string endStation, bool reverse)
-            // Return a string containing the path from startStation to endStation.
-            // reverse -> if true, then the branch will be processed in the right-to-left direction, otherwise it will be searched from left-to-right.
-            {
-                int position = Array.IndexOf(_stations, startStation);
-                var i = reverse ? -1 : 1;
-                string currentStation;
-                var path = new List<string>();
-
-                do
-                {
-                    currentStation = _stations[position];
-                    path.Add(currentStation);
-                    position += i;
-                } while (currentStation != endStation && position >= 0 && position < _stations.Length);
-
-                return path;
-            }
-        }
-
-        public class PathFinder
-        {
-            private readonly List<List<string>> _paths = new List<List<string>>();
-            public readonly TubeLine _line;
-
-            public PathFinder(TubeLine line, string start, string end)
-            {
-                _line = line;
-
-                FindPaths(start, end, new List<string>(), false);
-                FindPaths(start, end, new List<string>(), true);
-            }
-
-            private void FindPaths(string start, string end, List<string> pathSoFar, bool reverse)
-            // Find all valid paths from start to end.
-            // reverse -> specifies whether the paths are searched right-to-left or left-to-right.
-            {
-                List<string> path;
-
-                foreach (Branch branch in _line._branches)
-                {
-                    path = new List<string>(pathSoFar);
-
-                    if (branch.Contains(start))
-                    {
-                        if (branch.RightEndPoint != start && !reverse)
-                        {
-                            CheckForEndStation(start, end, reverse, path, branch);
-                        }
-
-                        if (branch.LeftEndPoint != start && reverse)
-                        {
-                            CheckForEndStation(start, end, reverse, path, branch);
-                        }
-                    }
-                }
-            }
-
-            private void CheckForEndStation(string start, string end, bool reverse, List<string> path, Branch branch)
-            {
-                string endOfPathSoFar;
-                var flag = false;
-                path.AddRange(branch.GetPath(start, end, reverse));
-
-                if (path.Contains(end))
-                {
-                    foreach (List<string> _path in _paths)
-                    {
-                        if (AreTheSameFuckingList(_path, path)) flag = true;
-                    }
-                    if (!flag) _paths.Add(path);
-                }
-                else
-                {
-                    endOfPathSoFar = path[path.Count() - 1];
-                    path.Remove(endOfPathSoFar);
-                    FindPaths(endOfPathSoFar, end, path, reverse);
-                }
-            }
-
-            private bool AreTheSameFuckingList(List<string> list1, List<string> list2)
-            {
-                if (list1.Count() != list2.Count()) return false;
-
-                for (int i = 0; i < list1.Count(); i++)
-                {
-                    if (list1[i] != list2[i]) return false;
-                }
-
-                return true;
-            }
-
-            public bool HasPath()
-            {
-
-                //foreach (List<string> path in _paths)
-                //{
-                //    Debug.Log(string.Join(" ", path.ToArray()));
-                //}
-                if (_paths.Count == 0)
-                {
-                    return false;
-                }
-                return true;
-            }
-
-            public Path ProducePath()
-            {
-                var rnd = new System.Random();
-                int i = rnd.Next(_paths.Count() + 1);
-                var p = new Path(_line.Name, _paths[i - 1].ToArray());
-                return p;
-            }
-        }
-        
-        public class Path
-        {
-            public string Name;
-            public string[] Stations;
-            public string id;
-            private string[] _endPoints = new string[2];
-
-            public Path(string lineName, string[] pathStations)
-            {
-                Name = lineName;
-                id = lineName;
-                Stations = pathStations;
-                _endPoints[0] = Stations[0];
-                _endPoints[1] = Stations[Stations.Length - 1];
-
-                if (Name == "NORTHERN") CheckNorthernLineExceptions();
-                if (Name == "CIRCLE") CheckCircleLineDirection();
-            }
-
-            private void CheckNorthernLineExceptions()
-            {
-                if (_endPoints.Contains("EUSTON") && Stations.Contains("CAMDEN TOWN"))
-                {
-                    if (Stations.Contains("MORNINGTON CRESCENT")) Name = "NORTHERN CC BRANCH";
-                    else Name = "NORTHERN BANK BRANCH";
-                }
-                else if ((_endPoints.Contains("EUSTON") || Stations.Contains("CAMDEN TOWN")) && (Stations.Contains("KENNINGTON") && !Stations.Contains("NINE ELMS")))
-                {
-                    if (Stations.Contains("CHARING CROSS")) Name = "NORTHERN CC BRANCH";
-                    else Name = "NORTHERN BANK BRANCH";
-                }
-            }
-
-            private void CheckCircleLineDirection()
-            {
-                if (_endPoints.Contains("PADDINGTON") || _endPoints.Contains("EDGWARE ROAD"))
-                {
-                    if (Stations.Contains("BAYSWATER")) Name = "CIRCLE VIA BAYSWATER";
-                    else if (Stations.Contains("BAKER STREET")) Name = "CIRCLE VIA BAKER ST";
-                }
-            }
-        }
-    }
     #endregion
 
 #pragma warning disable 414
@@ -1080,5 +903,282 @@ public class CipherEver : MonoBehaviour
     IEnumerator TwitchHandleForcedSolve()
     {
         yield return null;
+    }
+}
+
+
+// COMMENT THIS SHIT BEFORE DOING ANYTHING ELSE OKAY THANK YOU
+static class TubeCipher
+{
+    public static void PerformTubeLineTransposition(TubeLine.Path[] paths, string keyword)
+    { 
+        string transpositionKey = GetTranspositionKey(paths).Substring(0, keyword.Length);
+        Debug.Log(transpositionKey);
+        Debug.Log(Transpose(keyword, transpositionKey));
+    }
+
+    private static string Transpose(string keyword, string transpositionKey)
+    {
+        var transpositionPositions = new List<int>();
+        var encryptedLetters = new string[keyword.Length];
+
+        foreach (char keyDigit in "0123456789ABCDEF")
+        {
+            foreach (int i in Enumerable.Range(0, keyword.Length))
+            {
+                if (transpositionKey[i] == keyDigit) transpositionPositions.Add(i);
+            }
+        }
+
+        foreach (int i in Enumerable.Range(0, keyword.Length))
+        {
+            encryptedLetters[transpositionPositions[i]] = keyword[i].ToString();
+        }
+
+        return string.Join("", encryptedLetters);
+    }
+
+    private static string GetTranspositionKey(TubeLine.Path[] paths)
+    {
+        string lineHexCodes = "";
+        int shiftIndex = Math.Abs((paths[0].Stations.Length + paths[1].Stations.Length) - (paths[2].Stations.Length + paths[3].Stations.Length + paths[4].Stations.Length));
+        string key1;
+        string key2;
+
+        for (int i = 0; i < 5; i++)
+        {
+            lineHexCodes += paths[i].Line.Colour;
+        }
+
+        lineHexCodes = CipherTools.ShiftRight(lineHexCodes, shiftIndex);
+        key1 = (int.Parse(lineHexCodes.Substring(0, 6), System.Globalization.NumberStyles.HexNumber) + int.Parse(lineHexCodes.Substring(6, 6), System.Globalization.NumberStyles.HexNumber)).ToString("X6");
+        key2 = (int.Parse(lineHexCodes.Substring(12, 6), System.Globalization.NumberStyles.HexNumber) + int.Parse(lineHexCodes.Substring(18, 6), System.Globalization.NumberStyles.HexNumber)
+             + int.Parse(lineHexCodes.Substring(24, 6), System.Globalization.NumberStyles.HexNumber)).ToString("X6");
+
+        if (IsEven(key1) == IsEven(key2)) return key1 + key2;
+        return key2 + key1;
+    }
+
+    private static bool IsEven(string hexString)
+    {
+        if ("02468ACE".Contains(hexString[hexString.Length - 1])) return true;
+        return false;
+    }
+}
+
+static class CipherTools
+{
+    public static string ShiftLeft(string text, int shiftIndex)
+    {
+        shiftIndex %= text.Length;
+        return text.Substring(shiftIndex) + text.Substring(0, shiftIndex);
+    }
+
+    public static string ShiftRight(string text, int shiftIndex)
+    {
+        shiftIndex %= text.Length;
+        return text.Substring(text.Length - shiftIndex) + text.Substring(0, text.Length - shiftIndex);
+    }
+}
+
+class TubeLine
+{
+    public string Name;
+    public string Colour;
+    public List<string> Stations = new List<string>();
+    private readonly List<Branch> _branches = new List<Branch>();
+
+    public TubeLine(string lineName, string lineColour)
+    {
+        Name = lineName;
+        Colour = lineColour;
+    }
+
+    public void AddBranch(string[] stationsList, string branchIdentifier = "")
+    {
+        _branches.Add(new Branch(stationsList, branchIdentifier));
+        Stations.AddRange(stationsList);
+        Stations = Stations.Distinct().ToList();
+    }
+
+    private class Branch
+    {
+        // private readonly string[] _stations;
+        public string[] _stations;
+        public string LeftEndPoint;
+        public string RightEndPoint;
+        public string Name;
+
+        public Branch(string[] stationsList, string branchName)
+        {
+            _stations = stationsList;
+            LeftEndPoint = stationsList[0];
+            RightEndPoint = stationsList[stationsList.Count() - 1];
+            Name = branchName;
+        }
+
+        public bool Contains(string station)
+        {
+            return _stations.Contains(station);
+        }
+
+        public List<string> GetPath(string startStation, string endStation, bool reverse)
+        // Return a string containing the path from startStation to endStation.
+        // reverse -> if true, then the branch will be processed in the right-to-left direction, otherwise it will be searched from left-to-right.
+        {
+            int position = Array.IndexOf(_stations, startStation);
+            var i = reverse ? -1 : 1;
+            string currentStation;
+            var path = new List<string>();
+
+            do
+            {
+                currentStation = _stations[position];
+                path.Add(currentStation);
+                position += i;
+            } while (currentStation != endStation && position >= 0 && position < _stations.Length);
+
+            return path;
+        }
+    }
+
+    public class PathFinder
+    {
+        private readonly List<List<string>> _paths = new List<List<string>>();
+        public readonly TubeLine _line;
+
+        public PathFinder(TubeLine line, string start, string end)
+        {
+            _line = line;
+
+            FindPaths(start, end, new List<string>(), false);
+            FindPaths(start, end, new List<string>(), true);
+        }
+
+        private void FindPaths(string start, string end, List<string> pathSoFar, bool reverse)
+        // Find all valid paths from start to end.
+        // reverse -> specifies whether the paths are searched right-to-left or left-to-right.
+        {
+            List<string> path;
+
+            foreach (Branch branch in _line._branches)
+            {
+                path = new List<string>(pathSoFar);
+
+                if (branch.Contains(start))
+                {
+                    if (branch.RightEndPoint != start && !reverse)
+                    {
+                        CheckForEndStation(start, end, reverse, path, branch);
+                    }
+
+                    if (branch.LeftEndPoint != start && reverse)
+                    {
+                        CheckForEndStation(start, end, reverse, path, branch);
+                    }
+                }
+            }
+        }
+
+        private void CheckForEndStation(string start, string end, bool reverse, List<string> path, Branch branch)
+        {
+            string endOfPathSoFar;
+            var flag = false;
+            path.AddRange(branch.GetPath(start, end, reverse));
+
+            if (path.Contains(end))
+            {
+                foreach (List<string> _path in _paths)
+                {
+                    if (AreTheSameFuckingList(_path, path)) flag = true;
+                }
+                if (!flag) _paths.Add(path);
+            }
+            else
+            {
+                endOfPathSoFar = path[path.Count() - 1];
+                path.Remove(endOfPathSoFar);
+                FindPaths(endOfPathSoFar, end, path, reverse);
+            }
+        }
+
+        private bool AreTheSameFuckingList(List<string> list1, List<string> list2)
+        {
+            if (list1.Count() != list2.Count()) return false;
+
+            for (int i = 0; i < list1.Count(); i++)
+            {
+                if (list1[i] != list2[i]) return false;
+            }
+
+            return true;
+        }
+
+        public bool HasPath()
+        {
+
+            //foreach (List<string> path in _paths)
+            //{
+            //    Debug.Log(string.Join(" ", path.ToArray()));
+            //}
+            if (_paths.Count == 0)
+            {
+                return false;
+            }
+            return true;
+        }
+
+        public Path ProducePath()
+        {
+            var rnd = new System.Random();
+            int i = rnd.Next(_paths.Count() + 1);
+            var p = new Path(_line, _paths[i - 1].ToArray());
+            return p;
+        }
+    }
+
+    public class Path
+    {
+        public TubeLine Line;
+        public string Name;
+        public string[] Stations;
+        public string id;
+        private string[] _endPoints = new string[2];
+
+        public Path(TubeLine line, string[] pathStations)
+        {
+            Line = line;
+            Name = line.Name;
+            id = line.Name;
+            Stations = pathStations;
+            _endPoints[0] = Stations[0];
+            _endPoints[1] = Stations[Stations.Length - 1];
+
+            if (Name == "NORTHERN") CheckNorthernLineExceptions();
+            if (Name == "CIRCLE") CheckCircleLineDirection();
+        }
+
+        private void CheckNorthernLineExceptions()
+        {
+            if (_endPoints.Contains("EUSTON") && Stations.Contains("CAMDEN TOWN"))
+            {
+                if (Stations.Contains("MORNINGTON CRESCENT")) Name = "NORTHERN CC BRANCH";
+                else Name = "NORTHERN BANK BRANCH";
+            }
+            else if ((_endPoints.Contains("EUSTON") || Stations.Contains("CAMDEN TOWN")) && (Stations.Contains("KENNINGTON") && !Stations.Contains("NINE ELMS")))
+            {
+                if (Stations.Contains("CHARING CROSS")) Name = "NORTHERN CC BRANCH";
+                else Name = "NORTHERN BANK BRANCH";
+            }
+        }
+
+        private void CheckCircleLineDirection()
+        {
+            if (_endPoints.Contains("PADDINGTON") || _endPoints.Contains("EDGWARE ROAD"))
+            {
+                if (Stations.Contains("BAYSWATER")) Name = "CIRCLE VIA BAYSWATER";
+                else if (Stations.Contains("BAKER STREET")) Name = "CIRCLE VIA BAKER ST";
+            }
+        }
     }
 }
