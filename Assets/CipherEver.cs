@@ -30,6 +30,7 @@ public class CipherEver : MonoBehaviour
     string[,] pageContents = new string[6, 3];
 
 
+
     bool moduleSolved;
     bool moduleSelected;
 
@@ -219,13 +220,57 @@ public class CipherEver : MonoBehaviour
             routeInputs[1] = ScreenTexts[1].text;
             routeInputs[2] = ScreenTexts[2].text;
 
-            pageContents[0, 0] = CheckInterchanges(routeInputs).ToString();
-            if (pageContents[0, 0] == "True") TubeCipher.PerformTubeLineTransposition(linesTakenPathOne.Concat(linesTakenPathTwo).ToArray(), "BAYSWATER");
+            if (CheckInterchanges(routeInputs))
+            {
+                pagesLocked = false;
+                SetKuroScreens();
+            }
+            else module.HandleStrike();
+
             Submission = false;
             pageUpdate(currentPage);
 
             routeStage = 1;
             screenToWrite = 0;
+        }
+    }
+
+    void SetKuroScreens()
+    {
+        TubeCipher.PerformTubeLineTransposition(linesTakenPathOne.Concat(linesTakenPathTwo).ToArray(), "BAYSWATER"); //TEMP
+
+        pageContents[1, 0] = routeInputs[0];
+        pageContents[1, 1] = routeInputs[1];
+        pageContents[1, 2] = routeInputs[2];
+
+        pageContents[2, 0] = TubeCipher.EncryptedWord;
+        pageContents[2, 1] = linesTakenPathOne[0].Name;
+        pageContents[2, 2] = linesTakenPathOne[1].Name;
+
+        pageContents[3, 0] = linesTakenPathTwo[0].Name;
+        pageContents[3, 1] = linesTakenPathTwo[1].Name;
+        pageContents[3, 2] = linesTakenPathTwo[2].Name;
+    }
+
+    void SetScreenColours()
+    {
+        if (currentPage == 2)
+        {
+            ScreenTexts[0].color = Color.white;
+            ScreenTexts[1].color = new Color(linesTakenPathOne[0].Line.RGBValues[0], linesTakenPathOne[0].Line.RGBValues[1], linesTakenPathOne[0].Line.RGBValues[2]);
+            ScreenTexts[2].color = new Color(linesTakenPathOne[1].Line.RGBValues[0], linesTakenPathOne[1].Line.RGBValues[1], linesTakenPathOne[1].Line.RGBValues[2]);
+        }
+        else if (currentPage == 3)
+        {
+            ScreenTexts[0].color = new Color(linesTakenPathTwo[0].Line.RGBValues[0], linesTakenPathTwo[0].Line.RGBValues[1], linesTakenPathTwo[0].Line.RGBValues[2]);
+            ScreenTexts[1].color = new Color(linesTakenPathTwo[1].Line.RGBValues[0], linesTakenPathTwo[1].Line.RGBValues[1], linesTakenPathTwo[1].Line.RGBValues[2]);
+            ScreenTexts[2].color = new Color(linesTakenPathTwo[2].Line.RGBValues[0], linesTakenPathTwo[2].Line.RGBValues[1], linesTakenPathTwo[2].Line.RGBValues[2]);
+        }
+        else
+        {
+            ScreenTexts[0].color = Color.white;
+            ScreenTexts[1].color = Color.white;
+            ScreenTexts[2].color = Color.white;
         }
     }
 
@@ -249,6 +294,8 @@ public class CipherEver : MonoBehaviour
         Audio.PlaySoundAtTransform("ArrowPress", transform);
         currentPage = (currentPage - 1);
         if (currentPage == -1) currentPage = pages - 1;
+
+        SetScreenColours();
         pageUpdate(currentPage);
     }
 
@@ -260,6 +307,7 @@ public class CipherEver : MonoBehaviour
         }
         Audio.PlaySoundAtTransform("ArrowPress", transform);
         currentPage = (currentPage + 1) % pages;
+        SetScreenColours();
         pageUpdate(currentPage);
 
 
@@ -460,7 +508,7 @@ public class CipherEver : MonoBehaviour
         }
 
         string answerString = String.Join("", answer);
-        pageContents[0, 0] = answerString;
+        // pageContents[0, 0] = answerString;
         pageUpdate(0);
 
     }
@@ -489,7 +537,8 @@ public class CipherEver : MonoBehaviour
         lines = GenerateMap();
         PickStations();
 
-        pageContents[0, 1] = origin;
+        pageContents[0, 0] = origin;
+        pageContents[0, 1] = "TO";
         pageContents[0, 2] = destination;
 
         CheckImpossibilities();
@@ -910,11 +959,11 @@ public class CipherEver : MonoBehaviour
 // COMMENT THIS SHIT BEFORE DOING ANYTHING ELSE OKAY THANK YOU
 static class TubeCipher
 {
+    public static string EncryptedWord;
     public static void PerformTubeLineTransposition(TubeLine.Path[] paths, string keyword)
     { 
         string transpositionKey = GetTranspositionKey(paths).Substring(0, keyword.Length);
-        Debug.Log(transpositionKey);
-        Debug.Log(Transpose(keyword, transpositionKey));
+        EncryptedWord = Transpose(keyword, transpositionKey);
     }
 
     private static string Transpose(string keyword, string transpositionKey)
@@ -964,6 +1013,8 @@ static class TubeCipher
         if ("02468ACE".Contains(hexString[hexString.Length - 1])) return true;
         return false;
     }
+
+    
 }
 
 static class CipherTools
@@ -987,11 +1038,30 @@ class TubeLine
     public string Colour;
     public List<string> Stations = new List<string>();
     private readonly List<Branch> _branches = new List<Branch>();
+    public float[] RGBValues = { 0, 0, 0 };
 
     public TubeLine(string lineName, string lineColour)
     {
         Name = lineName;
         Colour = lineColour;
+        SetRGBValues();
+    }
+
+    private void SetRGBValues()
+    {
+
+        if (Colour == "000000")
+        {
+            RGBValues[0] = 1;
+            RGBValues[1] = 1;
+            RGBValues[2] = 1;
+        }
+        else
+        {
+            RGBValues[0] = (float)int.Parse(Colour.Substring(0, 2), System.Globalization.NumberStyles.HexNumber) / 255;
+            RGBValues[1] = (float)int.Parse(Colour.Substring(2, 2), System.Globalization.NumberStyles.HexNumber) / 255;
+            RGBValues[2] = (float)int.Parse(Colour.Substring(4, 2), System.Globalization.NumberStyles.HexNumber) / 255;
+        }
     }
 
     public void AddBranch(string[] stationsList, string branchIdentifier = "")
