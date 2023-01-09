@@ -168,36 +168,8 @@ public class CipherEver : MonoBehaviour
 
     }
 
-
-    //void submitPress()
-    //{
-    //    if (!Submission)
-    //    {
-    //        module.HandleStrike();
-    //        return;
-    //    }
-    //    if (pagesLocked && routeStage == 1)
-    //    {
-    //        routeStage = 2;
-    //        screenToWrite = 1;
-    //    }
-    //    else if (pagesLocked && routeStage == 2)
-    //    {
-    //        routeStage = 3;
-    //        screenToWrite = 2;
-    //    }
-    //    else if (pagesLocked && routeStage == 3)
-    //    {
-    //        routeInputs[0] = ScreenTexts[0].text;
-    //        routeInputs[1] = ScreenTexts[1].text;
-    //        routeInputs[2] = ScreenTexts[2].text;
-
-    //    }
-
-    //}
-
     void submitPress()
-    // For use by Kuro to test things. REMEMBER TO COMMENT OUT THE OTHER submitPress METHOD BEFORE TESTING, AND VICE VERSA AFTER TESTING
+        // Kuro has done things in the submitPress() function so please do not unKuro it :')
     {
         if (!Submission)
         {
@@ -223,7 +195,9 @@ public class CipherEver : MonoBehaviour
             if (CheckInterchanges(routeInputs))
             {
                 pagesLocked = false;
-                SetKuroScreens();
+                SetKuroPages();
+                currentPage = 2;
+                pageUpdate(2);
             }
             else module.HandleStrike();
 
@@ -235,9 +209,10 @@ public class CipherEver : MonoBehaviour
         }
     }
 
-    void SetKuroScreens()
-    {
-        TubeCipher.PerformTubeLineTransposition(linesTakenPathOne.Concat(linesTakenPathTwo).ToArray(), "BAYSWATER"); //TEMP
+    // Sets the pages after Wayfinding step.
+    void SetKuroPages()
+    {   
+        TubeCipher.EncryptWord(linesTakenPathOne.Concat(linesTakenPathTwo).ToArray(), "BAYSWATER"); //TEMP
 
         pageContents[1, 0] = routeInputs[0];
         pageContents[1, 1] = routeInputs[1];
@@ -252,6 +227,7 @@ public class CipherEver : MonoBehaviour
         pageContents[3, 2] = linesTakenPathTwo[2].Name;
     }
 
+    // Sets each screen to the correct colour depending on the page being displayed.
     void SetScreenColours()
     {
         if (currentPage == 2)
@@ -295,7 +271,6 @@ public class CipherEver : MonoBehaviour
         currentPage = (currentPage - 1);
         if (currentPage == -1) currentPage = pages - 1;
 
-        SetScreenColours();
         pageUpdate(currentPage);
     }
 
@@ -307,7 +282,6 @@ public class CipherEver : MonoBehaviour
         }
         Audio.PlaySoundAtTransform("ArrowPress", transform);
         currentPage = (currentPage + 1) % pages;
-        SetScreenColours();
         pageUpdate(currentPage);
 
 
@@ -315,6 +289,8 @@ public class CipherEver : MonoBehaviour
 
     void pageUpdate(int page) // A function that sets the 3 screens to each entry in a 3 long array of strings
     {
+        SetScreenColours();
+
         if (currentPage == 0)
         {
             TrainsImage.SetActive(true);
@@ -573,7 +549,18 @@ public class CipherEver : MonoBehaviour
             j = rnd.Next(lines[i].Stations.Count());
             destination = lines[i].Stations[j];
         }
-        while (OnIllegalLine(destination, linesWithOrigin));
+        while (OnIllegalLine(destination, linesWithOrigin) && CheckForBankMonumentLiverpoolStreetMoorgate());
+    }
+
+    bool CheckForBankMonumentLiverpoolStreetMoorgate()
+    {
+        string[] bankMonument = { "BANK", "MONUMENT" };
+        string[] LiverpoolStreetMoorgate = { "LIVERPOOL STREET", "MOORGATE" };
+
+        if (bankMonument.Contains(origin) && bankMonument.Contains(destination)) return false;
+        if (LiverpoolStreetMoorgate.Contains(origin) && LiverpoolStreetMoorgate.Contains(destination)) return false;
+
+        return true;
     }
 
     bool OnIllegalLine(string station, string IllegalLines)
@@ -664,8 +651,8 @@ public class CipherEver : MonoBehaviour
         }
 
         // Checking validity here.
-        if (pathOneSections[0].Count() == 0 || pathOneSections[1].Count() == 0) return false;
-        if ((pathOneSections[0].Count == 1 && pathOneSections[1].Count == 1) && pathOneSections[0][0].id == pathOneSections[1][0].id) return false;
+        if (pathOneSections[0].Count() == 0 || pathOneSections[1].Count() == 0) { Debug.Log("No path on path 1"); return false; }
+        if ((pathOneSections[0].Count == 1 && pathOneSections[1].Count == 1) && pathOneSections[0][0].id == pathOneSections[1][0].id) { Debug.Log("Path requires same line path 1"); return false; }
 
         if (pathOneSections[1].Count == 1)
         {
@@ -766,9 +753,10 @@ public class CipherEver : MonoBehaviour
             switch (section.Count())
             {
                 case 0:
+                    Debug.Log("No path on path 2 section " + j.ToString());
                     return false;
                 case 1:
-                    if (onePaths.Contains(section[0].id)) return false;
+                    if (onePaths.Contains(section[0].id)) { Debug.Log("No path on path 2");  return false; }
                     else onePaths.Add(section[0].id);
                     linesTakenPathTwo[j] = section[0];
                     break;
@@ -800,6 +788,7 @@ public class CipherEver : MonoBehaviour
 
                 if (linesTakenPathTwo[j] == null)
                 {
+                    Debug.Log("Can't assign path on path 2 (twopaths)");
                     return false;
                 }
             }
@@ -816,16 +805,11 @@ public class CipherEver : MonoBehaviour
 
                 if (linesTakenPathTwo[j] == null)
                 {
+                    Debug.Log("Can't assign path on path 2 (end)");
                     return false;
                 }
             }
         }
-
-        Debug.Log(string.Join(" ", linesTakenPathOne[0].Stations));
-        Debug.Log(string.Join(" ", linesTakenPathOne[1].Stations));
-        Debug.Log(string.Join(" ", linesTakenPathTwo[0].Stations));
-        Debug.Log(string.Join(" ", linesTakenPathTwo[1].Stations));
-        Debug.Log(string.Join(" ", linesTakenPathTwo[2].Stations));
 
         return true;
     }
@@ -899,7 +883,7 @@ public class CipherEver : MonoBehaviour
         string[] northernPath2 = { "HIGH BARNET", "TOTT N WHETSTONE", "WOODSIDE PARK", "WEST FINCHLEY", "FINCHLEY CENTRAL" };
         string[] bitchPath1 = { "MILL HILL EAST", "FINCHLEY CENTRAL" };
         string[] northernPath3 = { "FINCHLEY CENTRAL", "EAST FINCHLEY", "HIGHGATE", "ARCHWAY", "TUFNELL PARK", "KENTISH TOWN", "CAMDEN TOWN" };
-        string[] northernPath4 = { "CAMDEN TOWN", "MORNINGTON CRESCENT", "EUSTON", "WARREN STREET", "GOODGE STREET", "TOTTENHAM COURT ROAD", "LEICESTER SQUARE", "CHARING CROSS", "EMBANKMENT", "WATERLOO", "KENNINGTON" };
+        string[] northernPath4 = { "CAMDEN TOWN", "MORNINGTON CRESCENT", "EUSTON", "WARREN STREET", "GOODGE STREET", "TOTTENHAM COURT ROAD", "LEICESTER SQUARE", "CHARING CROSS", "EMBANKMENT", "WATERLOO", "KENNINGTON", "OVAL" };
         string[] northernPath5 = { "CAMDEN TOWN", "EUSTON", "KINGS CROSS", "ANGEL", "OLD STREET", "MOORGATE", "BANK", "LONDON BRIDGE", "BOROUGH", "ELEPHANT N CASTLE", "KENNINGTON", "OVAL" };
         string[] bitchPath2 = { "CAMDEN TOWN", "MORNINGTON CRESCENT", "EUSTON", "WARREN STREET", "GOODGE STREET", "TOTTENHAM COURT ROAD", "LEICESTER SQUARE", "CHARING CROSS", "EMBANKMENT", "WATERLOO", "KENNINGTON", "NINE ELMS", "BATTERSEA PWR STN" };
         string[] northernPath6 = { "OVAL", "STOCKWELL", "CLAPHAM NORTH", "CLAPHAM COMMON", "CLAPHAM SOUTH", "BALHAM", "TOOTING BEC", "TOOTING BROADWAY", "COLLIERS WOOD", "SOUTH WIMBLEDON", "MORDEN" };
@@ -956,16 +940,140 @@ public class CipherEver : MonoBehaviour
 }
 
 
-// COMMENT THIS SHIT BEFORE DOING ANYTHING ELSE OKAY THANK YOU
 static class TubeCipher
 {
     public static string EncryptedWord;
-    public static void PerformTubeLineTransposition(TubeLine.Path[] paths, string keyword)
+    private static TubeLine.Path[] _paths;
+    private static string _trainfairKey;
+    private static char[,] _trainfairGrid = new char[5, 5];
+
+    public static void EncryptWord(TubeLine.Path[] paths, string keyword)
+    {
+        _paths = paths;
+        EncryptedWord = "BAYSWATER";
+        _trainfairKey = GenerateKey();
+        GenerateGrid();
+        Debug.Log(EncryptedWord);
+        EncryptedWord = ChooChooMotherfucker();
+
+        for (int i = 0; i < 5; i++)
+        {
+            Debug.Log(_trainfairGrid[i, 0] + " " + _trainfairGrid[i, 1] + " " + _trainfairGrid[i, 2] + " " + _trainfairGrid[i, 3] + " " + _trainfairGrid[i, 4]);
+        }
+
+        Debug.Log(EncryptedWord);
+
+        PerformTubeLineTransposition(keyword);
+    }
+
+    // Converts a path to a key consisting of the first letter of each station name in that path.
+    private static string ConvertToKey(params TubeLine.Path[] pathsToConvert)
+    {
+        string key = "";
+
+        foreach (TubeLine.Path path in pathsToConvert)
+        {
+            foreach (string station in path.Stations)
+            {
+                key += station[0];
+            }
+        }
+
+        return key;
+    }
+
+    // Generate the Trainfair key to be used for Trainfair Cipher.
+    private static string GenerateKey()
+    {
+        string pathKey1 = ConvertToKey(_paths[0], _paths[1]);
+        string pathKey2 = ConvertToKey(_paths[2], _paths[3], _paths[4]);
+
+        if (EncryptedWord.Length % 2 == 0)
+        {
+            if (pathKey1.Length >= pathKey2.Length) return pathKey1;
+            return pathKey2;
+        }
+
+        if (pathKey1.Length <= pathKey2.Length) return pathKey1;
+        return pathKey2;
+    }
+    
+    // Create a trainfair grid out of the trainfair key.
+    private static void GenerateGrid()
+    {
+        string grid = "";
+        int row;
+        int column;
+
+        foreach (char letter in _trainfairKey + "ABCDEFGHIKLMNOPQRSTUVWXYZ")
+        {
+            if (letter != 'j' && !grid.Contains(letter)) grid += letter;
+        }
+
+        for (int i = 0; i<25; i++)
+        {
+            row = (int)Math.Floor((double)i / 5d);
+            column = i % 5;
+
+            _trainfairGrid[row, column] = grid[i];
+        }
+    }
+
+    private static string DoTrainfairOn(string letterPair)
+    {
+        int[] position1;
+        int[] position2;
+
+
+
+        if (letterPair[0] == letterPair[1]) return letterPair;
+
+        position1 = GetGridPosition(letterPair[0]);
+        position2 = GetGridPosition(letterPair[1]);
+
+        if (position1[0] == position2[0]) return _trainfairGrid[position1[0], (position1[1] + 1) % 5].ToString() + _trainfairGrid[position2[0], (position2[1] + 1) % 5].ToString();
+
+        if (position1[1] == position2[1]) return _trainfairGrid[(position1[0] + 1) % 5, position1[1]].ToString() + _trainfairGrid[(position2[0] + 1) % 5, position1[1]].ToString();
+
+        return _trainfairGrid[position1[0], position2[1]].ToString() + _trainfairGrid[position2[0], position1[1]].ToString();
+    }
+
+    private static string ChooChooMotherfucker()
+    {
+        string chewedWord = DoTrainfairOn(EncryptedWord.Substring(EncryptedWord.Length - 2));
+
+        for (int i = EncryptedWord.Length - 3; i>=0; i--)
+        {
+            chewedWord = DoTrainfairOn(EncryptedWord[i].ToString() + chewedWord[0].ToString()) + chewedWord.Substring(1);
+        }
+
+        return chewedWord;
+    }
+
+    // Return a two-element array of int containing the position of a letter in the grid.
+    private static int[] GetGridPosition(char letter)
+    {
+        int row;
+        int column;
+
+        for (int i = 0; i < 25; i++)
+        {
+            row = (int)Math.Floor((double)i / 5d);
+            column = i % 5;
+
+            if (letter == _trainfairGrid[row, column]) return new int[] { row, column };
+        }
+
+        throw new FormatException("MATE WHAT R U DOING (CHARACTER NOT IN GRID).");
+    }
+
+    private static void PerformTubeLineTransposition(string keyword)
     { 
-        string transpositionKey = GetTranspositionKey(paths).Substring(0, keyword.Length);
+        string transpositionKey = GetTranspositionKey(_paths).Substring(0, keyword.Length);
         EncryptedWord = Transpose(keyword, transpositionKey);
     }
 
+    // Apply Tube Line Transposition using transpositionKey to keyword
     private static string Transpose(string keyword, string transpositionKey)
     {
         var transpositionPositions = new List<int>();
@@ -987,6 +1095,7 @@ static class TubeCipher
         return string.Join("", encryptedLetters);
     }
 
+    // Create the transposition key from the lines taken in Wayfinding step.
     private static string GetTranspositionKey(TubeLine.Path[] paths)
     {
         string lineHexCodes = "";
@@ -1008,13 +1117,13 @@ static class TubeCipher
         return key2 + key1;
     }
 
+    // Takes a string representing a hex value (hexString), and returns true if it is even and false otherwise.
     private static bool IsEven(string hexString)
     {
         if ("02468ACE".Contains(hexString[hexString.Length - 1])) return true;
         return false;
     }
 
-    
 }
 
 static class CipherTools
