@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using UnityEngine;
 using KModkit;
+using Rnd = UnityEngine.Random;
 
 public class CipherEver : MonoBehaviour
 {
@@ -504,7 +505,7 @@ public class CipherEver : MonoBehaviour
 
     #endregion
 
-    // Kuro formally apologises to all individuals (including Kuro himself) who find themselves needing to read the following code.
+    // Kuro formally apologises to all individuals (including Kuro himself) who find themselves needing to read the code located in the Wayfinding region.
     // This is Kuro's first "major" project, and as a result Kuro has learnt a lot during it, but this is too much for Kuro to be bothered to fix.
     // If you MUST continue, avoid at all costs all 200+ lines of the CheckInterchanges() method.
     #region Wayfinding
@@ -522,9 +523,9 @@ public class CipherEver : MonoBehaviour
 
     void PickStations()
     {
-        var rnd = new System.Random();
-        int i = rnd.Next(11);
-        int j = rnd.Next(lines[i].Stations.Count());
+
+        int i = Rnd.Range(0, 11);
+        int j = Rnd.Range(0, lines[i].Stations.Count());
         string linesWithOrigin = "";
         char nextLineLetter;
         const string Alphabet = "ABCDEFGHIJK";
@@ -538,7 +539,7 @@ public class CipherEver : MonoBehaviour
 
         do
         {
-            nextLineLetter = Alphabet[rnd.Next(11)];
+            nextLineLetter = Alphabet[Rnd.Range(0, 11)];
         }
         while (linesWithOrigin.Contains(nextLineLetter));
 
@@ -546,7 +547,7 @@ public class CipherEver : MonoBehaviour
 
         do
         {
-            j = rnd.Next(lines[i].Stations.Count());
+            j = Rnd.Range(0, lines[i].Stations.Count());
             destination = lines[i].Stations[j];
         }
         while (OnIllegalLine(destination, linesWithOrigin) && CheckForBankMonumentLiverpoolStreetMoorgate());
@@ -603,7 +604,6 @@ public class CipherEver : MonoBehaviour
         List<TubeLine.Path> section;
         var onePaths = new List<string>();
         var twoPathNumbers = new List<int>();
-        var rnd = new System.Random();
         int i;
 
         for (int j = 0; j < linesTakenPathOne.Length; j++)
@@ -657,7 +657,7 @@ public class CipherEver : MonoBehaviour
         if (pathOneSections[1].Count == 1)
         {
             linesTakenPathOne[1] = pathOneSections[1][0];
-            i = rnd.Next(pathOneSections[0].Count + 1) - 1;
+            i = Rnd.Range(0, pathOneSections[0].Count);
 
             if (pathOneSections[0][i].id != linesTakenPathOne[1].id) linesTakenPathOne[0] = pathOneSections[0][i];
             else
@@ -672,10 +672,10 @@ public class CipherEver : MonoBehaviour
         }
         else
         {
-            i = rnd.Next(pathOneSections[0].Count + 1) - 1;
+            i = Rnd.Range(0, pathOneSections[0].Count);
             linesTakenPathOne[0] = pathOneSections[0][i];
 
-            i = rnd.Next(pathOneSections[1].Count + 1) - 1;
+            i = Rnd.Range(0, pathOneSections[1].Count);
 
             if (pathOneSections[1][i].id != linesTakenPathOne[0].id) linesTakenPathOne[1] = pathOneSections[1][i];
             else
@@ -773,7 +773,7 @@ public class CipherEver : MonoBehaviour
 
         foreach (int j in twoPathNumbers)
         {
-            i = rnd.Next(2);
+            i = Rnd.Range(0, 2);
             if (!pathTwoIds.Contains(pathTwoSections[j][i].id))
             {
                 linesTakenPathTwo[j] = pathTwoSections[j][i];
@@ -953,18 +953,20 @@ static class TubeCipher
         EncryptedWord = "BAYSWATER";
         _trainfairKey = GenerateKey();
         GenerateGrid();
-        Debug.Log(EncryptedWord);
-        EncryptedWord = ChooChooMotherfucker();
 
-        for (int i = 0; i < 5; i++)
+        for (int i = 0; i<5; i++)
         {
-            Debug.Log(_trainfairGrid[i, 0] + " " + _trainfairGrid[i, 1] + " " + _trainfairGrid[i, 2] + " " + _trainfairGrid[i, 3] + " " + _trainfairGrid[i, 4]);
+            Debug.Log(_trainfairGrid[i, 0].ToString() + _trainfairGrid[i, 1].ToString() + _trainfairGrid[i, 2].ToString() + _trainfairGrid[i, 3].ToString() + _trainfairGrid[i, 4].ToString());
         }
 
-        Debug.Log(EncryptedWord);
 
-        PerformTubeLineTransposition(keyword);
+
+        EncryptedWord = ChooChooMotherfucker();
+
+        // PerformTubeLineTransposition(keyword);
     }
+
+    // Trainfair stuff below this.
 
     // Converts a path to a key consisting of the first letter of each station name in that path.
     private static string ConvertToKey(params TubeLine.Path[] pathsToConvert)
@@ -998,25 +1000,20 @@ static class TubeCipher
         return pathKey2;
     }
     
-    // Create a trainfair grid out of the trainfair key.
+    // Create a Trainfair grid out of the Trainfair key.
     private static void GenerateGrid()
     {
+        Debug.Log("Something");
         string grid = "";
-        int row;
-        int column;
 
         foreach (char letter in _trainfairKey + "ABCDEFGHIKLMNOPQRSTUVWXYZ")
         {
             if (letter != 'j' && !grid.Contains(letter)) grid += letter;
         }
 
-        for (int i = 0; i<25; i++)
-        {
-            row = (int)Math.Floor((double)i / 5d);
-            column = i % 5;
-
-            _trainfairGrid[row, column] = grid[i];
-        }
+        for (int row = 0; row < 5; row++)
+            for (int col = 0; col < 5; col++)
+                _trainfairGrid[row, col] = grid[row * 5 + col];
     }
 
     private static string DoTrainfairOn(string letterPair)
@@ -1024,12 +1021,12 @@ static class TubeCipher
         int[] position1;
         int[] position2;
 
-
+        Debug.Log(letterPair);
 
         if (letterPair[0] == letterPair[1]) return letterPair;
 
-        position1 = GetGridPosition(letterPair[0]);
-        position2 = GetGridPosition(letterPair[1]);
+        position1 = GetGridPosition(letterPair[0]).ToArray();
+        position2 = GetGridPosition(letterPair[1]).ToArray();
 
         if (position1[0] == position2[0]) return _trainfairGrid[position1[0], (position1[1] + 1) % 5].ToString() + _trainfairGrid[position2[0], (position2[1] + 1) % 5].ToString();
 
@@ -1038,6 +1035,7 @@ static class TubeCipher
         return _trainfairGrid[position1[0], position2[1]].ToString() + _trainfairGrid[position2[0], position1[1]].ToString();
     }
 
+    // Applies Compacted Traincipher encryption to the Non-Binary Cipher keyword.
     private static string ChooChooMotherfucker()
     {
         string chewedWord = DoTrainfairOn(EncryptedWord.Substring(EncryptedWord.Length - 2));
@@ -1045,6 +1043,7 @@ static class TubeCipher
         for (int i = EncryptedWord.Length - 3; i>=0; i--)
         {
             chewedWord = DoTrainfairOn(EncryptedWord[i].ToString() + chewedWord[0].ToString()) + chewedWord.Substring(1);
+            ShiftColumn(0, 1);
         }
 
         return chewedWord;
@@ -1053,20 +1052,55 @@ static class TubeCipher
     // Return a two-element array of int containing the position of a letter in the grid.
     private static int[] GetGridPosition(char letter)
     {
-        int row;
-        int column;
+        Debug.Log(letter);
 
-        for (int i = 0; i < 25; i++)
-        {
-            row = (int)Math.Floor((double)i / 5d);
-            column = i % 5;
-
-            if (letter == _trainfairGrid[row, column]) return new int[] { row, column };
-        }
-
-        throw new FormatException("MATE WHAT R U DOING (CHARACTER NOT IN GRID).");
+        for (int row = 0; row < 5; row++)
+            for (int col = 0; col < 5; col++)
+            {
+                Debug.Log("poat " + _trainfairGrid[row, col]);
+                if (letter == _trainfairGrid[row, col])
+                    return new int[] { row, col };
+            }
+        throw new InvalidOperationException("MATE WHAT R U DOING (CHARACTER NOT IN GRID).");
     }
 
+    // Shift the given column down by the given shifting index.
+    private static void ShiftColumn(int columnNumber, int shiftIndex)
+    {
+        string columnContents = "";
+
+        for (int i = 0; i < 5; i++)
+        {
+            columnContents += _trainfairGrid[i, columnNumber];
+        }
+
+        columnContents = CipherTools.ShiftRight(columnContents, shiftIndex);
+
+        for (int i = 0; i < 5; i++)
+        {
+            _trainfairGrid[i, columnNumber] = columnContents[i];
+        }
+    }
+
+    // Shift the given row right by the given shifting index.
+    private static void ShiftRow(int rowNumber, int shiftIndex)
+    {
+        string rowContents = "";
+
+        for (int i = 0; i < 5; i++)
+        {
+            rowContents += _trainfairGrid[rowNumber, i];
+        }
+
+        rowContents = CipherTools.ShiftRight(rowContents, shiftIndex);
+
+        for (int i = 0; i < 5; i++)
+        {
+            _trainfairGrid[rowNumber, i] = rowContents[i];
+        }
+    }
+
+    // Transposition Stuff below this.
     private static void PerformTubeLineTransposition(string keyword)
     { 
         string transpositionKey = GetTranspositionKey(_paths).Substring(0, keyword.Length);
@@ -1309,9 +1343,8 @@ class TubeLine
 
         public Path ProducePath()
         {
-            var rnd = new System.Random();
-            int i = rnd.Next(_paths.Count() + 1);
-            var p = new Path(_line, _paths[i - 1].ToArray());
+            int i = Rnd.Range(0, _paths.Count());
+            var p = new Path(_line, _paths[i].ToArray());
             return p;
         }
     }
