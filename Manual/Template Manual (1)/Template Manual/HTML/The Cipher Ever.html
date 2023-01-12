@@ -113,18 +113,18 @@
                 <h4>Step 2.1: Tube Line Transposition</h4>
                 <table style="float:left; width:20%; font-size:13px; margin-right:25px"> 
                     <caption>Table A: Tube Colour Index</caption>
-                    <tr><th>Tube Line</th><th>Colour Code</th></tr>
-                    <tr><th style="background-color:#B36305;color:white">Bakerloo</th><td>#B36305</td></tr>
-                    <tr><th style="background-color:#E32017;color:white">Central</th><td>#E32017</td></tr>
-                    <tr><th style="background-color:#FFD300">Circle</th><td>#FFD300</td></tr>
-                    <tr><th style="background-color:#00782A;color:white">District</th><td>#00782A</td></tr>
-                    <tr><th style="background-color:#F3A9BB">Hammersmith & City</th><td>#F3A9BB</td></tr>
-                    <tr><th style="background-color:#A0A5A9">Jubilee</th><td>#A0A5A9</td></tr>
-                    <tr><th style="background-color:#9B0056;color:white">Metropolitan</th><td>#9B0056</td></tr>
-                    <tr><th style="background-color:#000000;color:white">Northern</th><td>#000000</td></tr>
-                    <tr><th style="background-color:#003688;color:white">Piccadilly</th><td>#003688</td></tr>
-                    <tr><th style="background-color:#0098D4;color:white">Victoria</th><td>#0098D4</td></tr>
-                    <tr><th style="background-color:#95CDBA">Waterloo & City</th><td>#95CDBA</td></tr>
+                    <tr><th>Index</th><th>Tube Line</th><th>Colour Code</th></tr>
+                    <tr><th>0</th><th style="background-color:#B36305;color:white">Bakerloo</th><td>#B36305</td></tr>
+                    <tr><th>1</th><th style="background-color:#E32017;color:white">Central</th><td>#E32017</td></tr>
+                    <tr><th>2</th><th style="background-color:#FFD300">Circle</th><td>#FFD300</td></tr>
+                    <tr><th>3</th><th style="background-color:#00782A;color:white">District</th><td>#00782A</td></tr>
+                    <tr><th>4</th><th style="background-color:#F3A9BB">Hammersmith & City</th><td>#F3A9BB</td></tr>
+                    <tr><th>5</th><th style="background-color:#A0A5A9">Jubilee</th><td>#A0A5A9</td></tr>
+                    <tr><th>6</th><th style="background-color:#9B0056;color:white">Metropolitan</th><td>#9B0056</td></tr>
+                    <tr><th>7</th><th style="background-color:#000000;color:white">Northern</th><td>#000000</td></tr>
+                    <tr><th>8</th><th style="background-color:#003688;color:white">Piccadilly</th><td>#003688</td></tr>
+                    <tr><th>9</th><th style="background-color:#0098D4;color:white">Victoria</th><td>#0098D4</td></tr>
+                    <tr><th>10</th><th style="background-color:#95CDBA">Waterloo & City</th><td>#95CDBA</td></tr>
                 </table>
 
                 <p>Concatenate the colour codes of these lines (see Table A; omit the # in each code), in the order shown on the
@@ -160,10 +160,20 @@
             <div class="page-content">
                 <h4>Step 2.2: Compacted Trainfair Cipher</h4>
 
-                <p> GENERAL IDEA:
+                <p> GENERAL IDEA:s
                     Playfair, but use every pair of consecutive letters (encrypt right to left, decrypt left to right).
                     Additionally, after every use of the grid, shift a row/column based on the unused lines in wayfinding step.
                 </p>
+
+                <table style="float:left">
+                    <tr><td class="corner"></td><th style="background-color:#00782A;color:white">3</th><th style="background-color:#9B0056;color:white">6</th>
+                        <th style="background-color:#F3A9BB">4</th><th style="background-color:#B36305;color:white">0</th><th style="background-color:#A0A5A9">5</th></tr>
+                    <tr><th style="background-color:#E32017;color:white">1</th><td>.</td><td>.</td><td>.</td><td>.</td><td>.</td></tr>
+                    <tr><th style="background-color:#003688;color:white">8</th><td>.</td><td>.</td><td>.</td><td>.</td><td>.</td></tr>
+                    <tr><th style="background-color:#0098D4;color:white">9</th><td>.</td><td>.</td><td>.</td><td>.</td><td>.</td></tr>
+                    <tr><th style="background-color:#FFD300">2</th><td>.</td><td>.</td><td>.</td><td>.</td><td>.</td></tr>
+                    <tr><th style="background-color:#000000;color:white">7</th><td>.</td><td>.</td><td>.</td><td>.</td><td>.</td></tr>
+                </table>
             </div>
             <div class="page-footer relative-footer">3</div>
         </div>

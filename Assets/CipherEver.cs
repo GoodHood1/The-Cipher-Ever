@@ -213,7 +213,7 @@ public class CipherEver : MonoBehaviour
     // Sets the pages after Wayfinding step.
     void SetKuroPages()
     {   
-        TubeCipher.EncryptWord(linesTakenPathOne.Concat(linesTakenPathTwo).ToArray(), "BAYSWATER"); //TEMP
+        TubeCipher.EncryptWord(linesTakenPathOne.Concat(linesTakenPathTwo).ToArray(), "BAYSWATER", Bomb); //TEMP
 
         pageContents[1, 0] = routeInputs[0];
         pageContents[1, 1] = routeInputs[1];
@@ -820,11 +820,11 @@ public class CipherEver : MonoBehaviour
 
         TubeLine[] lines = new TubeLine[11];
 
-        lines[0] = new TubeLine("BAKERLOO", "B36305");
+        lines[0] = new TubeLine("BAKERLOO", "B36305", 0);
         string[] bakerlooPath = { "HARROW N WEALDSTONE", "KENTON", "SOUTH KENTON", "NORTH WEMBLEY", "WEMBLEY CENTRAL", "STONEBRIDGE PARK", "HARLSEDEN", "WILLESDEN JUNCTION", "KENSAL GREEN", "QUEENS PARK", "KILBURN PARK", "MAIDA VALE", "WARWICK AVENUE", "PADDINGTON", "EDGWARE ROAD", "MARYLEBONE", "BAKER STREET", "REGENTS PARK", "OXFORD CIRCUS", "PICCADILLY CIRCUS", "CHARING CROSS", "EMBANKMENT", "WATERLOO", "LAMBETH NORTH", "ELEPHANT N CASTLE" };
         lines[0].AddBranch(bakerlooPath);
 
-        lines[1] = new TubeLine("CENTRAL", "E32017");
+        lines[1] = new TubeLine("CENTRAL", "E32017", 1);
         string[] centralPath1 = { "WEST RUISLIP", "RUISLIP GARDENS", "SOUTH RUISLIP", "NORTHOLT", "GREENFORD", "PERIVALE", "HANGER LANE", "NORTH ACTON" };
         string[] centralPath2 = { "EALING BROADWAY", "WEST ACTON", "NORTH ACTON" };
         string[] centralPath3 = { "NORTH ACTON", "EAST ACTON", "WHITE CITY", "SHEPHERDS BUSH", "HOLLAND PARK", "NOTTING HILL GATE", "QUEENSWAY", "LANCASTER GATE", "MARBLE ARCH", "BOND STREET", "OXFORD CIRCUS", "TOTTENHAM COURT ROAD", "HOLBORN", "CHANCERY LANE", "ST PAULS", "BANK", "LIVERPOOL STREET", "BETHNAL GREEN", "MILE END", "STRATFORD", "LEYTON", "LEYTONSTONE" };
@@ -836,11 +836,11 @@ public class CipherEver : MonoBehaviour
         lines[1].AddBranch(centralPath4);
         lines[1].AddBranch(centralPath5);
 
-        lines[2] = new TubeLine("CIRCLE", "FFD300");
+        lines[2] = new TubeLine("CIRCLE", "FFD300", 2);
         string[] circlePath = { "HAMMERSMITH", "GOLDHAWK ROAD", "SHEPHERDS BUSH MKT", "WOOD LANE", "LATIMER ROAD", "LADBROKE GROVE", "WESTBOURNE PARK", "ROYAL OAK", "PADDINGTON", "EDGWARE ROAD", "BAKER STREET", "GREAT PORTLAND ST", "EUSTON SQUARE", "KINGS CROSS", "FARRINGDON", "BARBICAN", "MOORGATE", "LIVERPOOL STREET", "ALDGATE", "TOWER HILL", "MONUMENT", "CANNON STREET", "MANSION HOUSE", "BLACKFRIARS", "TEMPLE", "EMBANKMENT", "WESTMINSTER", "ST JAMES PARK", "VICTORIA", "SLOANE SQUARE", "SOUTH KENSINGTON", "GLOUCESTER ROAD", "HIGH STREET KEN", "NOTTING HILL GATE", "BAYSWATER", "PADDINGTON", "EDGWARE ROAD" };
         lines[2].AddBranch(circlePath);
 
-        lines[3] = new TubeLine("DISTRICT", "00782A");
+        lines[3] = new TubeLine("DISTRICT", "00782A", 3);
         string[] districtPath1 = { "EALING BROADWAY", "EALING COMMON", "ACTON TOWN", "CHISWICK PARK", "TURNHAM GREEN" };
         string[] districtPath2 = { "RICHMOND", "KEW GARDENS", "GUNNERSBURY", "TURNHAM GREEN" };
         string[] districtPath3 = { "TURNHAM GREEN", "STAMFORD BROOK", "RAVENSCOURT PARK", "HAMMERSMITH", "BARONS COURT", "WEST KENSINGTON", "EARLS COURT" };
@@ -854,15 +854,15 @@ public class CipherEver : MonoBehaviour
         lines[3].AddBranch(districtPath5);
         lines[3].AddBranch(districtPath6);
 
-        lines[4] = new TubeLine("HAMMERSMITH N CITY", "F3A9BB");
+        lines[4] = new TubeLine("HAMMERSMITH N CITY", "F3A9BB", 4);
         string[] hamNcheesePath = { "HAMMERSMITH", "GOLDHAWK ROAD", "SHEPHERDS BUSH MKT", "WOOD LANE", "LATIMER ROAD", "LADBROKE GROVE", "WESTBOURNE PARK", "ROYAL OAK", "PADDINGTON", "EDGWARE ROAD", "BAKER STREET", "GREAT PORTLAND ST", "EUSTON SQUARE", "KINGS CROSS", "FARRINGDON", "BARBICAN", "MOORGATE", "LIVERPOOL STREET", "ALDGATE EAST", "WHITECHAPEL", "STEPNEY GREEN", "MILE END", "BOW ROAD", "BROMLEY BY BOW", "WEST HAM", "PLAISTOW", "UPTON PARK", "EAST HAM", "BARKING" };
         lines[4].AddBranch(hamNcheesePath);
 
-        lines[5] = new TubeLine("JUBILEE", "A0A5A9");
+        lines[5] = new TubeLine("JUBILEE", "A0A5A9", 5);
         string[] jubileePath = { "STANMORE", "CANONS PARK", "QUEENSBURY", "KINGSBURY", "WEMBLEY PARK", "NEASDEN", "DOLLIS HILL", "WILLESDEN GREEN", "KILBURN", "WEST HAMPSTEAD", "FINCHLEY ROAD", "SWISS COTTAGE", "ST JOHNS WOOD", "BAKER STREET", "BOND STREET", "GREEN PARK", "WESTMINSTER", "WATERLOO", "SOUTHWARK", "LONDON BRIDGE", "BERMONDSEY", "CANADA WATER", "CANARY WHARF", "NORTH GREENWICH", "CANNING TOWN", "WEST HAM", "STRATFORD" };
         lines[5].AddBranch(jubileePath);
 
-        lines[6] = new TubeLine("METROPOLITAN", "9B0056");
+        lines[6] = new TubeLine("METROPOLITAN", "9B0056", 6);
         string[] metropolitanPath1 = { "CHESHAM", "CHALFONT N LATIMER" };
         string[] metropolitanPath2 = { "AMERSHAM", "CHALFONT N LATIMER" };
         string[] metropolitanPath3 = { "CHALFONT N LATIMER", "CHORLEYWOOD", "RICKMANSWORTH", "MOOR PARK" };
@@ -878,7 +878,7 @@ public class CipherEver : MonoBehaviour
         lines[6].AddBranch(metropolitanPath6);
         lines[6].AddBranch(metropolitanPath7);
 
-        lines[7] = new TubeLine("NORTHERN", "000000");
+        lines[7] = new TubeLine("NORTHERN", "000000", 7);
         string[] northernPath1 = { "EDGWARE", "BURNT OAK", "COLINDALE", "HENDON CENTRAL", "BRENT CROSS", "GOLDERS GREEN", "HAMPSTEAD", "BELSIZE PARK", "CHALK FARM", "CAMDEN TOWN" };
         string[] northernPath2 = { "HIGH BARNET", "TOTT N WHETSTONE", "WOODSIDE PARK", "WEST FINCHLEY", "FINCHLEY CENTRAL" };
         string[] bitchPath1 = { "MILL HILL EAST", "FINCHLEY CENTRAL" };
@@ -896,7 +896,7 @@ public class CipherEver : MonoBehaviour
         lines[7].AddBranch(northernPath6);
         lines[7].AddBranch(bitchPath2);
 
-        lines[8] = new TubeLine("PICCADILLY", "003688");
+        lines[8] = new TubeLine("PICCADILLY", "003688", 8);
         string[] piccadillyPath1 = { "HEATHROW T5", "HEATHROW T2 N 3", "HATTON CROSS", "HOUNSLOW WEST", "HOUNSLOW CENTRAL", "HOUNSLOW EAST", "OSTERLEY", "BOSTON MANOR", "NORTHFIELDS", "SOUTH EALING", "ACTON TOWN" };
         string[] piccadillyPath2 = { "UXBRIDGE", "HILLINGDON", "ICKENHAM", "RUISLIP", "RUISLIP MANOR", "EASTCOTE", "RAYNERS LANE", "SOUTH HARROW", "SUDBURY HILL", "SUDBURY TOWN", "ALPERTON", "PARK ROYAL", "NORTH EALING", "EALING COMMON", "ACTON TOWN" };
         //                                                                                                                       :O
@@ -906,11 +906,11 @@ public class CipherEver : MonoBehaviour
         lines[8].AddBranch(piccadillyPath2);
         lines[8].AddBranch(piccadillyPath3);
 
-        lines[9] = new TubeLine("VICTORIA", "0098D4");
+        lines[9] = new TubeLine("VICTORIA", "0098D4", 9);
         string[] victoriaPath = { "BRIXTON", "STOCKWELL", "VAUXHALL", "PIMLICO", "VICTORIA", "GREEN PARK", "OXFORD CIRCUS", "WARREN STREET", "EUSTON", "KINGS CROSS", "HIGHBURY N ISLINGTON", "FINSBURY PARK", "SEVEN SISTERS", "TOTTENHAM HALE", "BLACKHORSE ROAD", "WALTHOMSTOW CENTRAL" };
         lines[9].AddBranch(victoriaPath);
 
-        lines[10] = new TubeLine("WATERLOO N CITY", "95CDBA");
+        lines[10] = new TubeLine("WATERLOO N CITY", "95CDBA", 10);
         string[] wineNcheesePath = { "WATERLOO", "BANK" };
         lines[10].AddBranch(wineNcheesePath);
 
@@ -946,9 +946,26 @@ static class TubeCipher
     private static TubeLine.Path[] _paths;
     private static string _trainfairKey;
     private static char[,] _trainfairGrid = new char[5, 5];
+    private static KMBombInfo Bomb;
 
-    public static void EncryptWord(TubeLine.Path[] paths, string keyword)
+    private static Dictionary<int, string> LineToShiftID = new Dictionary<int, string>()
     {
+        {0, "C3"},
+        {1, "R0"},
+        {2, "R3"},
+        {3, "C0"},
+        {4, "C2"},  
+        {5, "C4"},
+        {6, "C1"},
+        {7, "R4"},
+        {8, "R1"},
+        {9, "R2"},
+        {10, "NONE"}
+    };
+
+    public static void EncryptWord(TubeLine.Path[] paths, string keyword, KMBombInfo bomb)
+    {
+        Bomb = bomb;
         _paths = paths;
         EncryptedWord = "BAYSWATER";
         _trainfairKey = GenerateKey();
@@ -958,8 +975,6 @@ static class TubeCipher
         {
             Debug.Log(_trainfairGrid[i, 0].ToString() + _trainfairGrid[i, 1].ToString() + _trainfairGrid[i, 2].ToString() + _trainfairGrid[i, 3].ToString() + _trainfairGrid[i, 4].ToString());
         }
-
-
 
         EncryptedWord = ChooChooMotherfucker();
 
@@ -1016,6 +1031,7 @@ static class TubeCipher
                 _trainfairGrid[row, col] = grid[row * 5 + col];
     }
 
+    // Return a pair of letters which are the result of performing Trainfair on the parameter letterPair.
     private static string DoTrainfairOn(string letterPair)
     {
         int[] position1;
@@ -1035,15 +1051,56 @@ static class TubeCipher
         return _trainfairGrid[position1[0], position2[1]].ToString() + _trainfairGrid[position2[0], position1[1]].ToString();
     }
 
+    // Return an int[] containing the lineNumbers of the unused lines to be used for Trainfair grid shifting.
+    private static int[] GetLinesForShifting()
+    {
+        var linesForShifting = new List<int>(new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 });
+        int initialLength;
+
+        foreach (TubeLine.Path path in _paths)
+        {
+            linesForShifting.Remove(path.Line.LineNumber);
+        }
+
+        initialLength = linesForShifting.Count();
+
+        while (linesForShifting.Count() < EncryptedWord.Length) linesForShifting.Add(linesForShifting[linesForShifting.Count() - initialLength]);
+
+        return linesForShifting.ToArray();
+    }
+
+    // Return an int[] containing the shift indices based on the alphanumeric positions of the serial number characters.
+    private static int[] GetShiftIndices()
+    {
+        string serial = Bomb.GetSerialNumber().ToUpper();
+        var shiftIndices = new List<int>();
+
+        foreach (char character in serial)
+        {
+            if ("0123456789".Contains(character)) shiftIndices.Add(character - '0');
+            else shiftIndices.Add("ABCDEFGHIJKLMNOPQRSTUVWXYZ".IndexOf(character) + 1);
+        }
+
+        while (shiftIndices.Count() < EncryptedWord.Length) shiftIndices.Add(shiftIndices[shiftIndices.Count() - serial.Length]);
+
+        return shiftIndices.ToArray();
+    }
+
     // Applies Compacted Traincipher encryption to the Non-Binary Cipher keyword.
     private static string ChooChooMotherfucker()
     {
         string chewedWord = DoTrainfairOn(EncryptedWord.Substring(EncryptedWord.Length - 2));
+        int[] linesForShifting = GetLinesForShifting();
+        int[] shiftIndices = GetShiftIndices();
+        int currentPos = 0;
+
+        ShiftGrid(linesForShifting[currentPos], shiftIndices[currentPos]);
 
         for (int i = EncryptedWord.Length - 3; i>=0; i--)
         {
+            currentPos++;
             chewedWord = DoTrainfairOn(EncryptedWord[i].ToString() + chewedWord[0].ToString()) + chewedWord.Substring(1);
-            ShiftColumn(0, 1);
+            ShiftGrid(linesForShifting[currentPos], shiftIndices[currentPos]);
         }
 
         return chewedWord;
@@ -1062,6 +1119,17 @@ static class TubeCipher
                     return new int[] { row, col };
             }
         throw new InvalidOperationException("MATE WHAT R U DOING (CHARACTER NOT IN GRID).");
+    }
+
+    // Shifts the row/column corresponding to the lineNumber by the shiftIndex.
+    private static void ShiftGrid(int lineNumber, int shiftIndex)
+    {
+        string shiftID = LineToShiftID[lineNumber];
+
+        if (shiftID == "NONE") return;
+
+        if (shiftID[0] == 'R') ShiftRow(shiftID[1] - '0', shiftIndex);
+        else ShiftColumn(shiftID[1] - '0', shiftIndex);
     }
 
     // Shift the given column down by the given shifting index.
@@ -1099,6 +1167,8 @@ static class TubeCipher
             _trainfairGrid[rowNumber, i] = rowContents[i];
         }
     }
+
+
 
     // Transposition Stuff below this.
     private static void PerformTubeLineTransposition(string keyword)
@@ -1182,9 +1252,11 @@ class TubeLine
     public List<string> Stations = new List<string>();
     private readonly List<Branch> _branches = new List<Branch>();
     public float[] RGBValues = { 0, 0, 0 };
+    public int LineNumber;
 
-    public TubeLine(string lineName, string lineColour)
+    public TubeLine(string lineName, string lineColour, int lineNumber)
     {
+        LineNumber = lineNumber;
         Name = lineName;
         Colour = lineColour;
         SetRGBValues();
