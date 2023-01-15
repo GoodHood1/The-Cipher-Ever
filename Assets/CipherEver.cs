@@ -52,7 +52,9 @@ public class CipherEver : MonoBehaviour
     string origin;
     string destination;
     string[] routeInputs = new string[3];
-
+    bool angelUnicorn;
+    bool ikeaUnicorn;
+    string angelUnicornSubmission;
 
     string[] six_letter_words = new string[]
             {
@@ -209,6 +211,31 @@ public class CipherEver : MonoBehaviour
             screenToWrite = 0;
         }
     }
+
+    void CheckUnicorns()
+    {
+        var angelStations = new List<string> { "HOLBORN", "ANGEL", "GLOUCESTER ROAD" };
+
+        if (angelStations.Contains(origin) && angelStations.Contains(destination))
+        {
+            angelUnicorn = true;
+            angelStations.Remove(origin);
+            angelStations.Remove(destination);
+
+            angelUnicornSubmission = angelStations[0];
+            return;
+        }
+
+        if (new string[] { "NEASDEN", "HAMMERSMITH", "NORTH GREENWICH" }.Contains(origin) && new string[] { "NEASDEN", "HAMMERSMITH", "NORTH GREENWICH" }.Contains(destination)) ikeaUnicorn = true;
+    }
+
+    //bool CorrectInputs()
+    //{
+    //    if (angelUnicorn && routeInputs[0] == angelUnicornSubmission && routeInputs[1] == angelUnicornSubmission && routeInputs[2] == angelUnicornSubmission)
+    //    {
+            
+    //    }
+    //}
 
     // Sets the pages for London Underground Cipher after Wayfinding step.
     void SetKuroPages()
