@@ -197,10 +197,14 @@ public class CipherEver : MonoBehaviour
 
             if (CheckInterchanges(routeInputs))
             {
-                pagesLocked = false;
-                SetKuroPages();
-                currentPage = 2;
-                pageUpdate(2);
+                angelUnicorn = false;
+                ikeaUnicorn = false;
+                SetDefaultKuroPages();
+                HandleWayfindingSolve();
+            }
+            else if (CorrectUnicornInputs())
+            {
+                HandleWayfindingSolve();
             }
             else module.HandleStrike();
 
@@ -212,52 +216,11 @@ public class CipherEver : MonoBehaviour
         }
     }
 
-    void CheckUnicorns()
-    {
-        var angelStations = new List<string> { "HOLBORN", "ANGEL", "GLOUCESTER ROAD" };
-
-        if (angelStations.Contains(origin) && angelStations.Contains(destination))
-        {
-            angelUnicorn = true;
-            angelStations.Remove(origin);
-            angelStations.Remove(destination);
-
-            angelUnicornSubmission = angelStations[0];
-            return;
-        }
-
-        if (new string[] { "NEASDEN", "HAMMERSMITH", "NORTH GREENWICH" }.Contains(origin) && new string[] { "NEASDEN", "HAMMERSMITH", "NORTH GREENWICH" }.Contains(destination)) ikeaUnicorn = true;
-    }
-
-    //bool CorrectInputs()
-    //{
-    //    if (angelUnicorn && routeInputs[0] == angelUnicornSubmission && routeInputs[1] == angelUnicornSubmission && routeInputs[2] == angelUnicornSubmission)
-    //    {
-            
-    //    }
-    //}
-
-    // Sets the pages for London Underground Cipher after Wayfinding step.
-    void SetKuroPages()
-    {   
-        TubeCipher.EncryptWord(linesTakenPathOne.Concat(linesTakenPathTwo).ToArray(), "JUDGING", Bomb); //TEMP: KEYWORD IS OBTAINED FROM NON-BINARY CIPHER.
-
-        pageContents[1, 0] = routeInputs[0];
-        pageContents[1, 1] = routeInputs[1];
-        pageContents[1, 2] = routeInputs[2];
-
-        pageContents[2, 0] = TubeCipher.EncryptedWord;
-        pageContents[2, 1] = linesTakenPathOne[0].Name;
-        pageContents[2, 2] = linesTakenPathOne[1].Name;
-
-        pageContents[3, 0] = linesTakenPathTwo[0].Name;
-        pageContents[3, 1] = linesTakenPathTwo[1].Name;
-        pageContents[3, 2] = linesTakenPathTwo[2].Name;
-    }
-
     // Sets each screen to the correct colour depending on the page being displayed.
     void SetScreenColours()
     {
+        if (angelUnicorn || ikeaUnicorn) return;
+
         if (currentPage == 2)
         {
             ScreenTexts[0].color = Color.white;
@@ -541,11 +504,15 @@ public class CipherEver : MonoBehaviour
         lines = GenerateMap();
         PickStations();
 
+        origin = "GLOUCESTER ROAD";
+        destination = "ANGEL";
+
         pageContents[0, 0] = origin;
         pageContents[0, 1] = "TO";
         pageContents[0, 2] = destination;
 
         CheckImpossibilities();
+        CheckUnicorns();
     }
 
     void PickStations()
@@ -942,6 +909,98 @@ public class CipherEver : MonoBehaviour
         lines[10].AddBranch(wineNcheesePath);
 
         return lines;
+    }
+
+    void HandleWayfindingSolve()
+    {
+        pagesLocked = false;
+        currentPage = 2;
+        pageUpdate(2);
+    }
+
+    void CheckUnicorns()
+    {
+        var angelStations = new List<string> { "HOLBORN", "ANGEL", "GLOUCESTER ROAD" };
+
+        if (angelStations.Contains(origin) && angelStations.Contains(destination))
+        {
+            angelUnicorn = true;
+            angelStations.Remove(origin);
+            angelStations.Remove(destination);
+
+            angelUnicornSubmission = angelStations[0];
+            return;
+        }
+
+        if (new string[] { "NEASDEN", "HAMMERSMITH", "NORTH GREENWICH" }.Contains(origin) && new string[] { "NEASDEN", "HAMMERSMITH", "NORTH GREENWICH" }.Contains(destination)) ikeaUnicorn = true;
+    }
+
+    // Catches unicorn-related inputs and updates pages as necessary. Returns true if a unicorn was successfully solved.
+    bool CorrectUnicornInputs()
+    {
+        if (angelUnicorn && routeInputs[0] == angelUnicornSubmission && routeInputs[1] == angelUnicornSubmission && routeInputs[2] == angelUnicornSubmission)
+        {
+            SetAngelPages();
+            return true;
+        }
+
+        if (ikeaUnicorn && routeInputs[0] == "IKEA" && routeInputs[1] == "IKEA" && routeInputs[2] == "IKEA")
+        {
+            SetIkeaPages();
+            return true;
+        }
+
+        return false;
+    }
+
+    // Sets the pages for London Underground Cipher after Wayfinding step.
+    void SetDefaultKuroPages()
+    {
+        TubeCipher.EncryptWord(linesTakenPathOne.Concat(linesTakenPathTwo).ToArray(), "JUDGING", Bomb); //TEMP: KEYWORD IS OBTAINED FROM NON-BINARY CIPHER.
+
+        pageContents[1, 0] = routeInputs[0];
+        pageContents[1, 1] = routeInputs[1];
+        pageContents[1, 2] = routeInputs[2];
+
+        pageContents[2, 0] = TubeCipher.EncryptedWord;
+        pageContents[2, 1] = linesTakenPathOne[0].Name;
+        pageContents[2, 2] = linesTakenPathOne[1].Name;
+
+        pageContents[3, 0] = linesTakenPathTwo[0].Name;
+        pageContents[3, 1] = linesTakenPathTwo[1].Name;
+        pageContents[3, 2] = linesTakenPathTwo[2].Name;
+    }
+
+    // Sets the pages for London Underground Cipher if an Angel unicorn is dealt with correctly.
+    void SetAngelPages()
+    {
+        pageContents[1, 0] = routeInputs[0];
+        pageContents[1, 1] = routeInputs[1];
+        pageContents[1, 2] = routeInputs[2];
+
+        pageContents[2, 0] = "ANGEL";
+        pageContents[2, 1] = "THANKS";
+        pageContents[2, 2] = "YOU";
+
+        pageContents[3, 0] = "KEYWORD";
+        pageContents[3, 1] = "IS";
+        pageContents[3, 2] = "KEYWORD";
+    }
+
+    // Sets the pages for London Underground Cipher is Ikea unicorn is dealt with correctly.
+    void SetIkeaPages()
+    {
+        pageContents[1, 0] = routeInputs[0];
+        pageContents[1, 1] = routeInputs[1];
+        pageContents[1, 2] = routeInputs[2];
+
+        pageContents[2, 0] = "DOCKSTA";
+        pageContents[2, 1] = "KALLAX";
+        pageContents[2, 2] = "EKTORP";
+
+        pageContents[3, 0] = "KEYWORD";
+        pageContents[3, 1] = "IS";
+        pageContents[3, 2] = "KEYWORD";
     }
 
     #endregion
