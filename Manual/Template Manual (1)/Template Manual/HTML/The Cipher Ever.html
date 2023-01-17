@@ -17,7 +17,7 @@
         ul{ margin-top: 0.5em; }
 
         .page-footer::before { content: 'Page '; }
-        .page-footer::after { content: ' of 4'; }
+        .page-footer::after { content: ' of 5'; }
     </style>
 </head>
 <body>
@@ -160,26 +160,69 @@
             <div class="page-content">
                 <h4>Step 2.2: Compacted Trainfair Cipher</h4>
 
-                <p> GENERAL IDEA:s
-                    Playfair, but use every pair of consecutive letters (encrypt right to left, decrypt left to right).
-                    Additionally, after every use of the grid, shift a row/column based on the unused lines in wayfinding step.
+                <p> For this step, you will need the two paths you submitted in step 1, as well as the tube Lines
+                    you did <b>not</b> use. Each "path" consists of the list of stations that you passed through
+                    <b>Note: Getting off and getting on a train at a station each also count as having passed through
+                    that station, so if you changed trains at Leicester Square, then you will have visited Leicester
+                    Square twice in a row on that path.</b>
                 </p>
 
-                <table style="float:left">
+                <p>To generate a <b>Trainfair Key</b>, first pick one of your two paths - if the encrypted word has an
+                    even number of letters, pick the longer one; otherwise pick the shortest one.</p>
+                    <p>Take the first letter of each station along the chosen path in order and append the English alphabet to the end.
+                    Then, remove any duplicate letters from the resulting string, keeping only the first occurence of each letter.
+                    Finally, remove any instances of the letter 'J' from the <b>key</b>.
+                </p>
+
+                <p>Fill a 5x5 matrix with the <b>Trainfair Key</b> in reading order to create the <b>Trainfair Grid</b>.
+                    Apply <b>Trainfair Cipher</b> to the first two letters of the encrypted word. <b>After</b> modifying
+                    those characters apply <b>Trainfair Cipher</b> to the new second and third letters. Repeat this
+                    process until you have modified every letter to obtain the <b>Non-binary Cipher Keyword</b>.
+                </p>
+
+                <p>After the first modification, shift the row/column corresponding to the first unused tube line in <b>Table A</b>
+                right/down the first character of the serial number (convert letters using A1Z26). After subsequent modifications,
+                use the next unused line and the next character of the serial number, looping back to the start if needed.</p>
+
+                <table style="float:left; margin-right:25px">
+                    <caption>Key: TRAINFAIR <b>(TEMP)</b></caption>
                     <tr><td class="corner"></td><th style="background-color:#00782A;color:white">3</th><th style="background-color:#9B0056;color:white">6</th>
                         <th style="background-color:#F3A9BB">4</th><th style="background-color:#B36305;color:white">0</th><th style="background-color:#A0A5A9">5</th></tr>
-                    <tr><th style="background-color:#E32017;color:white">1</th><td>.</td><td>.</td><td>.</td><td>.</td><td>.</td></tr>
-                    <tr><th style="background-color:#003688;color:white">8</th><td>.</td><td>.</td><td>.</td><td>.</td><td>.</td></tr>
-                    <tr><th style="background-color:#0098D4;color:white">9</th><td>.</td><td>.</td><td>.</td><td>.</td><td>.</td></tr>
-                    <tr><th style="background-color:#FFD300">2</th><td>.</td><td>.</td><td>.</td><td>.</td><td>.</td></tr>
-                    <tr><th style="background-color:#000000;color:white">7</th><td>.</td><td>.</td><td>.</td><td>.</td><td>.</td></tr>
+                    <tr><th style="background-color:#E32017;color:white">1</th><td>T</td><td>R</td><td>A</td><td>I</td><td>N</td></tr>
+                    <tr><th style="background-color:#003688;color:white">8</th><td>F</td><td>B</td><td>C</td><td>D</td><td>E</td></tr>
+                    <tr><th style="background-color:#0098D4;color:white">9</th><td>G</td><td>H</td><td>K</td><td>L</td><td>M</td></tr>
+                    <tr><th style="background-color:#FFD300">2</th><td>O</td><td>P</td><td>Q</td><td>S</td><td>U</td></tr>
+                    <tr><th style="background-color:#000000;color:white">7</th><td>V</td><td>W</td><td>X</td><td>Y</td><td>Z</td></tr>
                 </table>
+
+                <h4>How to Trainfair Cipher</h4>
+
+                <ul>
+                    <li>If the two letters are the same, or either of them are 'J', do not modify them.</li> 
+                    <li>Otherwise, find the two letters in the <b>Trainfair Grid</b>.</li>
+                    <li>If they are in the same row, replace them with the letters to their immediate left, wrapping to the right side of the row if necessary.</li>
+                    <li>If they are in the same column, replace them with the letters immediately above them, wrapping to the bottom of the column if necessary.</li>
+                    <li>If neither of the previous two rules applied, replace each letter with the letter in the same row as it but in the column of the other letter of the pair.</li>
+                </ul>
+
             </div>
             <div class="page-footer relative-footer">3</div>
         </div>
 
 
         <div class="page page-bg-04">
+            <div class="page-header">
+                <span class="page-header-doc-title">Keep Talking and Nobody Explodes Mod</span>
+                <span class="page-header-section-title">The Cipher Ever</span>
+            </div>
+            <div class="page-content">
+                <h4>STEP ??????: ???????</h4>
+            </div>
+            <div class="page-footer relative-footer">4</div>
+        </div>
+
+
+        <div class="page page-bg-05">
             <div class="page-header">
                 <span class="page-header-doc-title">Keep Talking and Nobody Explodes Mod</span>
                 <span class="page-header-section-title">The Cipher Ever</span>
@@ -210,7 +253,7 @@
                 <p>Now you should have an encrypted word ready to decrypt.</p>
                 
             </div>
-            <div class="page-footer relative-footer">4</div>
+            <div class="page-footer relative-footer">5</div>
         </div>
     </div>
 </body>
