@@ -600,6 +600,11 @@ public class CipherEver : MonoBehaviour
         var twoPathNumbers = new List<int>();
         int i;
 
+        for (int j = 0; j < interchanges.Length; j++)
+        {
+            if (interchanges[j] == "ST JAMESS PARK") interchanges[j] = "ST JAMES PARK";
+        }
+
         for (int j = 0; j < linesTakenPathOne.Length; j++)
         {
             linesTakenPathOne[j] = null;
