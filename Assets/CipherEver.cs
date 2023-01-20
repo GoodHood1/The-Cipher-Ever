@@ -1,10 +1,9 @@
+using KModkit;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.RegularExpressions;
 using UnityEngine;
-using KModkit;
 using Rnd = UnityEngine.Random;
 
 public class CipherEver : MonoBehaviour
@@ -496,7 +495,7 @@ public class CipherEver : MonoBehaviour
     #endregion
 
     // Kuro formally apologises to all individuals (including Kuro himself) who find themselves needing to read the code located in the Wayfinding region.
-    // This is Kuro's first "major" project, and as a result Kuro has learnt a lot during it, but this is too much for Kuro to be bothered to fix.
+    // This is Kuro's first "major" project, and so Kuro has learnt a lot during it, but this is too much for Kuro to be bothered to fix.
     // If you MUST continue, avoid at all costs all 200+ lines of the CheckInterchanges() method.
     #region Wayfinding
     void Wayfinding()
@@ -587,6 +586,7 @@ public class CipherEver : MonoBehaviour
         }
     }
 
+    // Big scary function :(((( Kuro apologises again.
     bool CheckInterchanges(string[] interchanges)
         // Check validity of paths between the two given stations on the module.
     {
