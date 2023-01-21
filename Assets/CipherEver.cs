@@ -27,7 +27,7 @@ public class CipherEver : MonoBehaviour
     public GameObject TrainsImage;
 
     public Material BGMat;
-    public Texture hammerlgb;
+    public Texture[] BackgroundImages;
 
 
     string[,] pageContents = new string[6, 3];
@@ -56,6 +56,7 @@ public class CipherEver : MonoBehaviour
     bool angelUnicorn;
     bool ikeaUnicorn;
     string angelUnicornSubmission;
+    int tubecipherBackgroundNumber = 0;
 
     string[] six_letter_words = new string[]
             {
@@ -93,8 +94,6 @@ public class CipherEver : MonoBehaviour
 
     void Start()
     {
-
-        ChangeBGImage();
         pageContents[0, 0] = "1TOP";
         pageContents[0, 1] = "1MID";
         pageContents[0, 2] = "1BOT";
@@ -217,31 +216,6 @@ public class CipherEver : MonoBehaviour
         }
     }
 
-    // Sets each screen to the correct colour depending on the page being displayed.
-    void SetScreenColours()
-    {
-        if (angelUnicorn || ikeaUnicorn) return;
-
-        if (currentPage == 2)
-        {
-            ScreenTexts[0].color = Color.white;
-            ScreenTexts[1].color = new Color(linesTakenPathOne[0].Line.RGBValues[0], linesTakenPathOne[0].Line.RGBValues[1], linesTakenPathOne[0].Line.RGBValues[2]);
-            ScreenTexts[2].color = new Color(linesTakenPathOne[1].Line.RGBValues[0], linesTakenPathOne[1].Line.RGBValues[1], linesTakenPathOne[1].Line.RGBValues[2]);
-        }
-        else if (currentPage == 3)
-        {
-            ScreenTexts[0].color = new Color(linesTakenPathTwo[0].Line.RGBValues[0], linesTakenPathTwo[0].Line.RGBValues[1], linesTakenPathTwo[0].Line.RGBValues[2]);
-            ScreenTexts[1].color = new Color(linesTakenPathTwo[1].Line.RGBValues[0], linesTakenPathTwo[1].Line.RGBValues[1], linesTakenPathTwo[1].Line.RGBValues[2]);
-            ScreenTexts[2].color = new Color(linesTakenPathTwo[2].Line.RGBValues[0], linesTakenPathTwo[2].Line.RGBValues[1], linesTakenPathTwo[2].Line.RGBValues[2]);
-        }
-        else
-        {
-            ScreenTexts[0].color = Color.white;
-            ScreenTexts[1].color = Color.white;
-            ScreenTexts[2].color = Color.white;
-        }
-    }
-
     void leftPress()
     {
         screenToWrite = 0;
@@ -281,12 +255,42 @@ public class CipherEver : MonoBehaviour
 
     void ChangeBGImage()
     {
-        BGMat.mainTexture = hammerlgb;
+        if (currentPage <= 3)
+        {
+            BGMat.mainTexture = BackgroundImages[tubecipherBackgroundNumber];
+        }
+        else BGMat.mainTexture = BackgroundImages[4];
+    }
+
+    // Sets each screen to the correct colour depending on the page being displayed.
+    void SetScreenColours()
+    {
+        if (angelUnicorn || ikeaUnicorn) return;
+
+        if (currentPage == 2)
+        {
+            ScreenTexts[0].color = Color.white;
+            ScreenTexts[1].color = new Color(linesTakenPathOne[0].Line.RGBValues[0], linesTakenPathOne[0].Line.RGBValues[1], linesTakenPathOne[0].Line.RGBValues[2]);
+            ScreenTexts[2].color = new Color(linesTakenPathOne[1].Line.RGBValues[0], linesTakenPathOne[1].Line.RGBValues[1], linesTakenPathOne[1].Line.RGBValues[2]);
+        }
+        else if (currentPage == 3)
+        {
+            ScreenTexts[0].color = new Color(linesTakenPathTwo[0].Line.RGBValues[0], linesTakenPathTwo[0].Line.RGBValues[1], linesTakenPathTwo[0].Line.RGBValues[2]);
+            ScreenTexts[1].color = new Color(linesTakenPathTwo[1].Line.RGBValues[0], linesTakenPathTwo[1].Line.RGBValues[1], linesTakenPathTwo[1].Line.RGBValues[2]);
+            ScreenTexts[2].color = new Color(linesTakenPathTwo[2].Line.RGBValues[0], linesTakenPathTwo[2].Line.RGBValues[1], linesTakenPathTwo[2].Line.RGBValues[2]);
+        }
+        else
+        {
+            ScreenTexts[0].color = Color.white;
+            ScreenTexts[1].color = Color.white;
+            ScreenTexts[2].color = Color.white;
+        }
     }
 
     void pageUpdate(int page)
     {
         SetScreenColours();
+        ChangeBGImage();
 
         if (currentPage == 0)
         {
@@ -513,6 +517,9 @@ public class CipherEver : MonoBehaviour
         pageContents[0, 0] = origin;
         pageContents[0, 1] = "TO";
         pageContents[0, 2] = destination;
+
+        if (origin == "HAMMERSMITH" || destination == "HAMMERSMITH") tubecipherBackgroundNumber = 1;
+        ChangeBGImage();
 
         CheckImpossibilities();
         CheckUnicorns();
@@ -950,12 +957,14 @@ public class CipherEver : MonoBehaviour
         if (angelUnicorn && routeInputs[0] == angelUnicornSubmission && routeInputs[1] == angelUnicornSubmission && routeInputs[2] == angelUnicornSubmission)
         {
             SetAngelPages();
+            tubecipherBackgroundNumber = 2;
             return true;
         }
 
         if (ikeaUnicorn && routeInputs[0] == "IKEA" && routeInputs[1] == "IKEA" && routeInputs[2] == "IKEA")
         {
             SetIkeaPages();
+            tubecipherBackgroundNumber = 3;
             return true;
         }
 
