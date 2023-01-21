@@ -932,6 +932,8 @@ MonoBehaviour:
   submit: {fileID: 1388222599}
   subText: {fileID: 584219721}
   TrainsImage: {fileID: 82945064}
+  BGMat: {fileID: 2100000, guid: e6dc324f163889147ba62ff0e7c1c34b, type: 2}
+  hammerlgb: {fileID: 2800000, guid: e55a62cde6a25294fa2631074df9acaf, type: 3}
 --- !u!114 &140933621
 MonoBehaviour:
   m_ObjectHideFlags: 0
