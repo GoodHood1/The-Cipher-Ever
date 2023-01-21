@@ -26,9 +26,11 @@ public class CipherEver : MonoBehaviour
     public GameObject subText;
     public GameObject TrainsImage;
 
+    public Material BGMat;
+    public Texture hammerlgb;
+
 
     string[,] pageContents = new string[6, 3];
-
 
 
     bool moduleSolved;
@@ -92,7 +94,7 @@ public class CipherEver : MonoBehaviour
     void Start()
     {
 
-
+        ChangeBGImage();
         pageContents[0, 0] = "1TOP";
         pageContents[0, 1] = "1MID";
         pageContents[0, 2] = "1BOT";
@@ -277,7 +279,12 @@ public class CipherEver : MonoBehaviour
 
     }
 
-    void pageUpdate(int page) // A function that sets the 3 screens to each entry in a 3 long array of strings
+    void ChangeBGImage()
+    {
+        BGMat.mainTexture = hammerlgb;
+    }
+
+    void pageUpdate(int page)
     {
         SetScreenColours();
 
