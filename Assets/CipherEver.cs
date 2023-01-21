@@ -503,9 +503,6 @@ public class CipherEver : MonoBehaviour
         lines = GenerateMap();
         PickStations();
 
-        origin = "GLOUCESTER ROAD";
-        destination = "ANGEL";
-
         pageContents[0, 0] = origin;
         pageContents[0, 1] = "TO";
         pageContents[0, 2] = destination;
