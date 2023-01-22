@@ -514,6 +514,9 @@ public class CipherEver : MonoBehaviour
         lines = GenerateMap();
         PickStations();
 
+        origin = "ANGEL";
+        destination = "HOLBORN";
+
         pageContents[0, 0] = origin;
         pageContents[0, 1] = "TO";
         pageContents[0, 2] = destination;
