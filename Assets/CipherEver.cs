@@ -6,8 +6,7 @@ using System.Linq;
 using UnityEngine;
 using Rnd = UnityEngine.Random;
 
-public class CipherEver : MonoBehaviour
-{
+public class CipherEver : MonoBehaviour {
 
     public KMBombInfo Bomb;
     public KMAudio Audio;
@@ -87,13 +86,11 @@ public class CipherEver : MonoBehaviour
                 "YACHTS", "YEARLY", "YELLED", "YELLER", "YELLOW", "YIELDS", "YIPPEE", "YONDER", "YOUTHS", "YUPPIE",
                 "ZAGGED", "ZAPPED", "ZAPPER", "ZEALOT", "ZEBRAS", "ZENITH", "ZEROES", "ZIGGED", "ZIGZAG", "ZINGER", "ZIPPED", "ZIPPER", "ZODIAC", "ZOMBIE", "ZONING", "ZOOMED", "ZYGOTE", };
 
-    void Awake()
-    {
+    void Awake() {
 
     }
 
-    void Start()
-    {
+    void Start() {
         pageContents[0, 0] = "1TOP";
         pageContents[0, 1] = "1MID";
         pageContents[0, 2] = "1BOT";
@@ -129,8 +126,7 @@ public class CipherEver : MonoBehaviour
         module.GetComponent<KMSelectable>().OnFocus += delegate { moduleSelected = true; };
         module.GetComponent<KMSelectable>().OnDefocus += delegate { moduleSelected = false; };
         ModuleId = ModuleIdCounter++;
-        foreach (KMSelectable button in keyboard)
-        {
+        foreach (KMSelectable button in keyboard) {
             button.OnInteract += delegate () { keyboardPress(button); return false; };
         }
         right.OnInteract += delegate () { keyboardPress(right); return false; };
@@ -140,28 +136,22 @@ public class CipherEver : MonoBehaviour
 
     }
 
-    void keyboardPress(KMSelectable button)
-    {
-        if (button == right && !pagesLocked)
-        {
+    void keyboardPress(KMSelectable button) {
+        if (button == right && !pagesLocked) {
             rightPress();
             return;
         }
-        if (!Submission)
-        {
+        if (!Submission) {
             Submission = true;
-            for (int i = 0; i < ScreenTexts.Length; i++)
-            {
+            for (int i = 0; i < ScreenTexts.Length; i++) {
                 ScreenTexts[i].text = "";
             }
         }
-        if (ScreenTexts[screenToWrite].text.Length >= 20) return;
-        if (button == right)
-        {
+        if (ScreenTexts[screenToWrite].text.Length >= 20)
+            return;
+        if (button == right) {
             ScreenTexts[screenToWrite].text += " ";
-        }
-        else
-        {
+        } else {
             ScreenTexts[screenToWrite].text += button.name.ToUpper();
         }
         int length = ScreenTexts[screenToWrite].text.Length;
@@ -172,41 +162,32 @@ public class CipherEver : MonoBehaviour
     }
 
     void submitPress()
-        // Kuro has done things in the submitPress() function so please do not unKuro it :')
+    // Kuro has done things in the submitPress() function so please do not unKuro it :')
     {
-        if (!Submission)
-        {
+        if (!Submission) {
             module.HandleStrike();
             return;
         }
-        if (pagesLocked && routeStage == 1)
-        {
+        if (pagesLocked && routeStage == 1) {
             routeStage = 2;
             screenToWrite = 1;
-        }
-        else if (pagesLocked && routeStage == 2)
-        {
+        } else if (pagesLocked && routeStage == 2) {
             routeStage = 3;
             screenToWrite = 2;
-        }
-        else if (pagesLocked && routeStage == 3)
-        {
+        } else if (pagesLocked && routeStage == 3) {
             routeInputs[0] = ScreenTexts[0].text;
             routeInputs[1] = ScreenTexts[1].text;
             routeInputs[2] = ScreenTexts[2].text;
 
-            if (CheckInterchanges(routeInputs))
-            {
+            if (CheckInterchanges(routeInputs)) {
                 angelUnicorn = false;
                 ikeaUnicorn = false;
                 SetDefaultKuroPages();
                 HandleWayfindingSolve();
-            }
-            else if (CorrectUnicornInputs())
-            {
+            } else if (CorrectUnicornInputs()) {
                 HandleWayfindingSolve();
-            }
-            else module.HandleStrike();
+            } else
+                module.HandleStrike();
 
             Submission = false;
             pageUpdate(currentPage);
@@ -216,34 +197,27 @@ public class CipherEver : MonoBehaviour
         }
     }
 
-    void leftPress()
-    {
+    void leftPress() {
         screenToWrite = 0;
         routeStage = 1;
-        if (Submission && pagesLocked)
-        {
+        if (Submission && pagesLocked) {
             currentPage = 1;
             Submission = false;
-        }
-        else if (pagesLocked)
-        {
+        } else if (pagesLocked) {
             return;
-        }
-        else if (Submission)
-        {
+        } else if (Submission) {
             Submission = false;
         }
         Audio.PlaySoundAtTransform("ArrowPress", transform);
         currentPage = (currentPage - 1);
-        if (currentPage == -1) currentPage = pages - 1;
+        if (currentPage == -1)
+            currentPage = pages - 1;
 
         pageUpdate(currentPage);
     }
 
-    void rightPress()
-    {
-        if (Submission)
-        {
+    void rightPress() {
+        if (Submission) {
             Submission = false;
         }
         Audio.PlaySoundAtTransform("ArrowPress", transform);
@@ -253,57 +227,45 @@ public class CipherEver : MonoBehaviour
 
     }
 
-    void ChangeBGImage()
-    {
-        if (currentPage <= 3)
-        {
+    void ChangeBGImage() {
+        if (currentPage <= 3) {
             BGMat.mainTexture = BackgroundImages[tubecipherBackgroundNumber];
-        }
-        else BGMat.mainTexture = BackgroundImages[4];
+        } else
+            BGMat.mainTexture = BackgroundImages[4];
     }
 
     // Sets each screen to the correct colour depending on the page being displayed.
-    void SetScreenColours()
-    {
-        if (angelUnicorn || ikeaUnicorn) return;
+    void SetScreenColours() {
+        if (angelUnicorn || ikeaUnicorn)
+            return;
 
-        if (currentPage == 2)
-        {
+        if (currentPage == 2) {
             ScreenTexts[0].color = Color.white;
             ScreenTexts[1].color = new Color(linesTakenPathOne[0].Line.RGBValues[0], linesTakenPathOne[0].Line.RGBValues[1], linesTakenPathOne[0].Line.RGBValues[2]);
             ScreenTexts[2].color = new Color(linesTakenPathOne[1].Line.RGBValues[0], linesTakenPathOne[1].Line.RGBValues[1], linesTakenPathOne[1].Line.RGBValues[2]);
-        }
-        else if (currentPage == 3)
-        {
+        } else if (currentPage == 3) {
             ScreenTexts[0].color = new Color(linesTakenPathTwo[0].Line.RGBValues[0], linesTakenPathTwo[0].Line.RGBValues[1], linesTakenPathTwo[0].Line.RGBValues[2]);
             ScreenTexts[1].color = new Color(linesTakenPathTwo[1].Line.RGBValues[0], linesTakenPathTwo[1].Line.RGBValues[1], linesTakenPathTwo[1].Line.RGBValues[2]);
             ScreenTexts[2].color = new Color(linesTakenPathTwo[2].Line.RGBValues[0], linesTakenPathTwo[2].Line.RGBValues[1], linesTakenPathTwo[2].Line.RGBValues[2]);
-        }
-        else
-        {
+        } else {
             ScreenTexts[0].color = Color.white;
             ScreenTexts[1].color = Color.white;
             ScreenTexts[2].color = Color.white;
         }
     }
 
-    void pageUpdate(int page)
-    {
+    void pageUpdate(int page) {
         SetScreenColours();
         ChangeBGImage();
 
-        if (currentPage == 0)
-        {
+        if (currentPage == 0) {
             TrainsImage.SetActive(true);
             subText.SetActive(false);
-        }
-        else
-        {
+        } else {
             TrainsImage.SetActive(false);
             subText.SetActive(true);
         }
-        for (int i = 0; i < 3; i++)
-        {
+        for (int i = 0; i < 3; i++) {
             ScreenTexts[i].text = pageContents[page, i];
             int length = pageContents[page, i].Length;
             ScreenTexts[i].fontSize = length < 13 ? 317 : length == 13 ? 292 : length < 17 ? 237 : 185;
@@ -315,15 +277,12 @@ public class CipherEver : MonoBehaviour
         return "QWERTYUIOPASDFGHJKLZXCVBNM".IndexOf(c);
     }
 
-    void Update()
-    {
+    void Update() {
         //CHANGE THIS TO IF MODULE SELECTED AFTER DONE
-        if (!moduleSelected)
-        {
+        if (!moduleSelected) {
             for (var ltr = 0; ltr < 26; ltr++) //Keyboard Support
             {
-                if (Input.GetKeyDown(((char)('a' + ltr)).ToString()))
-                {
+                if (Input.GetKeyDown(((char)('a' + ltr)).ToString())) {
 
                     keyboard[getPositionFromChar((char)('A' + ltr))].OnInteract();
                 }
@@ -338,26 +297,23 @@ public class CipherEver : MonoBehaviour
 
     #region GoodHoodStuff
 
-    string encryptGoodHoodKeyword(string word)
-    {
+    string encryptGoodHoodKeyword(string word) {
         string alpha = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
         int posOfFirstLetter = Bomb.GetPortCount() % 8;
-        for (int i = 0; i < posOfFirstLetter - 1; i++)
-        {
+        for (int i = 0; i < posOfFirstLetter - 1; i++) {
             char randomChar = alpha[UnityEngine.Random.Range(0, alpha.Length)];
             word = word.Insert(0, randomChar.ToString());
         }
-        while (word.Length < 12)
-        {
+        while (word.Length < 12) {
             char randomChar = alpha[UnityEngine.Random.Range(0, alpha.Length)];
             word += randomChar.ToString();
         }
         string newWord = "";
-        for (int letter = 0; letter < word.Length; letter++)
-        {
+        for (int letter = 0; letter < word.Length; letter++) {
             int indexOfLetter = alpha.IndexOf(word[letter]);
             indexOfLetter -= Bomb.GetBatteryCount();
-            if (indexOfLetter < 0) indexOfLetter += 26;
+            if (indexOfLetter < 0)
+                indexOfLetter += 26;
             newWord += alpha[indexOfLetter];
         }
         word = newWord;
@@ -366,18 +322,15 @@ public class CipherEver : MonoBehaviour
         string ayoString = "AOYYOAAOAYOY";
         int ayoShift = Bomb.GetSerialNumberNumbers().Last() + 1;
         string[] ayoStringShifted = new string[12];
-        for (int i = 0; i < ayoString.Length; i++)
-        {
+        for (int i = 0; i < ayoString.Length; i++) {
             ayoStringShifted[i] = ayoString[(i + ayoShift) % 12].ToString();
         }
         List<int> APositions = new List<int>();
         List<int> YPositions = new List<int>();
         List<int> OPositions = new List<int>();
 
-        for (int i = 0; i < ayoStringShifted.Length; i++)
-        {
-            switch (ayoStringShifted[i])
-            {
+        for (int i = 0; i < ayoStringShifted.Length; i++) {
+            switch (ayoStringShifted[i]) {
                 case "A":
                     APositions.Add(i);
                     break;
@@ -392,24 +345,17 @@ public class CipherEver : MonoBehaviour
 
         }
         string[] encryptedKeyWordArr = new string[12];
-        for (int i = 0; i < word.Length; i++)
-        {
-            if (i >= 0 && i <= 3)
-            {
+        for (int i = 0; i < word.Length; i++) {
+            if (i >= 0 && i <= 3) {
                 encryptedKeyWordArr[APositions[i]] = word[i].ToString();
-            }
-            else if (i >= 4 && i <= 7)
-            {
+            } else if (i >= 4 && i <= 7) {
                 encryptedKeyWordArr[YPositions[i % 4]] = word[i].ToString();
-            }
-            else
-            {
+            } else {
                 encryptedKeyWordArr[OPositions[i % 4]] = word[i].ToString();
             }
         }
         string encryptedKeyWord = "";
-        foreach (string letter in encryptedKeyWordArr)
-        {
+        foreach (string letter in encryptedKeyWordArr) {
             encryptedKeyWord += letter;
         }
 
@@ -420,35 +366,27 @@ public class CipherEver : MonoBehaviour
         return "bla";
     }
 
-    void GoodHoodCipher(string keyword, string word)
-    {
+    void GoodHoodCipher(string keyword, string word) {
         string key2Initial = "LLLLLL";
         string key2 = "";
-        for (int i = 0; i < key2Initial.Length; i++)
-        {
+        for (int i = 0; i < key2Initial.Length; i++) {
             char serialChar = Bomb.GetSerialNumber()[i];
             int serialCharNum;
-            if (Char.IsLetter(serialChar))
-            {
+            if (Char.IsLetter(serialChar)) {
                 serialCharNum = alphaNum(serialChar.ToString());
-            }
-            else
-            {
+            } else {
                 serialCharNum = Int32.Parse(serialChar.ToString());
             }
 
             int liemuhIndex = 12;
-            if (serialCharNum % 2 == 0)
-            {
+            if (serialCharNum % 2 == 0) {
                 int newIndex = (serialCharNum + liemuhIndex) % 26;
-                if (newIndex == 0) newIndex = 26;
+                if (newIndex == 0)
+                    newIndex = 26;
                 key2 += toAlpha(newIndex);
-            }
-            else
-            {
+            } else {
                 int newIndex = (liemuhIndex - serialCharNum);
-                if (newIndex < 1)
-                {
+                if (newIndex < 1) {
                     newIndex += 26;
                 }
                 key2 += toAlpha(newIndex);
@@ -458,14 +396,12 @@ public class CipherEver : MonoBehaviour
         Debug.Log("FINALKEY " + finalKey);
         string[] finalKeyArray = new string[12];
 
-        for (int i = 0; i < finalKey.Length; i++)
-        {
+        for (int i = 0; i < finalKey.Length; i++) {
             finalKeyArray[i] = finalKey[i].ToString();
         }
 
         string[] finalShifted = new string[12];
-        for (int i = 0; i < finalKey.Length; i++)
-        {
+        for (int i = 0; i < finalKey.Length; i++) {
             finalShifted[(i + (Bomb.GetIndicators().Count() + 2)) % 12] = finalKeyArray[i].ToString();
         }
         finalKey = String.Join("", finalShifted);
@@ -474,11 +410,9 @@ public class CipherEver : MonoBehaviour
 
         string[] answer = new string[word.Length];
 
-        for (int i = 0; i < finalKey.Length; i++)
-        {
+        for (int i = 0; i < finalKey.Length; i++) {
             int newChar = (alphaNum(finalKey[i].ToString()) - alphaNum(word[i].ToString())) % 26;
-            if (newChar < 1)
-            {
+            if (newChar < 1) {
                 newChar += 26;
             }
             answer[word.Length - 1 - i] = toAlpha(newChar);
@@ -490,15 +424,13 @@ public class CipherEver : MonoBehaviour
 
     }
 
-    int alphaNum(string letter)
-    {
+    int alphaNum(string letter) {
         string alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
         int letIndex = alphabet.IndexOf(letter) + 1;
         return letIndex;
     }
 
-    string toAlpha(int index)
-    {
+    string toAlpha(int index) {
         string alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
         return (alphabet[index - 1]).ToString();
     }
@@ -509,8 +441,7 @@ public class CipherEver : MonoBehaviour
     // This is Kuro's first "major" project, and so Kuro has learnt a lot during it, but this is too much for Kuro to be bothered to fix.
     // If you MUST continue, avoid at all costs all 200+ lines of the CheckInterchanges() method.
     #region Wayfinding
-    void Wayfinding()
-    {
+    void Wayfinding() {
         lines = GenerateMap();
         PickStations();
 
@@ -521,80 +452,75 @@ public class CipherEver : MonoBehaviour
         pageContents[0, 1] = "TO";
         pageContents[0, 2] = destination;
 
-        if (origin == "HAMMERSMITH" || destination == "HAMMERSMITH") tubecipherBackgroundNumber = 1;
+        if (origin == "HAMMERSMITH" || destination == "HAMMERSMITH")
+            tubecipherBackgroundNumber = 1;
         ChangeBGImage();
 
         CheckImpossibilities();
         CheckUnicorns();
     }
 
-    void PickStations()
-    {
+    void PickStations() {
 
         int i = Rnd.Range(0, 11);
         int j = Rnd.Range(0, lines[i].Stations.Count());
         string linesWithOrigin = "";
         char nextLineLetter;
         const string Alphabet = "ABCDEFGHIJK";
-            
+
         origin = lines[i].Stations[j];
 
-        foreach (char letter in Alphabet)
-        {
-            if (lines[alphaNum(letter.ToString()) - 1].Stations.Contains(origin)) linesWithOrigin += letter;
+        foreach (char letter in Alphabet) {
+            if (lines[alphaNum(letter.ToString()) - 1].Stations.Contains(origin))
+                linesWithOrigin += letter;
         }
 
-        do
-        {
+        do {
             nextLineLetter = Alphabet[Rnd.Range(0, 11)];
         }
         while (linesWithOrigin.Contains(nextLineLetter));
 
         i = alphaNum(nextLineLetter.ToString()) - 1;
 
-        do
-        {
+        do {
             j = Rnd.Range(0, lines[i].Stations.Count());
             destination = lines[i].Stations[j];
         }
         while (OnIllegalLine(destination, linesWithOrigin) && CheckForBankMonumentLiverpoolStreetMoorgate());
     }
 
-    bool CheckForBankMonumentLiverpoolStreetMoorgate()
-    {
+    bool CheckForBankMonumentLiverpoolStreetMoorgate() {
         string[] bankMonument = { "BANK", "MONUMENT" };
         string[] LiverpoolStreetMoorgate = { "LIVERPOOL STREET", "MOORGATE" };
 
-        if (bankMonument.Contains(origin) && bankMonument.Contains(destination)) return false;
-        if (LiverpoolStreetMoorgate.Contains(origin) && LiverpoolStreetMoorgate.Contains(destination)) return false;
+        if (bankMonument.Contains(origin) && bankMonument.Contains(destination))
+            return false;
+        if (LiverpoolStreetMoorgate.Contains(origin) && LiverpoolStreetMoorgate.Contains(destination))
+            return false;
 
         return true;
     }
 
-    bool OnIllegalLine(string station, string IllegalLines)
-    {
-        foreach (char letter in IllegalLines)
-        {
-            if (lines[alphaNum(letter.ToString()) - 1].Stations.Contains(station)) return true;
+    bool OnIllegalLine(string station, string IllegalLines) {
+        foreach (char letter in IllegalLines) {
+            if (lines[alphaNum(letter.ToString()) - 1].Stations.Contains(station))
+                return true;
         }
 
         return false;
     }
 
-    void CheckImpossibilities()
-    {
+    void CheckImpossibilities() {
         string[] endpoints = { origin, destination };
         string[] metropolitanLineExclusives = { "CHESHAM", "CHALFONT N LATIMER", "AMERSHAM", "CHORLEYWOOD", "RICKMANSWORTH", "MOOR PARK", "WATFORD", "CROXLEY", "NORTHWOOD", "NORTHWOOD HILLS", "PINNER", "NORTH HARROW", "HARROW ON THE HILL", "WEST HARROW", "NORTHWICK PARK", "PRESTON ROAD" };
         string[] districtLineExclusives = { "UPNEY", "BECONTREE", "DAGENHAM HEATHWAY", "DAGENHAM EAST", "ELM PARK", "HORNCHURCH", "UPMINSTER BRIDGE", "UPMINSTER", "WIMBLEDON", "WIMBLEDON PARK", "SOUTHFIELDS", "EAST PUTNEY", "PUTNEY BRIDGE", "PARSONS GREEN", "FULHAM BROADWAY", "WEST BROMPTON", "WEST KENSINGTON", "RAVENSCOURT PARK", "STAMFORD BROOK", "GUNNERSBURY", "KEW GARDENS", "RICHMOND", "CHISWICK PARK" };
 
-        if ((endpoints.Contains("MORNINGTON CRESCENT") || endpoints.Contains("GOODGE STREET") || endpoints.Contains("BATTERSEA POWER ST") || endpoints.Contains("NINE ELMS")) && (metropolitanLineExclusives.Contains(endpoints[0]) || metropolitanLineExclusives.Contains(endpoints[1])))
-        {
+        if ((endpoints.Contains("MORNINGTON CRESCENT") || endpoints.Contains("GOODGE STREET") || endpoints.Contains("BATTERSEA POWER ST") || endpoints.Contains("NINE ELMS")) && (metropolitanLineExclusives.Contains(endpoints[0]) || metropolitanLineExclusives.Contains(endpoints[1]))) {
             origin = "HAINAULT";
             destination = "COCKFOSTERS";
         }
 
-        if ((metropolitanLineExclusives.Contains(endpoints[0]) || metropolitanLineExclusives.Contains(endpoints[1])) && (districtLineExclusives.Contains(endpoints[0]) || districtLineExclusives.Contains(endpoints[1])))
-        {
+        if ((metropolitanLineExclusives.Contains(endpoints[0]) || metropolitanLineExclusives.Contains(endpoints[1])) && (districtLineExclusives.Contains(endpoints[0]) || districtLineExclusives.Contains(endpoints[1]))) {
             origin = "HAINAULT";
             destination = "COCKFOSTERS";
         }
@@ -602,7 +528,7 @@ public class CipherEver : MonoBehaviour
 
     // Big scary function :(((( Kuro apologises again.
     bool CheckInterchanges(string[] interchanges)
-        // Check validity of paths between the two given stations on the module.
+    // Check validity of paths between the two given stations on the module.
     {
         TubeLine.PathFinder p;
         List<TubeLine.Path>[] pathOneSections = new List<TubeLine.Path>[2];
@@ -614,52 +540,50 @@ public class CipherEver : MonoBehaviour
         var twoPathNumbers = new List<int>();
         int i;
 
-        for (int j = 0; j < interchanges.Length; j++)
-        {
-            if (interchanges[j] == "ST JAMESS PARK") interchanges[j] = "ST JAMES PARK";
+        for (int j = 0; j < interchanges.Length; j++) {
+            if (interchanges[j] == "ST JAMESS PARK")
+                interchanges[j] = "ST JAMES PARK";
         }
 
-        for (int j = 0; j < linesTakenPathOne.Length; j++)
-        {
+        for (int j = 0; j < linesTakenPathOne.Length; j++) {
             linesTakenPathOne[j] = null;
         }
 
-        for (int j = 0; j < linesTakenPathTwo.Length; j++)
-        {
+        for (int j = 0; j < linesTakenPathTwo.Length; j++) {
             linesTakenPathTwo[j] = null;
         }
 
-        if (interchanges.Length != interchanges.Distinct().Count()) return false;
+        if (interchanges.Length != interchanges.Distinct().Count())
+            return false;
 
         // Checking path 1:
         pathOneSections[0] = new List<TubeLine.Path>();
-        foreach (TubeLine line in lines)
-        {
+        foreach (TubeLine line in lines) {
             p = new TubeLine.PathFinder(line, origin, interchanges[0]);
-            if (p.HasPath()) pathOneSections[0].Add(p.ProducePath());
+            if (p.HasPath())
+                pathOneSections[0].Add(p.ProducePath());
         }
 
         pathOneSections[1] = new List<TubeLine.Path>();
-        foreach (TubeLine line in lines)
-        {
-            if ((interchanges[0] == "MOORGATE" || interchanges[0] == "LIVERPOOL STREET") && !funnyLines.Contains(line.Name) && destination != "MOORGATE" && destination != "LIVERPOOL STREET")
-            {
+        foreach (TubeLine line in lines) {
+            if ((interchanges[0] == "MOORGATE" || interchanges[0] == "LIVERPOOL STREET") && !funnyLines.Contains(line.Name) && destination != "MOORGATE" && destination != "LIVERPOOL STREET") {
                 p = new TubeLine.PathFinder(line, "LIVERPOOL STREET", destination);
-                if (p.HasPath()) pathOneSections[1].Add(p.ProducePath());
+                if (p.HasPath())
+                    pathOneSections[1].Add(p.ProducePath());
                 p = new TubeLine.PathFinder(line, "MOORGATE", destination);
-                if (p.HasPath()) pathOneSections[1].Add(p.ProducePath());
-            }
-            else if ((interchanges[0] == "BANK" || interchanges[0] == "MONUMENT") && destination != "BANK" && destination != "MONUMENT")
-            {
+                if (p.HasPath())
+                    pathOneSections[1].Add(p.ProducePath());
+            } else if ((interchanges[0] == "BANK" || interchanges[0] == "MONUMENT") && destination != "BANK" && destination != "MONUMENT") {
                 p = new TubeLine.PathFinder(line, "MONUMENT", destination);
-                if (p.HasPath()) pathOneSections[1].Add(p.ProducePath());
+                if (p.HasPath())
+                    pathOneSections[1].Add(p.ProducePath());
                 p = new TubeLine.PathFinder(line, "BANK", destination);
-                if (p.HasPath()) pathOneSections[1].Add(p.ProducePath());
-            }
-            else
-            {
+                if (p.HasPath())
+                    pathOneSections[1].Add(p.ProducePath());
+            } else {
                 p = new TubeLine.PathFinder(line, interchanges[0], destination);
-                if (p.HasPath()) pathOneSections[1].Add(p.ProducePath());
+                if (p.HasPath())
+                    pathOneSections[1].Add(p.ProducePath());
             }
         }
 
@@ -667,35 +591,30 @@ public class CipherEver : MonoBehaviour
         if (pathOneSections[0].Count() == 0 || pathOneSections[1].Count() == 0) { Debug.Log("No path on path 1"); return false; }
         if ((pathOneSections[0].Count == 1 && pathOneSections[1].Count == 1) && pathOneSections[0][0].id == pathOneSections[1][0].id) { Debug.Log("Path requires same line path 1"); return false; }
 
-        if (pathOneSections[1].Count == 1)
-        {
+        if (pathOneSections[1].Count == 1) {
             linesTakenPathOne[1] = pathOneSections[1][0];
             i = Rnd.Range(0, pathOneSections[0].Count);
 
-            if (pathOneSections[0][i].id != linesTakenPathOne[1].id) linesTakenPathOne[0] = pathOneSections[0][i];
-            else
-            {
+            if (pathOneSections[0][i].id != linesTakenPathOne[1].id)
+                linesTakenPathOne[0] = pathOneSections[0][i];
+            else {
                 i = 0;
-                do
-                {
+                do {
                     linesTakenPathOne[0] = pathOneSections[0][i];
                     i++;
                 } while (linesTakenPathOne[0].id == linesTakenPathOne[1].id);
             }
-        }
-        else
-        {
+        } else {
             i = Rnd.Range(0, pathOneSections[0].Count);
             linesTakenPathOne[0] = pathOneSections[0][i];
 
             i = Rnd.Range(0, pathOneSections[1].Count);
 
-            if (pathOneSections[1][i].id != linesTakenPathOne[0].id) linesTakenPathOne[1] = pathOneSections[1][i];
-            else
-            {
+            if (pathOneSections[1][i].id != linesTakenPathOne[0].id)
+                linesTakenPathOne[1] = pathOneSections[1][i];
+            else {
                 i = 0;
-                do
-                {
+                do {
                     linesTakenPathOne[1] = pathOneSections[1][i];
                     i++;
                 } while (linesTakenPathOne[1].id == linesTakenPathOne[0].id);
@@ -704,73 +623,69 @@ public class CipherEver : MonoBehaviour
 
         // Checking path 2:
         pathTwoSections[0] = new List<TubeLine.Path>();
-        foreach (TubeLine line in lines)
-        {
+        foreach (TubeLine line in lines) {
             p = new TubeLine.PathFinder(line, origin, interchanges[1]);
-            if (p.HasPath()) pathTwoSections[0].Add(p.ProducePath());
+            if (p.HasPath())
+                pathTwoSections[0].Add(p.ProducePath());
         }
 
-            pathTwoSections[1] = new List<TubeLine.Path>();
-        foreach (TubeLine line in lines)
-        {
-            if ((interchanges[1] == "MOORGATE" || interchanges[1] == "LIVERPOOL STREET") && !funnyLines.Contains(line.Name) && interchanges[2] != "MOORGATE" && interchanges[2] != "LIVERPOOL STREET")
-            {
+        pathTwoSections[1] = new List<TubeLine.Path>();
+        foreach (TubeLine line in lines) {
+            if ((interchanges[1] == "MOORGATE" || interchanges[1] == "LIVERPOOL STREET") && !funnyLines.Contains(line.Name) && interchanges[2] != "MOORGATE" && interchanges[2] != "LIVERPOOL STREET") {
                 p = new TubeLine.PathFinder(line, "LIVERPOOL STREET", interchanges[2]);
-                if (p.HasPath()) pathTwoSections[1].Add(p.ProducePath());
+                if (p.HasPath())
+                    pathTwoSections[1].Add(p.ProducePath());
                 p = new TubeLine.PathFinder(line, "MOORGATE", interchanges[2]);
-                if (p.HasPath()) pathTwoSections[1].Add(p.ProducePath());
-            }
-            else if ((interchanges[1] == "BANK" || interchanges[1] == "MONUMENT") && interchanges[2] != "BANK" && interchanges[2] != "MONUMENT")
-            {
+                if (p.HasPath())
+                    pathTwoSections[1].Add(p.ProducePath());
+            } else if ((interchanges[1] == "BANK" || interchanges[1] == "MONUMENT") && interchanges[2] != "BANK" && interchanges[2] != "MONUMENT") {
                 p = new TubeLine.PathFinder(line, "MONUMENT", interchanges[2]);
-                if (p.HasPath()) pathTwoSections[1].Add(p.ProducePath());
+                if (p.HasPath())
+                    pathTwoSections[1].Add(p.ProducePath());
                 p = new TubeLine.PathFinder(line, "BANK", interchanges[2]);
-                if (p.HasPath()) pathTwoSections[1].Add(p.ProducePath());
-            }
-            else
-            {
+                if (p.HasPath())
+                    pathTwoSections[1].Add(p.ProducePath());
+            } else {
                 p = new TubeLine.PathFinder(line, interchanges[1], interchanges[2]);
-                if (p.HasPath()) pathTwoSections[1].Add(p.ProducePath());
+                if (p.HasPath())
+                    pathTwoSections[1].Add(p.ProducePath());
             }
         }
 
         pathTwoSections[2] = new List<TubeLine.Path>();
-        foreach (TubeLine line in lines)
-        {
-            if ((interchanges[2] == "MOORGATE" || interchanges[2] == "LIVERPOOL STREET") && !funnyLines.Contains(line.Name) && destination != "MOORGATE" && destination != "LIVERPOOL STREET")
-            {
+        foreach (TubeLine line in lines) {
+            if ((interchanges[2] == "MOORGATE" || interchanges[2] == "LIVERPOOL STREET") && !funnyLines.Contains(line.Name) && destination != "MOORGATE" && destination != "LIVERPOOL STREET") {
                 p = new TubeLine.PathFinder(line, "LIVERPOOL STREET", destination);
-                if (p.HasPath()) pathTwoSections[2].Add(p.ProducePath());
+                if (p.HasPath())
+                    pathTwoSections[2].Add(p.ProducePath());
                 p = new TubeLine.PathFinder(line, "MOORGATE", destination);
-                if (p.HasPath()) pathTwoSections[2].Add(p.ProducePath());
-            }
-            else if ((interchanges[2] == "BANK" || interchanges[2] == "MONUMENT") && destination != "BANK" && destination != "MONUMENT")
-            {
+                if (p.HasPath())
+                    pathTwoSections[2].Add(p.ProducePath());
+            } else if ((interchanges[2] == "BANK" || interchanges[2] == "MONUMENT") && destination != "BANK" && destination != "MONUMENT") {
                 p = new TubeLine.PathFinder(line, "MONUMENT", destination);
-                if (p.HasPath()) pathTwoSections[2].Add(p.ProducePath());
+                if (p.HasPath())
+                    pathTwoSections[2].Add(p.ProducePath());
                 p = new TubeLine.PathFinder(line, "BANK", destination);
-                if (p.HasPath()) pathTwoSections[2].Add(p.ProducePath());
-            }
-            else
-            {
+                if (p.HasPath())
+                    pathTwoSections[2].Add(p.ProducePath());
+            } else {
                 p = new TubeLine.PathFinder(line, interchanges[2], destination);
-                if (p.HasPath()) pathTwoSections[2].Add(p.ProducePath());
+                if (p.HasPath())
+                    pathTwoSections[2].Add(p.ProducePath());
             }
         }
 
         // Checking validity here.
-        for (int j = 0; j < 3; j++)
-        {
+        for (int j = 0; j < 3; j++) {
             section = pathTwoSections[j];
 
-            switch (section.Count())
-            {
+            switch (section.Count()) {
                 case 0:
                     Debug.Log("No path on path 2 section " + j.ToString());
                     return false;
                 case 1:
-                    if (onePaths.Contains(section[0].id)) { Debug.Log("No path on path 2");  return false; }
-                    else onePaths.Add(section[0].id);
+                    if (onePaths.Contains(section[0].id)) { Debug.Log("No path on path 2"); return false; } else
+                        onePaths.Add(section[0].id);
                     linesTakenPathTwo[j] = section[0];
                     break;
                 case 2:
@@ -779,45 +694,37 @@ public class CipherEver : MonoBehaviour
             }
         }
 
-        foreach (TubeLine.Path path in linesTakenPathTwo)
-        {
-            if (path != null) pathTwoIds.Add(path.id);
+        foreach (TubeLine.Path path in linesTakenPathTwo) {
+            if (path != null)
+                pathTwoIds.Add(path.id);
         }
 
-        foreach (int j in twoPathNumbers)
-        {
+        foreach (int j in twoPathNumbers) {
             i = Rnd.Range(0, 2);
-            if (!pathTwoIds.Contains(pathTwoSections[j][i].id))
-            {
+            if (!pathTwoIds.Contains(pathTwoSections[j][i].id)) {
                 linesTakenPathTwo[j] = pathTwoSections[j][i];
                 pathTwoIds.Add(pathTwoSections[j][i].id);
-            }
-            else
-            {
-                foreach (TubeLine.Path path in pathTwoSections[j])
-                {
-                    if (!linesTakenPathTwo.Contains(path)) linesTakenPathTwo[j] = path;
+            } else {
+                foreach (TubeLine.Path path in pathTwoSections[j]) {
+                    if (!linesTakenPathTwo.Contains(path))
+                        linesTakenPathTwo[j] = path;
                 }
 
-                if (linesTakenPathTwo[j] == null)
-                {
+                if (linesTakenPathTwo[j] == null) {
                     Debug.Log("Can't assign path on path 2 (twopaths)");
                     return false;
                 }
             }
         }
 
-        for (int j = 0; j < 3; j++)
-        {
-            if (linesTakenPathTwo[j] == null)
-            {
-                foreach (TubeLine.Path path in pathTwoSections[j])
-                {
-                    if (!linesTakenPathTwo.Contains(path)) linesTakenPathTwo[j] = path;
+        for (int j = 0; j < 3; j++) {
+            if (linesTakenPathTwo[j] == null) {
+                foreach (TubeLine.Path path in pathTwoSections[j]) {
+                    if (!linesTakenPathTwo.Contains(path))
+                        linesTakenPathTwo[j] = path;
                 }
 
-                if (linesTakenPathTwo[j] == null)
-                {
+                if (linesTakenPathTwo[j] == null) {
                     Debug.Log("Can't assign path on path 2 (end)");
                     return false;
                 }
@@ -930,19 +837,16 @@ public class CipherEver : MonoBehaviour
         return lines;
     }
 
-    void HandleWayfindingSolve()
-    {
+    void HandleWayfindingSolve() {
         pagesLocked = false;
         currentPage = 2;
         pageUpdate(2);
     }
 
-    void CheckUnicorns()
-    {
+    void CheckUnicorns() {
         var angelStations = new List<string> { "HOLBORN", "ANGEL", "GLOUCESTER ROAD" };
 
-        if (angelStations.Contains(origin) && angelStations.Contains(destination))
-        {
+        if (angelStations.Contains(origin) && angelStations.Contains(destination)) {
             angelUnicorn = true;
             angelStations.Remove(origin);
             angelStations.Remove(destination);
@@ -951,21 +855,19 @@ public class CipherEver : MonoBehaviour
             return;
         }
 
-        if (new string[] { "NEASDEN", "HAMMERSMITH", "NORTH GREENWICH" }.Contains(origin) && new string[] { "NEASDEN", "HAMMERSMITH", "NORTH GREENWICH" }.Contains(destination)) ikeaUnicorn = true;
+        if (new string[] { "NEASDEN", "HAMMERSMITH", "NORTH GREENWICH" }.Contains(origin) && new string[] { "NEASDEN", "HAMMERSMITH", "NORTH GREENWICH" }.Contains(destination))
+            ikeaUnicorn = true;
     }
 
     // Catches unicorn-related inputs and updates pages as necessary. Returns true if a unicorn was successfully solved.
-    bool CorrectUnicornInputs()
-    {
-        if (angelUnicorn && routeInputs[0] == angelUnicornSubmission && routeInputs[1] == angelUnicornSubmission && routeInputs[2] == angelUnicornSubmission)
-        {
+    bool CorrectUnicornInputs() {
+        if (angelUnicorn && routeInputs[0] == angelUnicornSubmission && routeInputs[1] == angelUnicornSubmission && routeInputs[2] == angelUnicornSubmission) {
             SetAngelPages();
             tubecipherBackgroundNumber = 2;
             return true;
         }
 
-        if (ikeaUnicorn && routeInputs[0] == "IKEA" && routeInputs[1] == "IKEA" && routeInputs[2] == "IKEA")
-        {
+        if (ikeaUnicorn && routeInputs[0] == "IKEA" && routeInputs[1] == "IKEA" && routeInputs[2] == "IKEA") {
             SetIkeaPages();
             tubecipherBackgroundNumber = 3;
             return true;
@@ -975,8 +877,7 @@ public class CipherEver : MonoBehaviour
     }
 
     // Sets the pages for London Underground Cipher after Wayfinding step.
-    void SetDefaultKuroPages()
-    {
+    void SetDefaultKuroPages() {
         TubeCipher.EncryptWord(linesTakenPathOne.Concat(linesTakenPathTwo).ToArray(), "JUDGING", Bomb); //TEMP: KEYWORD IS OBTAINED FROM NON-BINARY CIPHER.
 
         pageContents[1, 0] = routeInputs[0];
@@ -993,8 +894,7 @@ public class CipherEver : MonoBehaviour
     }
 
     // Sets the pages for London Underground Cipher if an Angel unicorn is dealt with correctly.
-    void SetAngelPages()
-    {
+    void SetAngelPages() {
         pageContents[1, 0] = routeInputs[0];
         pageContents[1, 1] = routeInputs[1];
         pageContents[1, 2] = routeInputs[2];
@@ -1009,8 +909,7 @@ public class CipherEver : MonoBehaviour
     }
 
     // Sets the pages for London Underground Cipher is Ikea unicorn is dealt with correctly.
-    void SetIkeaPages()
-    {
+    void SetIkeaPages() {
         pageContents[1, 0] = routeInputs[0];
         pageContents[1, 1] = routeInputs[1];
         pageContents[1, 2] = routeInputs[2];
@@ -1031,21 +930,18 @@ public class CipherEver : MonoBehaviour
     private readonly string TwitchHelpMessage = @"Use !{0} to do something.";
 #pragma warning restore 414
 
-    IEnumerator ProcessTwitchCommand(string Command)
-    {
+    IEnumerator ProcessTwitchCommand(string Command) {
         yield return null;
     }
 
-    IEnumerator TwitchHandleForcedSolve()
-    {
+    IEnumerator TwitchHandleForcedSolve() {
         yield return null;
     }
 }
 
 
 // Represents the London Underground Cipher
-static class TubeCipher
-{
+static class TubeCipher {
     public static string EncryptedWord;
     private static TubeLine.Path[] _paths;
     private static string _trainfairKey;
@@ -1058,7 +954,7 @@ static class TubeCipher
         {1, "R0"},
         {2, "R3"},
         {3, "C0"},
-        {4, "C2"},  
+        {4, "C2"},
         {5, "C4"},
         {6, "C1"},
         {7, "R4"},
@@ -1067,8 +963,7 @@ static class TubeCipher
         {10, "NONE"}
     };
 
-    public static void EncryptWord(TubeLine.Path[] paths, string keyword, KMBombInfo bomb)
-    {
+    public static void EncryptWord(TubeLine.Path[] paths, string keyword, KMBombInfo bomb) {
         Bomb = bomb;
         _paths = paths;
         EncryptedWord = keyword;
@@ -1084,14 +979,11 @@ static class TubeCipher
 
 
     // Converts a path to a key consisting of the first letter of each station name in that path.
-    private static string ConvertToKey(params TubeLine.Path[] pathsToConvert)
-    {
+    private static string ConvertToKey(params TubeLine.Path[] pathsToConvert) {
         string key = "";
 
-        foreach (TubeLine.Path path in pathsToConvert)
-        {
-            foreach (string station in path.Stations)
-            {
+        foreach (TubeLine.Path path in pathsToConvert) {
+            foreach (string station in path.Stations) {
                 key += station[0];
             }
         }
@@ -1100,30 +992,29 @@ static class TubeCipher
     }
 
     // Generate the Trainfair key to be used for Trainfair Cipher.
-    private static string GenerateKey()
-    {
+    private static string GenerateKey() {
         string pathKey1 = ConvertToKey(_paths[0], _paths[1]);
         string pathKey2 = ConvertToKey(_paths[2], _paths[3], _paths[4]);
 
-        if (EncryptedWord.Length % 2 == 0)
-        {
-            if (pathKey1.Length >= pathKey2.Length) return pathKey1;
+        if (EncryptedWord.Length % 2 == 0) {
+            if (pathKey1.Length >= pathKey2.Length)
+                return pathKey1;
             return pathKey2;
         }
 
-        if (pathKey1.Length <= pathKey2.Length) return pathKey1;
+        if (pathKey1.Length <= pathKey2.Length)
+            return pathKey1;
         return pathKey2;
     }
-    
+
     // Create a Trainfair grid out of the Trainfair key.
-    private static void GenerateGrid()
-    {
+    private static void GenerateGrid() {
         Debug.Log("Something");
         string grid = "";
 
-        foreach (char letter in _trainfairKey + "ABCDEFGHIKLMNOPQRSTUVWXYZ")
-        {
-            if (letter != 'j' && !grid.Contains(letter)) grid += letter;
+        foreach (char letter in _trainfairKey + "ABCDEFGHIKLMNOPQRSTUVWXYZ") {
+            if (letter != 'j' && !grid.Contains(letter))
+                grid += letter;
         }
 
         for (int row = 0; row < 5; row++)
@@ -1132,66 +1023,70 @@ static class TubeCipher
     }
 
     // Return a pair of letters which are the result of performing Trainfair on the parameter letterPair.
-    private static string DoTrainfairOn(string letterPair)
-    {
+    private static string DoTrainfairOn(string letterPair) {
         int[] position1;
         int[] position2;
 
         Debug.Log(letterPair);
 
-        if (letterPair[0] == letterPair[1]) return letterPair; // Do not modify if both letters are the same.
-        if (letterPair.Contains("J")) return letterPair; // Do not modify if either letter is J.
+        if (letterPair[0] == letterPair[1])
+            return letterPair; // Do not modify if both letters are the same.
+        if (letterPair.Contains("J"))
+            return letterPair; // Do not modify if either letter is J.
 
         position1 = GetGridPosition(letterPair[0]).ToArray();
         position2 = GetGridPosition(letterPair[1]).ToArray();
 
-        if (position1[0] == position2[0]) return _trainfairGrid[position1[0], (position1[1] + 1) % 5].ToString() + _trainfairGrid[position2[0], (position2[1] + 1) % 5].ToString(); // Same row.
+        if (position1[0] == position2[0])
+            return _trainfairGrid[position1[0], (position1[1] + 1) % 5].ToString() + _trainfairGrid[position2[0], (position2[1] + 1) % 5].ToString(); // Same row.
 
-        if (position1[1] == position2[1]) return _trainfairGrid[(position1[0] + 1) % 5, position1[1]].ToString() + _trainfairGrid[(position2[0] + 1) % 5, position1[1]].ToString(); // Same column.
+        if (position1[1] == position2[1])
+            return _trainfairGrid[(position1[0] + 1) % 5, position1[1]].ToString() + _trainfairGrid[(position2[0] + 1) % 5, position1[1]].ToString(); // Same column.
 
         return _trainfairGrid[position1[0], position2[1]].ToString() + _trainfairGrid[position2[0], position1[1]].ToString(); // Different rows and columns.
     }
 
     // Return an int[] containing the lineNumbers of the unused lines to be used for Trainfair grid shifting.
-    private static int[] GetLinesForShifting()
-    {
+    private static int[] GetLinesForShifting() {
         var linesForShifting = new List<int>(new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 });
         int initialLength;
 
-        foreach (TubeLine.Path path in _paths)
-        {
+        foreach (TubeLine.Path path in _paths) {
             linesForShifting.Remove(path.Line.LineNumber);
         }
 
         initialLength = linesForShifting.Count();
 
-        if (linesForShifting.Count() >= EncryptedWord.Length - 1) return linesForShifting.GetRange(0, EncryptedWord.Length - 2).ToArray();
+        if (linesForShifting.Count() >= EncryptedWord.Length - 1)
+            return linesForShifting.GetRange(0, EncryptedWord.Length - 2).ToArray();
 
-        while (linesForShifting.Count() < EncryptedWord.Length - 2) linesForShifting.Add(linesForShifting[linesForShifting.Count() - initialLength]);
+        while (linesForShifting.Count() < EncryptedWord.Length - 2)
+            linesForShifting.Add(linesForShifting[linesForShifting.Count() - initialLength]);
         return linesForShifting.ToArray();
     }
 
     // Return an int[] containing the shift indices based on the alphanumeric positions of the serial number characters.
-    private static int[] GetShiftIndices()
-    {
+    private static int[] GetShiftIndices() {
         string serial = Bomb.GetSerialNumber().ToUpper();
         var shiftIndices = new List<int>();
 
-        foreach (char character in serial)
-        {
-            if ("0123456789".Contains(character)) shiftIndices.Add(character - '0');
-            else shiftIndices.Add("ABCDEFGHIJKLMNOPQRSTUVWXYZ".IndexOf(character) + 1);
+        foreach (char character in serial) {
+            if ("0123456789".Contains(character))
+                shiftIndices.Add(character - '0');
+            else
+                shiftIndices.Add("ABCDEFGHIJKLMNOPQRSTUVWXYZ".IndexOf(character) + 1);
         }
 
-        if (shiftIndices.Count() >= EncryptedWord.Length - 1) return shiftIndices.GetRange(0, EncryptedWord.Length - 2).ToArray();
+        if (shiftIndices.Count() >= EncryptedWord.Length - 1)
+            return shiftIndices.GetRange(0, EncryptedWord.Length - 2).ToArray();
 
-        while (shiftIndices.Count() < EncryptedWord.Length - 2) shiftIndices.Add(shiftIndices[shiftIndices.Count() - serial.Length]);
+        while (shiftIndices.Count() < EncryptedWord.Length - 2)
+            shiftIndices.Add(shiftIndices[shiftIndices.Count() - serial.Length]);
         return shiftIndices.ToArray();
     }
 
     // Applies Compacted Traincipher encryption to the Non-Binary Cipher keyword.
-    private static string ChooChooMotherfucker()
-    {
+    private static string ChooChooMotherfucker() {
         int[] linesForShifting = GetLinesForShifting();
         int[] shiftIndices = GetShiftIndices();
         string chewedWord;
@@ -1203,8 +1098,7 @@ static class TubeCipher
         chewedWord = DoTrainfairOn(EncryptedWord.Substring(EncryptedWord.Length - 2));
 
 
-        for (int i = EncryptedWord.Length - 3; i>=0; i--)
-        {
+        for (int i = EncryptedWord.Length - 3; i >= 0; i--) {
             ShiftGrid(linesForShifting[totalShifts - currentPos], -shiftIndices[totalShifts - currentPos]); // This is undoing the PreShift() pair by pair because encrypted happens right-to-left.
             chewedWord = DoTrainfairOn(EncryptedWord[i].ToString() + chewedWord[0].ToString()) + chewedWord.Substring(1);
             currentPos++;
@@ -1214,11 +1108,9 @@ static class TubeCipher
     }
 
     // Return a two-element array of int containing the position of a letter in the grid.
-    private static int[] GetGridPosition(char letter)
-    {
+    private static int[] GetGridPosition(char letter) {
         for (int row = 0; row < 5; row++)
-            for (int col = 0; col < 5; col++)
-            {
+            for (int col = 0; col < 5; col++) {
                 if (letter == _trainfairGrid[row, col])
                     return new int[] { row, col };
             }
@@ -1226,85 +1118,75 @@ static class TubeCipher
     }
 
     // Shifts the row/column corresponding to the lineNumber by the shiftIndex.
-    private static void ShiftGrid(int lineNumber, int shiftIndex)
-    {
+    private static void ShiftGrid(int lineNumber, int shiftIndex) {
         string shiftID = LineToShiftID[lineNumber];
 
-        if (shiftID == "NONE") return;
+        if (shiftID == "NONE")
+            return;
 
-        if (shiftID[0] == 'R') ShiftRow(shiftID[1] - '0', shiftIndex);
-        else ShiftColumn(shiftID[1] - '0', shiftIndex);
+        if (shiftID[0] == 'R')
+            ShiftRow(shiftID[1] - '0', shiftIndex);
+        else
+            ShiftColumn(shiftID[1] - '0', shiftIndex);
     }
 
     // Shift the given column down by the given shifting index.
-    private static void ShiftColumn(int columnNumber, int shiftIndex)
-    {
+    private static void ShiftColumn(int columnNumber, int shiftIndex) {
         string columnContents = "";
 
-        for (int i = 0; i < 5; i++)
-        {
+        for (int i = 0; i < 5; i++) {
             columnContents += _trainfairGrid[i, columnNumber];
         }
 
         columnContents = CipherTools.ShiftRight(columnContents, shiftIndex);
 
-        for (int i = 0; i < 5; i++)
-        {
+        for (int i = 0; i < 5; i++) {
             _trainfairGrid[i, columnNumber] = columnContents[i];
         }
     }
 
     // Shift the given row right by the given shifting index.
-    private static void ShiftRow(int rowNumber, int shiftIndex)
-    {
+    private static void ShiftRow(int rowNumber, int shiftIndex) {
         string rowContents = "";
 
-        for (int i = 0; i < 5; i++)
-        {
+        for (int i = 0; i < 5; i++) {
             rowContents += _trainfairGrid[rowNumber, i];
         }
 
         rowContents = CipherTools.ShiftRight(rowContents, shiftIndex);
 
-        for (int i = 0; i < 5; i++)
-        {
+        for (int i = 0; i < 5; i++) {
             _trainfairGrid[rowNumber, i] = rowContents[i];
         }
     }
 
     // Applies all the shifts to the grid so that the word can be encrypted in the correct order.
-    private static void PreShift(int[] linesForShifting, int[] shiftIndices)
-    {
-        for (int i = 0; i<linesForShifting.Length; i++)
-        {
+    private static void PreShift(int[] linesForShifting, int[] shiftIndices) {
+        for (int i = 0; i < linesForShifting.Length; i++) {
             ShiftGrid(linesForShifting[i], shiftIndices[i]);
         }
     }
 
 
     // Transposition Stuff below this.
-    private static void PerformTubeLineTransposition()
-    { 
+    private static void PerformTubeLineTransposition() {
         string transpositionKey = GetTranspositionKey(_paths).Substring(0, EncryptedWord.Length);
         EncryptedWord = Transpose(EncryptedWord, transpositionKey);
     }
 
     // Apply Tube Line Transposition using transpositionKey to keyword
-    private static string Transpose(string keyword, string transpositionKey)
-    {
+    private static string Transpose(string keyword, string transpositionKey) {
         var transpositionPositions = new List<int>();
         var encryptedLetters = new string[keyword.Length];
 
-        foreach (char keyDigit in "0123456789ABCDEF")
-        {
-            foreach (int i in Enumerable.Range(0, keyword.Length))
-            {
-                if (transpositionKey[i] == keyDigit) transpositionPositions.Add(i);
+        foreach (char keyDigit in "0123456789ABCDEF") {
+            foreach (int i in Enumerable.Range(0, keyword.Length)) {
+                if (transpositionKey[i] == keyDigit)
+                    transpositionPositions.Add(i);
             }
         }
 
-        foreach (int i in Enumerable.Range(0, keyword.Length))
-        {
+        foreach (int i in Enumerable.Range(0, keyword.Length)) {
             encryptedLetters[transpositionPositions[i]] = keyword[i].ToString();
         }
 
@@ -1312,15 +1194,13 @@ static class TubeCipher
     }
 
     // Create the transposition key from the lines taken in Wayfinding step.
-    private static string GetTranspositionKey(TubeLine.Path[] paths)
-    {
+    private static string GetTranspositionKey(TubeLine.Path[] paths) {
         string lineHexCodes = "";
         int shiftIndex = Math.Abs((paths[0].Stations.Length + paths[1].Stations.Length) - (paths[2].Stations.Length + paths[3].Stations.Length + paths[4].Stations.Length));
         string key1;
         string key2;
 
-        for (int i = 0; i < 5; i++)
-        {
+        for (int i = 0; i < 5; i++) {
             lineHexCodes += paths[i].Line.Colour;
         }
 
@@ -1329,36 +1209,33 @@ static class TubeCipher
         key2 = (int.Parse(lineHexCodes.Substring(12, 6), System.Globalization.NumberStyles.HexNumber) + int.Parse(lineHexCodes.Substring(18, 6), System.Globalization.NumberStyles.HexNumber)
              + int.Parse(lineHexCodes.Substring(24, 6), System.Globalization.NumberStyles.HexNumber)).ToString("X6");
 
-        if (IsEven(key1) == IsEven(key2)) return key1 + key2;
+        if (IsEven(key1) == IsEven(key2))
+            return key1 + key2;
         return key2 + key1;
     }
 
     // Takes a string representing a hex value (hexString), and returns true if it is even and false otherwise.
-    private static bool IsEven(string hexString)
-    {
-        if ("02468ACE".Contains(hexString[hexString.Length - 1])) return true;
+    private static bool IsEven(string hexString) {
+        if ("02468ACE".Contains(hexString[hexString.Length - 1]))
+            return true;
         return false;
     }
 
 }
 
-static class CipherTools
-{
-    public static string ShiftLeft(string text, int shiftIndex)
-    {
+static class CipherTools {
+    public static string ShiftLeft(string text, int shiftIndex) {
         shiftIndex = ((shiftIndex % text.Length) + text.Length) % text.Length;
         return text.Substring(shiftIndex) + text.Substring(0, shiftIndex);
     }
 
-    public static string ShiftRight(string text, int shiftIndex)
-    {
+    public static string ShiftRight(string text, int shiftIndex) {
         shiftIndex = ((shiftIndex % text.Length) + text.Length) % text.Length;
         return text.Substring(text.Length - shiftIndex) + text.Substring(0, text.Length - shiftIndex);
     }
 }
 
-class TubeLine
-{
+class TubeLine {
     public string Name;
     public string Colour;
     public List<string> Stations = new List<string>();
@@ -1366,56 +1243,47 @@ class TubeLine
     public float[] RGBValues = { 0, 0, 0 };
     public int LineNumber;
 
-    public TubeLine(string lineName, string lineColour, int lineNumber)
-    {
+    public TubeLine(string lineName, string lineColour, int lineNumber) {
         LineNumber = lineNumber;
         Name = lineName;
         Colour = lineColour;
         SetRGBValues();
     }
 
-    private void SetRGBValues()
-    {
+    private void SetRGBValues() {
 
-        if (Colour == "000000")
-        {
+        if (Colour == "000000") {
             RGBValues[0] = 1;
             RGBValues[1] = 1;
             RGBValues[2] = 1;
-        }
-        else
-        {
+        } else {
             RGBValues[0] = (float)int.Parse(Colour.Substring(0, 2), System.Globalization.NumberStyles.HexNumber) / 255;
             RGBValues[1] = (float)int.Parse(Colour.Substring(2, 2), System.Globalization.NumberStyles.HexNumber) / 255;
             RGBValues[2] = (float)int.Parse(Colour.Substring(4, 2), System.Globalization.NumberStyles.HexNumber) / 255;
         }
     }
 
-    public void AddBranch(string[] stationsList, string branchIdentifier = "")
-    {
+    public void AddBranch(string[] stationsList, string branchIdentifier = "") {
         _branches.Add(new Branch(stationsList, branchIdentifier));
         Stations.AddRange(stationsList);
         Stations = Stations.Distinct().ToList();
     }
 
-    private class Branch
-    {
+    private class Branch {
         // private readonly string[] _stations;
         public string[] _stations;
         public string LeftEndPoint;
         public string RightEndPoint;
         public string Name;
 
-        public Branch(string[] stationsList, string branchName)
-        {
+        public Branch(string[] stationsList, string branchName) {
             _stations = stationsList;
             LeftEndPoint = stationsList[0];
             RightEndPoint = stationsList[stationsList.Count() - 1];
             Name = branchName;
         }
 
-        public bool Contains(string station)
-        {
+        public bool Contains(string station) {
             return _stations.Contains(station);
         }
 
@@ -1428,8 +1296,7 @@ class TubeLine
             string currentStation;
             var path = new List<string>();
 
-            do
-            {
+            do {
                 currentStation = _stations[position];
                 path.Add(currentStation);
                 position += i;
@@ -1439,13 +1306,11 @@ class TubeLine
         }
     }
 
-    public class PathFinder
-    {
+    public class PathFinder {
         private readonly List<List<string>> _paths = new List<List<string>>();
         public readonly TubeLine _line;
 
-        public PathFinder(TubeLine line, string start, string end)
-        {
+        public PathFinder(TubeLine line, string start, string end) {
             _line = line;
 
             FindPaths(start, end, new List<string>(), false);
@@ -1458,91 +1323,79 @@ class TubeLine
         {
             List<string> path;
 
-            foreach (Branch branch in _line._branches)
-            {
+            foreach (Branch branch in _line._branches) {
                 path = new List<string>(pathSoFar);
 
-                if (branch.Contains(start))
-                {
-                    if (branch.RightEndPoint != start && !reverse)
-                    {
+                if (branch.Contains(start)) {
+                    if (branch.RightEndPoint != start && !reverse) {
                         CheckForEndStation(start, end, reverse, path, branch);
                     }
 
-                    if (branch.LeftEndPoint != start && reverse)
-                    {
+                    if (branch.LeftEndPoint != start && reverse) {
                         CheckForEndStation(start, end, reverse, path, branch);
                     }
                 }
             }
         }
 
-        private void CheckForEndStation(string start, string end, bool reverse, List<string> path, Branch branch)
-        {
+        private void CheckForEndStation(string start, string end, bool reverse, List<string> path, Branch branch) {
             string endOfPathSoFar;
             var flag = false;
             path.AddRange(branch.GetPath(start, end, reverse));
 
-            if (path.Contains(end))
-            {
-                foreach (List<string> _path in _paths)
-                {
-                    if (AreTheSameFuckingList(_path, path)) flag = true;
+            if (path.Contains(end)) {
+                foreach (List<string> _path in _paths) {
+                    if (AreTheSameFuckingList(_path, path))
+                        flag = true;
                 }
-                if (!flag) _paths.Add(path);
-            }
-            else
-            {
+                if (!flag)
+                    _paths.Add(path);
+            } else {
                 endOfPathSoFar = path[path.Count() - 1];
                 path.Remove(endOfPathSoFar);
                 FindPaths(endOfPathSoFar, end, path, reverse);
             }
         }
 
-        private bool AreTheSameFuckingList(List<string> list1, List<string> list2)
-        {
-            if (list1.Count() != list2.Count()) return false;
+        private bool AreTheSameFuckingList(List<string> list1, List<string> list2) {
+            if (list1.Count() != list2.Count())
+                return false;
 
-            for (int i = 0; i < list1.Count(); i++)
-            {
-                if (list1[i] != list2[i]) return false;
+            for (int i = 0; i < list1.Count(); i++) {
+                if (list1[i] != list2[i])
+                    return false;
             }
 
             return true;
         }
 
-        public bool HasPath()
-        {
+        public bool HasPath() {
 
             //foreach (List<string> path in _paths)
             //{
             //    Debug.Log(string.Join(" ", path.ToArray()));
             //}
-            if (_paths.Count == 0)
-            {
+            if (_paths.Count == 0) {
                 return false;
             }
             return true;
         }
 
-        public Path ProducePath()
-        {
+        public Path ProducePath() {
             int i = Rnd.Range(0, _paths.Count());
             var p = new Path(_line, _paths[i].ToArray());
             return p;
         }
     }
 
-    public class Path
-    {
+    public class Path {
         public TubeLine Line;
         public string Name;
         public string[] Stations;
         public string id;
         private string[] _endPoints = new string[2];
 
-        public Path(TubeLine line, string[] pathStations)
-        {
+        public Path(TubeLine line, string[] pathStations) {
             Line = line;
             Name = line.Name;
             id = line.Name;
@@ -1550,30 +1403,32 @@ class TubeLine
             _endPoints[0] = Stations[0];
             _endPoints[1] = Stations[Stations.Length - 1];
 
-            if (Name == "NORTHERN") CheckNorthernLineExceptions();
-            if (Name == "CIRCLE") CheckCircleLineDirection();
+            if (Name == "NORTHERN")
+                CheckNorthernLineExceptions();
+            if (Name == "CIRCLE")
+                CheckCircleLineDirection();
         }
 
-        private void CheckNorthernLineExceptions()
-        {
-            if (_endPoints.Contains("EUSTON") && Stations.Contains("CAMDEN TOWN"))
-            {
-                if (Stations.Contains("MORNINGTON CRESCENT")) Name = "NORTHERN CC BRANCH";
-                else Name = "NORTHERN BANK BRANCH";
-            }
-            else if ((_endPoints.Contains("EUSTON") || Stations.Contains("CAMDEN TOWN")) && (Stations.Contains("KENNINGTON") && !Stations.Contains("NINE ELMS")))
-            {
-                if (Stations.Contains("CHARING CROSS")) Name = "NORTHERN CC BRANCH";
-                else Name = "NORTHERN BANK BRANCH";
+        private void CheckNorthernLineExceptions() {
+            if (_endPoints.Contains("EUSTON") && Stations.Contains("CAMDEN TOWN")) {
+                if (Stations.Contains("MORNINGTON CRESCENT"))
+                    Name = "NORTHERN CC BRANCH";
+                else
+                    Name = "NORTHERN BANK BRANCH";
+            } else if ((_endPoints.Contains("EUSTON") || Stations.Contains("CAMDEN TOWN")) && (Stations.Contains("KENNINGTON") && !Stations.Contains("NINE ELMS"))) {
+                if (Stations.Contains("CHARING CROSS"))
+                    Name = "NORTHERN CC BRANCH";
+                else
+                    Name = "NORTHERN BANK BRANCH";
             }
         }
 
-        private void CheckCircleLineDirection()
-        {
-            if (_endPoints.Contains("PADDINGTON") || _endPoints.Contains("EDGWARE ROAD"))
-            {
-                if (Stations.Contains("BAYSWATER")) Name = "CIRCLE VIA BAYSWATER";
-                else if (Stations.Contains("BAKER STREET")) Name = "CIRCLE VIA BAKER ST";
+        private void CheckCircleLineDirection() {
+            if (_endPoints.Contains("PADDINGTON") || _endPoints.Contains("EDGWARE ROAD")) {
+                if (Stations.Contains("BAYSWATER"))
+                    Name = "CIRCLE VIA BAYSWATER";
+                else if (Stations.Contains("BAKER STREET"))
+                    Name = "CIRCLE VIA BAKER ST";
             }
         }
     }
